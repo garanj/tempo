@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Tempo</string>
+    <string name="loading_message">Loading…</string>
+
+    <!-- Start menu -->
+    <string name="workout_heading">Select</string>
+    <string name="workout_run">Run</string>
+    <string name="workout_walk">Walk</string>
+    <string name="settings">Settings</string>
+
+    <string name="unknown_label"></string>
+
+    <string name="imperial_distance_label">mi</string>
+    <string name="imperial_speed_label">mph</string>
+    <string name="imperial_calories_label">cal</string>
+    <string name="imperial_hr_label">bpm</string>
+    <string name="imperial_pace_label">/mi</string>
+    <string name="imperial_cadence_label">spm</string>
+
+    <string name="metric_distance_label">km</string>
+    <string name="metric_speed_label">kph</string>
+    <string name="metric_calories_label">cal</string>
+    <string name="metric_hr_label">bpm</string>
+    <string name="metric_pace_label">/km</string>
+    <string name="metric_cadence_label">spm</string>
+
+    <!-- GPS indicator -->
+    <string name="gps_fixed">GPS fixed</string>
+    <string name="gps_acquiring">GPS acquiring</string>
+    <string name="gps_not_available">GPS not available</string>
+
+    <!-- HR indicator -->
+    <string name="hr_acquired">HR acquired</string>
+    <string name="hr_acquiring">HR acquiring</string>
+    <string name="hr_not_available">HR not available</string>
+
+    <!-- Settings -->
+    <string name="units_label">units</string>
+    <string name="metric_label">Metric</string>
+    <string name="imperial_label">Imperial</string>
+
+    <string name="auto_pause_label">Use auto-pause</string>
+</resources>

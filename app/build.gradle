@@ -1,0 +1,108 @@
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+    //id "com.google.protobuf" version "0.8.12"
+
+    id "kotlinx-serialization"
+}
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion "30.0.3"
+    defaultConfig {
+        applicationId "com.garan.tempo"
+        minSdkVersion 30
+        targetSdkVersion 30
+        versionCode 1
+        versionName "0.1"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+        }
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.2.0-alpha06"
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+        useIR = true
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Required for activity
+    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.activity:activity-compose:1.4.0"
+
+    // Required for Wear Compose
+    implementation "androidx.wear.compose:compose-foundation:$wear_compose_version"
+    implementation "androidx.wear.compose:compose-material:$wear_compose_version"
+    implementation "androidx.wear.compose:compose-navigation:$wear_compose_version"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+
+    // Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
+
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "androidx.wear:wear:1.2.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
+
+    // Required for serialization in preferences
+    implementation "com.google.code.gson:gson:2.8.6"
+
+    // Ongoing activity
+    implementation "androidx.wear:wear-ongoing:1.0.0"
+
+    // Required for the service
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
+    implementation "androidx.lifecycle:lifecycle-service:2.4.1"
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-android-compiler:2.38.1"
+
+    // For launching "About" via remote intent
+    implementation "androidx.wear:wear-remote-interactions:1.0.0"
+
+    // Health Services
+    implementation "androidx.health:health-services-client:1.0.0-alpha03"
+
+    // For pagers
+    implementation "com.google.accompanist:accompanist-pager:0.23.1"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.23.1"
+
+    // Datastore
+    implementation  "androidx.datastore:datastore-core:1.0.0"
+    implementation  "androidx.datastore:datastore-preferences:1.0.0"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
+}
