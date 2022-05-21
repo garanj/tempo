@@ -30,7 +30,10 @@ import java.util.EnumSet
 fun OnePlusTwoSlotDisplay(
     metricsConfig: List<DisplayMetric>,
     metricsUpdate: DisplayUpdateMap,
-    exerciseState: ExerciseState
+    exerciseState: ExerciseState,
+    screenIndex: Int = 0,
+    onConfigClick: (Int) -> Unit = { _ -> },
+    isForConfig: Boolean = false
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -47,7 +50,11 @@ fun OnePlusTwoSlotDisplay(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.BOTTOM)
                         )
                         .weight(5f),
@@ -57,14 +64,20 @@ fun OnePlusTwoSlotDisplay(
                         metricsConfig.getOrNull(0),
                         metricsUpdate[metricsConfig.getOrNull(0)],
                         exerciseState,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        onConfigClick = { onConfigClick(0) },
+                        isForConfig = isForConfig
                     )
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.TOP)
                         )
                         .weight(3f)
@@ -78,7 +91,9 @@ fun OnePlusTwoSlotDisplay(
                             metricsConfig.getOrNull(1),
                             metricsUpdate[metricsConfig.getOrNull(1)],
                             exerciseState,
-                            TextAlign.Start
+                            TextAlign.Start,
+                            onConfigClick = { onConfigClick(1) },
+                            isForConfig = isForConfig
                         )
                     }
                     Box(modifier = Modifier
@@ -89,7 +104,9 @@ fun OnePlusTwoSlotDisplay(
                         Slot(
                             metricsConfig.getOrNull(2),
                             metricsUpdate[metricsConfig.getOrNull(2)],
-                            exerciseState
+                            exerciseState,
+                            onConfigClick = { onConfigClick(2) },
+                            isForConfig = isForConfig
                         )
                     }
                 }

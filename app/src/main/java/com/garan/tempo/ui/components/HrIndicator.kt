@@ -3,13 +3,9 @@ package com.garan.tempo.ui.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.GpsFixed
-import androidx.compose.material.icons.filled.GpsNotFixed
-import androidx.compose.material.icons.filled.GpsOff
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.health.services.client.data.DataTypeAvailability
-import androidx.health.services.client.data.LocationAvailability
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import com.garan.tempo.R

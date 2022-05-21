@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -13,10 +11,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.health.services.client.data.ExerciseState
-import androidx.health.services.client.data.Value
-import com.garan.tempo.ui.components.display.OneSlotDisplay
-import com.garan.tempo.ui.metrics.DisplayMetric
 import com.garan.tempo.ui.theme.TempoTheme
 import java.util.EnumSet
 

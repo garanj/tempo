@@ -7,17 +7,19 @@ import com.garan.tempo.settings.ScreenFormat
 import com.garan.tempo.settings.ScreenSettings
 import com.garan.tempo.ui.metrics.DisplayMetric
 
-fun defaultWalkingSettings() = ExerciseSettings(
-    "Walking",
-    ExerciseType.WALKING,
+fun defaultWalkingExerciseSettings() = ExerciseSettings(
+    name ="Walking",
+    exerciseType = ExerciseType.WALKING,
     recordingMetrics = setOf(DataType.LOCATION),
-    listOf(
+    useAutoPause = true
+)
+
+fun defaultWalkingScreenSettings() = listOf(
         ScreenSettings(
-            ScreenFormat.ONE_SLOT,
-            listOf(
+            screenFormat = ScreenFormat.ONE_SLOT,
+            metrics = listOf(
                 DisplayMetric.ACTIVE_DURATION,
                 DisplayMetric.AVG_SPEED
             )
         )
     )
-)

@@ -30,7 +30,10 @@ import java.util.EnumSet
 fun TwoSlotDisplay(
     metricsConfig: List<DisplayMetric>,
     metricsUpdate: DisplayUpdateMap,
-    exerciseState: ExerciseState
+    exerciseState: ExerciseState,
+    screenIndex: Int = 0,
+    onConfigClick: (Int) -> Unit = { _ -> },
+    isForConfig: Boolean = false
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -47,7 +50,11 @@ fun TwoSlotDisplay(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.BOTTOM)
                         )
                         .weight(1f),
@@ -57,14 +64,20 @@ fun TwoSlotDisplay(
                         metricsConfig.getOrNull(0),
                         metricsUpdate[metricsConfig.getOrNull(0)],
                         exerciseState,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        onConfigClick = { onConfigClick(0) },
+                        isForConfig = isForConfig
                     )
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.TOP)
                         )
                         .weight(1f),
@@ -74,7 +87,9 @@ fun TwoSlotDisplay(
                         metricsConfig.getOrNull(1),
                         metricsUpdate[metricsConfig.getOrNull(1)],
                         exerciseState,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        onConfigClick = { onConfigClick(1) },
+                        isForConfig = isForConfig
                     )
                 }
             }

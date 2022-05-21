@@ -9,8 +9,7 @@ import kotlin.math.roundToInt
 class DisplayUnitFormatter(
     val distanceScaleFactor: Double = 1609.344,
     val speedScaleFactor: Double = 2.23694,
-    val labelMap: Map<DisplayMetric, Int> = imperialLabelMap(),
-    val plop: String = "imp"
+    val labelMap: Map<DisplayMetric, Int> = imperialLabelMap()
 ) {
     private val limitPace = 0.2
 
@@ -37,7 +36,7 @@ class DisplayUnitFormatter(
                 "--"
             } else {
                 val pace = (distanceScaleFactor / value.asDouble()).toLong()
-                "%02d:%02d".format(pace / 60, pace % 60)
+                "%d:%02d".format(pace / 60, pace % 60)
             }
         }
         DisplayMetric.CADENCE,
@@ -50,8 +49,7 @@ class DisplayUnitFormatter(
 fun metricUnitFormatter() = DisplayUnitFormatter(
     distanceScaleFactor = 1000.0,
     speedScaleFactor = 3.6,
-    labelMap = metricLabelMap(),
-    plop = "met"
+    labelMap = metricLabelMap()
 )
 
 fun imperialUnitFormatter() = DisplayUnitFormatter()

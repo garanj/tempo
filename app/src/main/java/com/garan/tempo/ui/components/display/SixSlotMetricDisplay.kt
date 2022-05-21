@@ -25,7 +25,10 @@ import java.util.EnumSet
 fun SixSlotMetricDisplay(
     metricsConfig: List<DisplayMetric>,
     metricsUpdate: DisplayUpdateMap,
-    exerciseState: ExerciseState
+    exerciseState: ExerciseState,
+    screenIndex: Int = 0,
+    onConfigClick: (Int) -> Unit = { _ -> },
+    isForConfig: Boolean = false
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -42,7 +45,11 @@ fun SixSlotMetricDisplay(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.BOTTOM)
                         )
                         .weight(1f)
@@ -57,7 +64,9 @@ fun SixSlotMetricDisplay(
                             metricsConfig.getOrNull(0),
                             metricsUpdate[metricsConfig.getOrNull(0)],
                             exerciseState,
-                            TextAlign.Start
+                            TextAlign.Start,
+                            onConfigClick = { onConfigClick(0) },
+                            isForConfig = isForConfig
                         )
                     }
                     Box(
@@ -69,7 +78,9 @@ fun SixSlotMetricDisplay(
                         Slot(
                             metricsConfig.getOrNull(1),
                             metricsUpdate[metricsConfig.getOrNull(1)],
-                            exerciseState
+                            exerciseState,
+                            onConfigClick = { onConfigClick(1) },
+                            isForConfig = isForConfig
                         )
                     }
                 }
@@ -89,7 +100,9 @@ fun SixSlotMetricDisplay(
                             metricsConfig.getOrNull(2),
                             metricsUpdate[metricsConfig.getOrNull(2)],
                             exerciseState,
-                            TextAlign.Start
+                            TextAlign.Start,
+                            onConfigClick = { onConfigClick(2) },
+                            isForConfig = isForConfig
                         )
                     }
                     Box(
@@ -101,7 +114,9 @@ fun SixSlotMetricDisplay(
                         Slot(
                             metricsConfig.getOrNull(3),
                             metricsUpdate[metricsConfig.getOrNull(3)],
-                            exerciseState
+                            exerciseState,
+                            onConfigClick = { onConfigClick(3) },
+                            isForConfig = isForConfig
                         )
                     }
                 }
@@ -110,7 +125,11 @@ fun SixSlotMetricDisplay(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.TOP)
                         )
                         .weight(1f)
@@ -125,7 +144,9 @@ fun SixSlotMetricDisplay(
                             metricsConfig.getOrNull(4),
                             metricsUpdate[metricsConfig.getOrNull(4)],
                             exerciseState,
-                            TextAlign.Start
+                            TextAlign.Start,
+                            onConfigClick = { onConfigClick(4) },
+                            isForConfig = isForConfig
                         )
                     }
                     Box(
@@ -137,7 +158,9 @@ fun SixSlotMetricDisplay(
                         Slot(
                             metricsConfig.getOrNull(5),
                             metricsUpdate[metricsConfig.getOrNull(5)],
-                            exerciseState
+                            exerciseState,
+                            onConfigClick = { onConfigClick(5) },
+                            isForConfig = isForConfig
                         )
                     }
                 }

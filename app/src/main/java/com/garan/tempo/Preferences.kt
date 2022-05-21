@@ -2,7 +2,7 @@ package com.garan.tempo
 
 import android.content.Context
 //import androidx.core.content.edit
-import com.google.gson.Gson
+
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton

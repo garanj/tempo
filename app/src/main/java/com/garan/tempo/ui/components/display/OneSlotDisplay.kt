@@ -1,17 +1,12 @@
 package com.garan.tempo.ui.components.display
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +21,10 @@ import com.garan.tempo.ui.theme.TempoTheme
 fun OneSlotDisplay(
     metricsConfig: List<DisplayMetric>,
     metricsUpdate: DisplayUpdateMap,
-    exerciseState: ExerciseState
+    exerciseState: ExerciseState,
+    screenIndex: Int = 0,
+    onConfigClick: (Int) -> Unit = { _ -> },
+    isForConfig: Boolean = false
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -40,7 +38,9 @@ fun OneSlotDisplay(
                         metricsConfig.getOrNull(0),
                         metricsUpdate[metricsConfig.getOrNull(0)],
                         exerciseState,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        onConfigClick = { onConfigClick(0) },
+                        isForConfig = isForConfig
                     )
         }
     }

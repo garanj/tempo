@@ -6,6 +6,7 @@ import androidx.health.services.client.data.Availability
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.ExerciseCapabilities
 import androidx.health.services.client.data.ExerciseConfig
+import androidx.health.services.client.data.ExerciseInfo
 import androidx.health.services.client.data.ExerciseLapSummary
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseType
@@ -13,6 +14,7 @@ import androidx.health.services.client.data.ExerciseTypeCapabilities
 import androidx.health.services.client.data.ExerciseUpdate
 import androidx.health.services.client.data.WarmUpConfig
 import com.garan.tempo.settings.ExerciseSettings
+import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.ui.metrics.DisplayMetric
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,6 +29,10 @@ class HealthServicesManager @Inject constructor(
     coroutineScope: CoroutineScope
 ) {
     private val exerciseClient = healthServicesClient.exerciseClient
+
+    suspend fun isExerciseInProgress() : ExerciseInfo {
+        return exerciseClient.currentExerciseInfo.await()
+    }
 
     suspend fun prepare() {
             // TODO base config on exercise type
@@ -62,12 +68,13 @@ class HealthServicesManager @Inject constructor(
         exerciseClient.resumeExercise().await()
     }
 
-    suspend fun startExercise(exerciseSettings: ExerciseSettings) {
+    suspend fun startExercise(exerciseSettingsWithScreens: ExerciseSettingsWithScreens) {
         // TODO should be moved elsewhere
+        val exerciseSettings = exerciseSettingsWithScreens.exerciseSettings
         val capabilities = exerciseClient.capabilities.await()
         val exerciseCapabilities = capabilities.getExerciseTypeCapabilities(exerciseSettings.exerciseType)
 
-        val (dataTypes, aggregateDataTypes) = exerciseSettings.getRequiredDataTypes()
+        val (dataTypes, aggregateDataTypes) = exerciseSettingsWithScreens.getRequiredDataTypes()
         val config = ExerciseConfig.builder()
             .setShouldEnableGps(exerciseSettings.getRequiresGps())
             // TODO set this from settings

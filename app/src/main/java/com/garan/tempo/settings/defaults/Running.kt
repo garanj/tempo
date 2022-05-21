@@ -7,19 +7,22 @@ import com.garan.tempo.settings.ScreenFormat
 import com.garan.tempo.settings.ScreenSettings
 import com.garan.tempo.ui.metrics.DisplayMetric
 
-fun defaultRunningSettings() = ExerciseSettings(
-    "Running",
-    ExerciseType.RUNNING,
+fun defaultRunningExerciseSettings() = ExerciseSettings(
+    name ="Running",
+    exerciseType = ExerciseType.RUNNING,
     recordingMetrics = setOf(
         DataType.LOCATION,
         DataType.HEART_RATE_BPM,
         DataType.STEPS_PER_MINUTE
     ),
-    screens = listOf(
+    useAutoPause = true
+)
+
+fun defaultRunningScreenSettings() = listOf(
         // Screen 1: Averages
         ScreenSettings(
-            ScreenFormat.ONE_PLUS_FOUR_SLOT,
-            listOf(
+            screenFormat = ScreenFormat.ONE_PLUS_FOUR_SLOT,
+            metrics = listOf(
                 DisplayMetric.AVG_PACE,
                 DisplayMetric.AVG_HEART_RATE,
                 DisplayMetric.ACTIVE_DURATION,
@@ -29,8 +32,8 @@ fun defaultRunningSettings() = ExerciseSettings(
         ),
         // Screen 2: Current
         ScreenSettings(
-            ScreenFormat.SIX_SLOT,
-            listOf(
+            screenFormat = ScreenFormat.SIX_SLOT,
+            metrics = listOf(
                 DisplayMetric.ACTIVE_DURATION,
                 DisplayMetric.PACE,
                 DisplayMetric.HEART_RATE_BPM,
@@ -41,8 +44,8 @@ fun defaultRunningSettings() = ExerciseSettings(
         ),
         // Screen 3: Current
         ScreenSettings(
-            ScreenFormat.ONE_PLUS_TWO_SLOT,
-            listOf(
+            screenFormat = ScreenFormat.ONE_PLUS_TWO_SLOT,
+            metrics = listOf(
                 DisplayMetric.PACE,
                 DisplayMetric.ACTIVE_DURATION,
                 DisplayMetric.DISTANCE
@@ -50,18 +53,17 @@ fun defaultRunningSettings() = ExerciseSettings(
         ),
         // Screen 4: Basic
         ScreenSettings(
-            ScreenFormat.TWO_SLOT,
-            listOf(
+            screenFormat = ScreenFormat.TWO_SLOT,
+            metrics = listOf(
                 DisplayMetric.PACE,
                 DisplayMetric.ACTIVE_DURATION
             )
         ),
         // Screen 5: Single
         ScreenSettings(
-            ScreenFormat.ONE_SLOT,
-            listOf(
+            screenFormat = ScreenFormat.ONE_SLOT,
+            metrics = listOf(
                 DisplayMetric.ACTIVE_DURATION
             )
         )
     )
-)

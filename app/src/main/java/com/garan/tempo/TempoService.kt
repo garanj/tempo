@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
-import android.net.Uri
 import android.os.Binder
 import android.os.IBinder
 import android.os.Vibrator
@@ -15,13 +14,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationCompat
 import androidx.health.services.client.data.CumulativeDataPoint
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.DataTypeAvailability
 import androidx.health.services.client.data.ExerciseState
-import androidx.health.services.client.data.ExerciseType
 import androidx.health.services.client.data.ExerciseUpdate
 import androidx.health.services.client.data.LocationAvailability
 import androidx.health.services.client.data.StatisticalDataPoint
@@ -30,14 +27,12 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.ongoing.OngoingActivity
 import androidx.wear.ongoing.Status
-import com.garan.tempo.settings.ExerciseSettings
+import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.TempoSettingsManager
-import com.garan.tempo.settings.defaults.defaultRunningSettings
 import com.garan.tempo.ui.metrics.AggregationType
 import com.garan.tempo.ui.metrics.DisplayMetric
 import com.garan.tempo.vibrations.stateVibrations
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -70,11 +65,7 @@ class TempoService : LifecycleService() {
         mutableStateOf(DataTypeAvailability.UNKNOWN)
     val hrAvailability: State<DataTypeAvailability> = _hrAvailability
 
-    private var currentExerciseSettingsIndex = 0
-
-    private val _currentExerciseSettings: MutableState<ExerciseSettings> =
-        mutableStateOf(defaultRunningSettings())
-    val currentExerciseSettings: State<ExerciseSettings> = _currentExerciseSettings
+    var currentSettings: ExerciseSettingsWithScreens? = null
 
     val metrics: DisplayUpdateMap = mutableStateMapOf()
 
@@ -131,19 +122,22 @@ class TempoService : LifecycleService() {
                 healthManager.exerciseUpdateFlow.collect { message ->
                     when (message) {
                         is ExerciseMessage.ExerciseUpdateMessage -> {
-                            processExerciseUpdateForDisplay(
-                                currentExerciseSettings.value.displayMetricsSet,
-                                metrics,
-                                message.update
-                            )
-                            vibrateByStateTransition(message.update.state)
+                            currentSettings?.let { current ->
+                                processExerciseUpdateForDisplay(
+                                    current.getDisplayMetricsSet(),
+                                    metrics,
+                                    message.update
+                                )
+                                vibrateByStateTransition(message.update.state)
+                            }
                             _exerciseState.value = message.update.state
                         }
                         is ExerciseMessage.AvailabilityChangedMessage -> {
                             if (message.availability is LocationAvailability) {
                                 _locationAvailability.value = message.availability
                             } else if (message.availability is DataTypeAvailability
-                                && message.dataType == DataType.HEART_RATE_BPM) {
+                                && message.dataType == DataType.HEART_RATE_BPM
+                            ) {
                                 _hrAvailability.value = message.availability
                             }
                         }
@@ -170,18 +164,15 @@ class TempoService : LifecycleService() {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.i(TAG, "service onUnbind")
+        Log.i(TAG, "* service onUnbind")
         if (!_exerciseState.value.isInProgress) {
             maybeStopService()
         }
         return true
     }
 
-    fun prepare(exerciseIndex: Int) {
-        currentExerciseSettingsIndex = exerciseIndex
+    fun prepare() {
         lifecycleScope.launch {
-            val exerciseSettings = tempoSettingsManager.exercises.first()
-            _currentExerciseSettings.value = exerciseSettings[currentExerciseSettingsIndex]
             healthManager.prepare()
         }
     }
@@ -193,27 +184,27 @@ class TempoService : LifecycleService() {
     }
 
     @ExperimentalSerializationApi
-    fun startWorkout() {
+    fun startExercise(settingsId: Int) {
         lifecycleScope.launch {
-            healthManager.startExercise(currentExerciseSettings.value)
+            currentSettings = tempoSettingsManager.getExerciseSettings(settingsId).first()
+            healthManager.startExercise(currentSettings!!)
         }
     }
 
-    fun endWorkout() {
+    fun endExercise() {
         lifecycleScope.launch {
+            Log.i(TAG, "Ending exercise")
             healthManager.endExercise()
         }
     }
 
-    fun pauseWorkout() {
+    fun pauseResumeExercise() {
         lifecycleScope.launch {
-            healthManager.pauseExercise()
-        }
-    }
-
-    fun resumeWorkout() {
-        lifecycleScope.launch {
-            healthManager.resumeExercise()
+            if (exerciseState.value.isUserPaused) {
+                healthManager.resumeExercise()
+            } else {
+                healthManager.pauseExercise()
+            }
         }
     }
 
@@ -224,7 +215,7 @@ class TempoService : LifecycleService() {
     }
 
     private fun maybeStopService() {
-        Log.i(TAG, "Stopping service")
+        Log.i(TAG, "* Stopping service")
         lifecycleScope.launch {
             if (!_exerciseState.value.isEnded) {
                 // For example, if still in the PREPARING state.

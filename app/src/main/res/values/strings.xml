@@ -39,5 +39,18 @@
     <string name="metric_label">Metric</string>
     <string name="imperial_label">Imperial</string>
 
+    <!-- Display metrics -->
+    <string name="display_metric_active_duration">Active duration</string>
+    <string name="display_metric_distance">Distance</string>
+    <string name="display_metric_speed">Speed</string>
+    <string name="display_metric_avg_speed">Avg. speed</string>
+    <string name="display_metric_calories">Calories</string>
+    <string name="display_metric_pace">Pace</string>
+    <string name="display_metric_avg_pace">Avg. pace</string>
+    <string name="display_metric_cadence">Cadence</string>
+    <string name="display_metric_avg_cadence">Avg. cadence</string>
+    <string name="display_metric_heart_rate_bpm">Heart rate</string>
+    <string name="display_metric_avg_heart_rate">Avg. Heart rate</string>
+
     <string name="auto_pause_label">Use auto-pause</string>
 </resources>

@@ -29,20 +29,26 @@ fun Slot(
     metricType: DisplayMetric?,
     metricValue: Value?,
     state: ExerciseState,
-    textAlign: TextAlign = TextAlign.End
+    textAlign: TextAlign = TextAlign.End,
+    onConfigClick: () -> Unit,
+    isForConfig: Boolean = false
 ) {
     if (metricType != null && metricType == DisplayMetric.ACTIVE_DURATION) {
         ActiveDurationMetric(
             metricValue = metricValue,
             state = state,
-            textAlign = textAlign
+            textAlign = textAlign,
+            onConfigClick = onConfigClick,
+            isForConfig = isForConfig
         )
     } else {
         WorkoutMetric(
             metricType = metricType,
             metricValue = metricValue,
             isPaused = state.isPaused,
-            textAlign = textAlign
+            textAlign = textAlign,
+            onConfigClick = onConfigClick,
+            isForConfig = isForConfig
         )
     }
 }
@@ -51,7 +57,9 @@ fun Slot(
 fun ActiveDurationMetric(
     metricValue: Value?,
     state: ExerciseState,
-    textAlign: TextAlign
+    textAlign: TextAlign,
+    onConfigClick: () -> Unit,
+    isForConfig: Boolean = false
 ) {
     var durationStart by remember { mutableStateOf(metricValue?.asLong() ?: 0L) }
     var duration by remember { mutableStateOf(metricValue?.asLong() ?: 0L) }
@@ -74,7 +82,6 @@ fun ActiveDurationMetric(
         duration / 3600, (duration % 3600) / 60, duration % 60
     )
     AutoSizeText(
-        modifier = Modifier.fillMaxWidth(),
         text = formattedValue,
         textAlign = textAlign,
         mainColor = if (!state.isPaused) {
@@ -83,7 +90,9 @@ fun ActiveDurationMetric(
             MaterialTheme.colors.secondary
         },
         sizingPlaceholder = "0:00:00",
-        unitText = ""
+        unitText = "",
+        onClick = onConfigClick,
+        isForConfig = isForConfig
     )
 }
 
@@ -92,7 +101,9 @@ fun WorkoutMetric(
     metricType: DisplayMetric?,
     metricValue: Value?,
     isPaused: Boolean,
-    textAlign: TextAlign
+    textAlign: TextAlign,
+    onConfigClick: () -> Unit,
+    isForConfig: Boolean = false
 ) {
     val formatter = LocalDisplayUnitFormatter.current
 
@@ -111,6 +122,7 @@ fun WorkoutMetric(
     } else {
         ""
     }
+    val placeholder = metricType?.placeholder() ?: "00:00"
     AutoSizeText(
         text = formattedValue,
         textAlign = textAlign,
@@ -119,8 +131,10 @@ fun WorkoutMetric(
         } else {
             MaterialTheme.colors.secondary
         },
-        sizingPlaceholder = "00:00",
-        unitText = label
+        sizingPlaceholder = placeholder,
+        unitText = label,
+        onClick = onConfigClick,
+        isForConfig = isForConfig
     )
 }
 

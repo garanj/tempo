@@ -30,7 +30,9 @@ import java.util.EnumSet
 fun OnePlusFourSlotDisplay(
     metricsConfig: List<DisplayMetric>,
     metricsUpdate: DisplayUpdateMap,
-    exerciseState: ExerciseState
+    exerciseState: ExerciseState,
+    onConfigClick: (Int) -> Unit = { _ -> },
+    isForConfig: Boolean = false
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -47,7 +49,11 @@ fun OnePlusFourSlotDisplay(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.BOTTOM)
                         )
                         .weight(2f)
@@ -58,10 +64,12 @@ fun OnePlusFourSlotDisplay(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Slot(
-                            metricsConfig.getOrNull(0),
-                            metricsUpdate[metricsConfig.getOrNull(0)],
-                            exerciseState,
-                            TextAlign.Start
+                            metricType = metricsConfig.getOrNull(0),
+                            metricValue = metricsUpdate[metricsConfig.getOrNull(0)],
+                            state = exerciseState,
+                            textAlign = TextAlign.Start,
+                            onConfigClick = { onConfigClick(0) },
+                            isForConfig = isForConfig
                         )
                     }
                     Box(modifier = Modifier
@@ -70,9 +78,11 @@ fun OnePlusFourSlotDisplay(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Slot(
-                            metricsConfig.getOrNull(1),
-                            metricsUpdate[metricsConfig.getOrNull(1)],
-                            exerciseState
+                            metricType = metricsConfig.getOrNull(1),
+                            metricValue = metricsUpdate[metricsConfig.getOrNull(1)],
+                            state = exerciseState,
+                            onConfigClick = { onConfigClick(1) },
+                            isForConfig = isForConfig
                         )
                     }
                 }
@@ -83,17 +93,23 @@ fun OnePlusFourSlotDisplay(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Slot(
-                        metricsConfig.getOrNull(2),
-                        metricsUpdate[metricsConfig.getOrNull(2)],
-                        exerciseState,
-                        textAlign = TextAlign.Center
+                        metricType = metricsConfig.getOrNull(2),
+                        metricValue = metricsUpdate[metricsConfig.getOrNull(2)],
+                        state = exerciseState,
+                        textAlign = TextAlign.Center,
+                        onConfigClick = { onConfigClick(2) },
+                        isForConfig = isForConfig
                     )
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .boxBorder(
-                            color = MaterialTheme.colors.primary,
+                            color = if (!exerciseState.isPaused) {
+                                MaterialTheme.colors.onSurface
+                            } else {
+                                MaterialTheme.colors.secondary
+                            },
                             boxBorders = EnumSet.of(BoxBorder.TOP)
                         )
                         .weight(2f)
@@ -103,11 +119,12 @@ fun OnePlusFourSlotDisplay(
                         .weight(1f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        Slot(
-                            metricsConfig.getOrNull(3),
-                            metricsUpdate[metricsConfig.getOrNull(3)],
-                            exerciseState,
-                            TextAlign.Start
+                        Slot(metricType = metricsConfig.getOrNull(3),
+                            metricValue = metricsUpdate[metricsConfig.getOrNull(3)],
+                            state = exerciseState,
+                            textAlign = TextAlign.Start,
+                            onConfigClick = { onConfigClick(3) },
+                            isForConfig = isForConfig
                         )
                     }
                     Box(modifier = Modifier
@@ -116,9 +133,11 @@ fun OnePlusFourSlotDisplay(
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Slot(
-                            metricsConfig.getOrNull(4),
-                            metricsUpdate[metricsConfig.getOrNull(4)],
-                            exerciseState
+                            metricType = metricsConfig.getOrNull(4),
+                            metricValue = metricsUpdate[metricsConfig.getOrNull(4)],
+                            state = exerciseState,
+                            onConfigClick = { onConfigClick(4) },
+                            isForConfig = isForConfig
                         )
                     }
                 }

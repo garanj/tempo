@@ -1,57 +1,64 @@
 package com.garan.tempo.settings
 
-import android.content.Context
-import android.util.Log
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import com.garan.tempo.TAG
-import com.garan.tempo.settings.defaults.defaultExerciseSettingsList
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import androidx.health.services.client.data.ExerciseCapabilities
+import com.garan.tempo.ui.metrics.DisplayMetric
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import javax.inject.Inject
 
-val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+class TempoSettingsManager @Inject constructor(
+    private val exerciseSettingsDao: ExerciseSettingsDao,
+    private val capabilities: Deferred<ExerciseCapabilities>,
+    private val tempoSettingsDao: TempoSettingsDao
+) {
+    val initialized = MutableStateFlow(false)
 
-class TempoSettingsManager(private val context: Context) {
-    private val TEMPO_UNITS = booleanPreferencesKey("tempo_units")
-    private val EXERCISE_SETTINGS_LIST = stringPreferencesKey("exercise_settings_list")
-
-    @ExperimentalSerializationApi
-    val exercises: Flow<List<ExerciseSettings>> = context.settingsDataStore.data.map { settings ->
-        val exerciseSettingsString = settings[EXERCISE_SETTINGS_LIST]
-        if (exerciseSettingsString.isNullOrEmpty()) {
-            val defaults = defaultExerciseSettingsList()
-            context.settingsDataStore.edit { newSettings ->
-                newSettings[EXERCISE_SETTINGS_LIST] = Json.encodeToString(defaults)
-            }
-            defaults
-        } else {
-            Json.decodeFromString<List<ExerciseSettings>>(exerciseSettingsString)
+    init {
+        capabilities.invokeOnCompletion {
+            initialized.value = true
         }
     }
 
-    val units: Flow<Units> = context.settingsDataStore.data.map { preferences ->
-        when(preferences[TEMPO_UNITS]) {
-            true -> Units.IMPERIAL
-            else -> Units.METRIC
-        }
-    }
-
-    suspend fun setUnits(units: Units) {
-        context.settingsDataStore.edit { preferences ->
-            Log.i(TAG, "Setting value; $units")
-            preferences[TEMPO_UNITS] = when(units) {
-                Units.METRIC -> false
-                Units.IMPERIAL -> true
+    fun getAllExerciseSettings() = exerciseSettingsDao.getExerciseSettingsWithScreenSettings()
+        .combine(initialized) { settingsList, initialized ->
+            if (initialized) {
+                settingsList.filter { settings ->
+                    capabilities.getCompleted().supportedExerciseTypes
+                        .contains(settings.exerciseSettings.exerciseType)
+                }
+            } else {
+                listOf()
             }
         }
+
+    fun getExerciseSettings(settingsId: Int) =
+        exerciseSettingsDao.getExerciseSettingsWithScreenSettings(settingsId)
+            .combine(initialized) { settings, initialized ->
+                if (initialized) {
+                    settings.exerciseSettings.supportsAutoPause = capabilities.getCompleted()
+                        .getExerciseTypeCapabilities(settings.exerciseSettings.exerciseType).supportsAutoPauseAndResume
+                }
+                settings
+            }
+
+    suspend fun setMetric(settingsId: Int, screen: Int, slot: Int, metric: DisplayMetric) {
+        val screenSettings = exerciseSettingsDao.getScreen(settingsId, screen)
+        val metrics = screenSettings.metrics.mapIndexed { index, displayMetric ->
+            if (index == slot) {
+                metric
+            } else {
+                displayMetric
+            }
+        }
+        val newScreen = screenSettings.copy(metrics = metrics)
+        exerciseSettingsDao.updateScreenSettings(newScreen)
+    }
+
+    suspend fun setAutoPause(settingsId: Int, enabled: Boolean) {
+        val settings = exerciseSettingsDao.getExerciseSettings(settingsId)
+        val newSettings = settings.copy(useAutoPause = enabled)
+        exerciseSettingsDao.updateExerciseSettings(newSettings)
     }
 }
 

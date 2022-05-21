@@ -1,5 +1,6 @@
 package com.garan.tempo.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -32,7 +33,6 @@ import androidx.wear.compose.material.Text
 @Composable
 fun AutoSizeText(
     text: String,
-    modifier: Modifier = Modifier,
     mainColor: Color = Color.Unspecified,
     unitColor: Color = mainColor,
     fontStyle: FontStyle? = null,
@@ -42,13 +42,22 @@ fun AutoSizeText(
     textDecoration: TextDecoration? = null,
     textAlign: TextAlign? = null,
     lineHeight: TextUnit = TextUnit.Unspecified,
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current,
     sizingPlaceholder: String,
     unitText: String,
-    unitSize: TextUnit = 6.sp
+    unitSize: TextUnit = 6.sp,
+    onClick: () -> Unit,
+    isForConfig: Boolean = false
 ) {
-    BoxWithConstraints {
+    val modifier = if (isForConfig) {
+        Modifier.clickable {
+            onClick()
+        }
+    } else {
+        Modifier
+    }
+    BoxWithConstraints(
+        modifier = modifier
+    ) {
         var shrunkFontSize by rememberSaveable{ mutableStateOf(100.0) }
         var ready by rememberSaveable{ mutableStateOf(false) }
         if (!ready) {
