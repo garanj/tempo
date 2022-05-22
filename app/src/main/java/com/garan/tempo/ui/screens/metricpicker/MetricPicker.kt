@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.screens
+package com.garan.tempo.ui.screens.metricpicker
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,12 +13,9 @@ import androidx.wear.compose.material.ScalingLazyListAnchorType
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.items
 import com.garan.tempo.ui.metrics.DisplayMetric
-import com.garan.tempo.ui.model.MetricPickerUiState
-import com.garan.tempo.ui.model.MetricPickerViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
+import com.garan.tempo.ui.screens.startmenu.collectAsStateLifecycleAware
 
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MetricPicker(
     onClick: (DisplayMetric) -> Unit,

@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.model
+package com.garan.tempo.ui.screens.screeneditor
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -10,7 +10,7 @@ import javax.inject.Inject
 class ScreenEditorViewModel @Inject constructor(
     val tempoSettingsManager: TempoSettingsManager,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
     private val settingsId = savedStateHandle.get<Int>("settingsId")!!
 
     val exerciseSettings = tempoSettingsManager.getExerciseSettings(settingsId)

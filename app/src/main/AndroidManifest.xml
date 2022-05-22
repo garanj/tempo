@@ -24,14 +24,14 @@
         android:theme="@android:style/Theme.DeviceDefault"
         tools:ignore="GoogleAppIndexingWarning">
 
-<!--        <provider-->
-<!--            android:name="androidx.startup.InitializationProvider"-->
-<!--            android:authorities="${applicationId}.androidx-startup"-->
-<!--            android:exported="false"-->
-<!--            tools:node="merge">-->
-<!--            <meta-data  android:name="com.garan.tempo.CachedCapabilitiesInitializer"-->
-<!--                android:value="androidx.startup" />-->
-<!--        </provider>-->
+        <!--        <provider-->
+        <!--            android:name="androidx.startup.InitializationProvider"-->
+        <!--            android:authorities="${applicationId}.androidx-startup"-->
+        <!--            android:exported="false"-->
+        <!--            tools:node="merge">-->
+        <!--            <meta-data  android:name="com.garan.tempo.CachedCapabilitiesInitializer"-->
+        <!--                android:value="androidx.startup" />-->
+        <!--        </provider>-->
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -43,28 +43,29 @@
 
         <activity
             android:name=".TempoActivity"
-            android:launchMode="singleTop"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="app"
                     android:host="tempo"
-                    android:pathPrefix="/settings"/>
+                    android:pathPrefix="/settings"
+                    android:scheme="app" />
             </intent-filter>
         </activity>
 
         <service
             android:name=".TempoService"
             android:exported="false"
-            android:foregroundServiceType="location">
-        </service>
+            android:foregroundServiceType="location"></service>
     </application>
 
     <queries>

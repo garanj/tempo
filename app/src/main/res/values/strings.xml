@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">Tempo</string>
-    <string name="loading_message">Loading…</string>
 
     <!-- Start menu -->
-    <string name="workout_heading">Select</string>
-    <string name="workout_run">Run</string>
-    <string name="workout_walk">Walk</string>
     <string name="settings">Settings</string>
 
     <string name="unknown_label"></string>

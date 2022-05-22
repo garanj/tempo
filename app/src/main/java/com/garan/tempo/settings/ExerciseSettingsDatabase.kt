@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database
-(
+    (
     entities = [
         ExerciseSettings::class,
         ScreenSettings::class

@@ -1,6 +1,5 @@
 package com.garan.tempo.ui.components.display
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,9 +56,10 @@ fun OnePlusFourSlotDisplay(
                         )
                         .weight(2f)
                 ) {
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Slot(
@@ -72,9 +71,10 @@ fun OnePlusFourSlotDisplay(
                             isForConfig = isForConfig
                         )
                     }
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Slot(
@@ -114,12 +114,14 @@ fun OnePlusFourSlotDisplay(
                         )
                         .weight(2f)
                 ) {
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
-                        Slot(metricType = metricsConfig.getOrNull(3),
+                        Slot(
+                            metricType = metricsConfig.getOrNull(3),
                             metricValue = metricsUpdate[metricsConfig.getOrNull(3)],
                             state = exerciseState,
                             textAlign = TextAlign.Start,
@@ -127,9 +129,10 @@ fun OnePlusFourSlotDisplay(
                             isForConfig = isForConfig
                         )
                     }
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Slot(
@@ -174,6 +177,7 @@ fun OnePlusFourSlotDisplayPreview() {
         OnePlusFourSlotDisplay(
             metricsConfig = config,
             metricsUpdate = update,
-            exerciseState = ExerciseState.ACTIVE)
+            exerciseState = ExerciseState.ACTIVE
+        )
     }
 }

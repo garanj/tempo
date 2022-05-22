@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.screens
+package com.garan.tempo.ui.screens.workout
 
 import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,17 +20,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.MaterialTheme
 import com.garan.tempo.DisplayUpdateMap
 import com.garan.tempo.TAG
-import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.ScreenFormat
 import com.garan.tempo.settings.ScreenSettings
 import com.garan.tempo.ui.components.EndRing
-import com.garan.tempo.ui.components.SixSlotMetricDisplay
 import com.garan.tempo.ui.components.display.OnePlusFourSlotDisplay
 import com.garan.tempo.ui.components.display.OnePlusTwoSlotDisplay
 import com.garan.tempo.ui.components.display.OneSlotDisplay
+import com.garan.tempo.ui.components.display.SixSlotMetricDisplay
 import com.garan.tempo.ui.components.display.TwoSlotDisplay
-import com.garan.tempo.ui.model.ServiceState
-import com.garan.tempo.ui.model.WorkoutViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.VerticalPagerIndicator

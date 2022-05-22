@@ -22,8 +22,7 @@ import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import com.garan.tempo.ui.components.GpsIndicator
 import com.garan.tempo.ui.components.HrIndicator
-import com.garan.tempo.ui.model.PreWorkoutViewModel
-import com.garan.tempo.ui.model.ServiceState
+import com.garan.tempo.ui.screens.workout.ServiceState
 
 @Composable
 fun PreWorkoutScreen(

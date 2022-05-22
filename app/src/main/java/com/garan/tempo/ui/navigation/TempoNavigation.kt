@@ -1,24 +1,23 @@
 package com.garan.tempo.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
-import com.garan.tempo.TAG
-import com.garan.tempo.TempoService
 import com.garan.tempo.UiState
-import com.garan.tempo.ui.model.MetricPickerViewModel
-import com.garan.tempo.ui.screens.MetricPicker
-import com.garan.tempo.ui.screens.PostWorkoutScreen
-import com.garan.tempo.ui.screens.ScreenEditor
-import com.garan.tempo.ui.screens.SettingsScreen
-import com.garan.tempo.ui.screens.StartMenuScreen
-import com.garan.tempo.ui.screens.WorkoutScreen
-import com.garan.tempo.ui.screens.WorkoutSettingsScreen
+import com.garan.tempo.ui.screens.metricpicker.MetricPicker
+import com.garan.tempo.ui.screens.metricpicker.MetricPickerViewModel
+import com.garan.tempo.ui.screens.postworkout.PostWorkoutScreen
 import com.garan.tempo.ui.screens.preworkout.PreWorkoutScreen
+import com.garan.tempo.ui.screens.screeneditor.ScreenEditor
+import com.garan.tempo.ui.screens.screenformat.ScreenFormatScreen
+import com.garan.tempo.ui.screens.screenformat.ScreenFormatViewModel
+import com.garan.tempo.ui.screens.settings.SettingsScreen
+import com.garan.tempo.ui.screens.startmenu.StartMenuScreen
+import com.garan.tempo.ui.screens.workout.WorkoutScreen
+import com.garan.tempo.ui.screens.workoutsettings.WorkoutSettingsScreen
 import com.google.accompanist.pager.ExperimentalPagerApi
 
 @ExperimentalPagerApi
@@ -88,6 +87,26 @@ fun TempoNavigation(
                 onConfigClick = { screen, slot ->
                     val route = Screen.METRIC_PICKER.route + "/$settingsId/$screen/$slot"
                     uiState.navHostController.navigate(route)
+                },
+                onScreenFormatClick = { screen ->
+                    val route = Screen.SCREEN_FORMAT.route + "/$settingsId/$screen"
+                    uiState.navHostController.navigate(route)
+                }
+            )
+        }
+        composable(
+            Screen.SCREEN_FORMAT.route + "/{settingsId}/{screen}",
+            arguments = listOf(
+                navArgument("settingsId") { type = NavType.IntType },
+                navArgument("screen") { type = NavType.IntType }
+            )
+        )
+        { backStackEntry ->
+            val viewModel = hiltViewModel<ScreenFormatViewModel>()
+            ScreenFormatScreen(
+                onScreenFormatClick = { screenFormat ->
+                    viewModel.setScreenFormat(screenFormat)
+                    uiState.navHostController.popBackStack()
                 }
             )
         }

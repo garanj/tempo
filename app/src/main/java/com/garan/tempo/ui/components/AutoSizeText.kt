@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.text.ParagraphIntrinsics
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -26,8 +25,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import androidx.wear.compose.material.LocalTextStyle
-import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 
 @Composable
@@ -58,9 +55,9 @@ fun AutoSizeText(
     BoxWithConstraints(
         modifier = modifier
     ) {
-        var shrunkFontSize by rememberSaveable{ mutableStateOf(100.0) }
-        var ready by rememberSaveable{ mutableStateOf(false) }
-        if (!ready) {
+        var shrunkFontSize by rememberSaveable { mutableStateOf(100.0) }
+        var ready by rememberSaveable { mutableStateOf(false) }
+        if (!ready or isForConfig) {
             var fontSize = shrunkFontSize
             var annotated = createAnnotatedString(
                 sizingPlaceholder,
@@ -107,7 +104,9 @@ fun AutoSizeText(
         }
         // TODO remembr styl?
         Text(
-            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             text = createAnnotatedString(
                 text,
                 shrunkFontSize.sp,
@@ -129,10 +128,10 @@ fun createAnnotatedString(
     unitSize: TextUnit,
     unitColor: Color
 ) = buildAnnotatedString {
-        withStyle(SpanStyle(fontSize = mainSize, color = mainColor)) {
-            append(mainText)
-        }
-        withStyle(SpanStyle(fontSize = unitSize, color = unitColor)) {
-            append(unitText)
-        }
+    withStyle(SpanStyle(fontSize = mainSize, color = mainColor)) {
+        append(mainText)
     }
+    withStyle(SpanStyle(fontSize = unitSize, color = unitColor)) {
+        append(unitText)
+    }
+}

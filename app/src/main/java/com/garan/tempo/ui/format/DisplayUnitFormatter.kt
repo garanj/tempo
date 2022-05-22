@@ -13,7 +13,7 @@ class DisplayUnitFormatter(
 ) {
     private val limitPace = 0.2
 
-    fun formatValue(metricType: DisplayMetric, value: Value) = when(metricType) {
+    fun formatValue(metricType: DisplayMetric, value: Value) = when (metricType) {
         DisplayMetric.DISTANCE -> {
             val distance = value.asDouble() / distanceScaleFactor
             if (distance >= 10) {
@@ -43,7 +43,8 @@ class DisplayUnitFormatter(
         DisplayMetric.AVG_CADENCE -> value.asLong().toString()
     }
 
-    fun labelId(metricType: DisplayMetric) = labelMap.getOrDefault(metricType, R.string.unknown_label)
+    fun labelId(metricType: DisplayMetric) =
+        labelMap.getOrDefault(metricType, R.string.unknown_label)
 }
 
 fun metricUnitFormatter() = DisplayUnitFormatter(

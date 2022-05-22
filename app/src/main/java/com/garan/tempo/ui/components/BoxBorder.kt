@@ -26,42 +26,42 @@ fun Modifier.boxBorder(
     strokeWidth: Float = 1.0f,
     boxBorders: EnumSet<BoxBorder> = EnumSet.allOf(BoxBorder::class.java)
 ) = this.drawWithCache {
-        onDrawWithContent {
-            drawContent()
-            if (boxBorders.contains(BoxBorder.TOP)) {
-                drawLine(
-                    color = color,
-                    strokeWidth = strokeWidth,
-                    start = Offset(0f, 0f),
-                    end = Offset(size.width, 0f)
-                )
-            }
-            if (boxBorders.contains(BoxBorder.BOTTOM)) {
-                drawLine(
-                    color = color,
-                    strokeWidth = strokeWidth,
-                    start = Offset(0f, size.height),
-                    end = Offset(size.width, size.height)
-                )
-            }
-            if (boxBorders.contains(BoxBorder.LEFT)) {
-                drawLine(
-                    color = color,
-                    strokeWidth = strokeWidth,
-                    start = Offset(0f, 0f),
-                    end = Offset(0f, size.height)
-                )
-            }
-            if (boxBorders.contains(BoxBorder.RIGHT)) {
-                drawLine(
-                    color = color,
-                    strokeWidth = strokeWidth,
-                    start = Offset(size.width, 0f),
-                    end = Offset(size.width, size.height)
-                )
-            }
+    onDrawWithContent {
+        drawContent()
+        if (boxBorders.contains(BoxBorder.TOP)) {
+            drawLine(
+                color = color,
+                strokeWidth = strokeWidth,
+                start = Offset(0f, 0f),
+                end = Offset(size.width, 0f)
+            )
+        }
+        if (boxBorders.contains(BoxBorder.BOTTOM)) {
+            drawLine(
+                color = color,
+                strokeWidth = strokeWidth,
+                start = Offset(0f, size.height),
+                end = Offset(size.width, size.height)
+            )
+        }
+        if (boxBorders.contains(BoxBorder.LEFT)) {
+            drawLine(
+                color = color,
+                strokeWidth = strokeWidth,
+                start = Offset(0f, 0f),
+                end = Offset(0f, size.height)
+            )
+        }
+        if (boxBorders.contains(BoxBorder.RIGHT)) {
+            drawLine(
+                color = color,
+                strokeWidth = strokeWidth,
+                start = Offset(size.width, 0f),
+                end = Offset(size.width, size.height)
+            )
         }
     }
+}
 
 @Preview(
     device = Devices.WEAR_OS_LARGE_ROUND,

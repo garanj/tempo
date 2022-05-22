@@ -18,7 +18,7 @@ fun UnitsToggle(
         onCheckedChange = onCheckedChange,
         toggleControl = { ToggleChipDefaults.switchIcon(Units.IMPERIAL == units) },
         label = {
-            val id = when(units) {
+            val id = when (units) {
                 Units.IMPERIAL -> R.string.imperial_label
                 else -> R.string.metric_label
             }

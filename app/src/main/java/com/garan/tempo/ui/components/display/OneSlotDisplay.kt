@@ -34,14 +34,14 @@ fun OneSlotDisplay(
             modifier = Modifier.fillMaxSize(0.707f),
             contentAlignment = Alignment.Center
         ) {
-                    Slot(
-                        metricsConfig.getOrNull(0),
-                        metricsUpdate[metricsConfig.getOrNull(0)],
-                        exerciseState,
-                        textAlign = TextAlign.Center,
-                        onConfigClick = { onConfigClick(0) },
-                        isForConfig = isForConfig
-                    )
+            Slot(
+                metricsConfig.getOrNull(0),
+                metricsUpdate[metricsConfig.getOrNull(0)],
+                exerciseState,
+                textAlign = TextAlign.Center,
+                onConfigClick = { onConfigClick(0) },
+                isForConfig = isForConfig
+            )
         }
     }
 }
@@ -66,6 +66,7 @@ fun OneSlotDisplayPreview() {
         OneSlotDisplay(
             metricsConfig = config,
             metricsUpdate = update,
-            exerciseState = ExerciseState.ACTIVE)
+            exerciseState = ExerciseState.ACTIVE
+        )
     }
 }

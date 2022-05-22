@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.model
+package com.garan.tempo.ui.screens.preworkout
 
 import android.content.ComponentName
 import android.content.Context
@@ -7,17 +7,13 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.health.services.client.data.DataTypeAvailability
-import androidx.health.services.client.data.ExerciseState
-import androidx.health.services.client.data.LocationAvailability
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.garan.tempo.DisplayUpdateMap
 import com.garan.tempo.TAG
 import com.garan.tempo.TempoService
 import com.garan.tempo.settings.TempoSettingsManager
+import com.garan.tempo.ui.screens.workout.ServiceState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

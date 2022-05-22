@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.model
+package com.garan.tempo.ui.screens.metricpicker
 
 import androidx.health.services.client.data.ExerciseCapabilities
 import androidx.lifecycle.SavedStateHandle

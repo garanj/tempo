@@ -8,5 +8,6 @@ enum class Screen(val route: String) {
     SETTINGS("settings"),
     WORKOUT_SETTINGS("workout_settings"),
     SCREEN_EDITOR("screen_editor"),
+    SCREEN_FORMAT("screen_format"),
     METRIC_PICKER("metric_picker")
 }

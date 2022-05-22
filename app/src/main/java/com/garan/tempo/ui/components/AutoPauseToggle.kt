@@ -26,12 +26,13 @@ fun AutoPauseToggle(
         uncheckedEndBackgroundColor = MaterialTheme.colors.surface,
         checkedToggleControlColor = MaterialTheme.colors.primary,
         uncheckedToggleControlColor = MaterialTheme.colors.primary
-        )
+    )
     ToggleChip(
         checked = isEnabled,
         colors = toggleChipColors,
         onCheckedChange = onCheckedChange,
-        toggleControl = { Icon(
+        toggleControl = {
+            Icon(
                 imageVector = ToggleChipDefaults.switchIcon(isEnabled),
                 contentDescription = ""
             )

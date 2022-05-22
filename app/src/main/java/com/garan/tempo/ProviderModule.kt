@@ -38,7 +38,7 @@ class ProviderModule {
     fun provideCapabilities(
         healthProvider: Provider<HealthServicesClient>,
         scopeProvider: Provider<CoroutineScope>
-    ) : Deferred<ExerciseCapabilities> {
+    ): Deferred<ExerciseCapabilities> {
         val client = healthProvider.get()
         return scopeProvider.get().async {
             client.exerciseClient.capabilities.await()
@@ -50,7 +50,7 @@ class ProviderModule {
     fun provideApplicationCoroutineScope(): CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-//    @Provides
+    //    @Provides
 //    fun provideTempoSettings(@ApplicationContext appContext: Context) =
 //        TempoSettingsManager()
 //
@@ -64,9 +64,9 @@ class ProviderModule {
         ExerciseSettingsDatabase::class.java,
         "exercise_settings_db"
     )
-    .fallbackToDestructiveMigration()
-    .addCallback(ExerciseSettingsCallback(provider))
-    .build()
+        .fallbackToDestructiveMigration()
+        .addCallback(ExerciseSettingsCallback(provider))
+        .build()
 
     @Singleton
     @Provides
@@ -79,7 +79,7 @@ class ProviderModule {
 
 class ExerciseSettingsCallback(
     private val provider: Provider<ExerciseSettingsDao>
-): RoomDatabase.Callback() {
+) : RoomDatabase.Callback() {
     private val applicationScope = CoroutineScope(SupervisorJob())
 
     override fun onCreate(db: SupportSQLiteDatabase) {

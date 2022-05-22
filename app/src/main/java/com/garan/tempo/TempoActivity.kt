@@ -1,12 +1,7 @@
 package com.garan.tempo
 
 import android.Manifest
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,7 +17,6 @@ import androidx.health.services.client.data.ExerciseTrackedStatus
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.wear.ambient.AmbientModeSupport
-import androidx.wear.compose.material.ExperimentalWearMaterialApi
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
@@ -37,8 +31,6 @@ import com.garan.tempo.ui.theme.TempoTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 const val TAG = "Tempo"

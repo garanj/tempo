@@ -13,15 +13,15 @@ import com.garan.tempo.R
 
 @Composable
 fun GpsIndicator(locationAvailability: LocationAvailability) {
-    when(locationAvailability) {
+    when (locationAvailability) {
         LocationAvailability.ACQUIRED_TETHERED,
-            LocationAvailability.ACQUIRED_UNTETHERED -> {
-                Icon(
-                    imageVector = Icons.Default.GpsFixed,
-                    contentDescription = stringResource(R.string.gps_fixed),
-                    tint = MaterialTheme.colors.primary
-                )
-            }
+        LocationAvailability.ACQUIRED_UNTETHERED -> {
+            Icon(
+                imageVector = Icons.Default.GpsFixed,
+                contentDescription = stringResource(R.string.gps_fixed),
+                tint = MaterialTheme.colors.primary
+            )
+        }
         LocationAvailability.ACQUIRING -> {
             Icon(
                 imageVector = Icons.Default.GpsNotFixed,

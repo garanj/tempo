@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.model
+package com.garan.tempo.ui.screens.workout
 
 import android.content.ComponentName
 import android.content.Context
@@ -18,7 +18,6 @@ import com.garan.tempo.DisplayUpdateMap
 import com.garan.tempo.TAG
 import com.garan.tempo.TempoService
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
-import com.garan.tempo.settings.TempoSettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject

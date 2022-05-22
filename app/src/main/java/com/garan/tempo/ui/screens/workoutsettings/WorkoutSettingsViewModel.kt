@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.model
+package com.garan.tempo.ui.screens.workoutsettings
 
 import androidx.health.services.client.data.ExerciseType
 import androidx.lifecycle.SavedStateHandle
@@ -27,7 +27,7 @@ class WorkoutSettingsViewModel @Inject constructor(
                 WorkoutSettingsUiState(
                     name = it.exerciseSettings.name,
                     exerciseType = it.exerciseSettings.exerciseType,
-                    supportsAutoPause = true,//it.exerciseSettings.supportsAutoPause,
+                    supportsAutoPause = it.exerciseSettings.supportsAutoPause,
                     useAutoPause = it.exerciseSettings.useAutoPause,
                     screens = it.screenSettings
                 )

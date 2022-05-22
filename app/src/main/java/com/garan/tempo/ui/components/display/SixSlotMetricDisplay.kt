@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.components
+package com.garan.tempo.ui.components.display
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +17,9 @@ import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.Value
 import androidx.wear.compose.material.MaterialTheme
 import com.garan.tempo.DisplayUpdateMap
+import com.garan.tempo.ui.components.BoxBorder
+import com.garan.tempo.ui.components.Slot
+import com.garan.tempo.ui.components.boxBorder
 import com.garan.tempo.ui.metrics.DisplayMetric
 import com.garan.tempo.ui.theme.TempoTheme
 import java.util.EnumSet

@@ -1,6 +1,5 @@
 package com.garan.tempo.ui.components.display
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +10,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -82,9 +80,10 @@ fun OnePlusTwoSlotDisplay(
                         )
                         .weight(3f)
                 ) {
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Slot(
@@ -96,9 +95,10 @@ fun OnePlusTwoSlotDisplay(
                             isForConfig = isForConfig
                         )
                     }
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                         contentAlignment = Alignment.CenterEnd
                     ) {
                         Slot(
@@ -139,6 +139,7 @@ fun OnePlusTwoSlotDisplayPreview() {
         OnePlusTwoSlotDisplay(
             metricsConfig = config,
             metricsUpdate = update,
-            exerciseState = ExerciseState.ACTIVE)
+            exerciseState = ExerciseState.ACTIVE
+        )
     }
 }

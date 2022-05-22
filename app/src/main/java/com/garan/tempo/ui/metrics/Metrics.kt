@@ -1,14 +1,11 @@
 package com.garan.tempo.ui.metrics
 
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.Value
 import com.garan.tempo.DisplayUpdateMap
 import com.garan.tempo.R
-import kotlinx.serialization.Serializable
 
-@Serializable
 enum class DisplayMetric {
     ACTIVE_DURATION {
         override fun requiredDataType() = null
@@ -80,13 +77,13 @@ enum class DisplayMetric {
     abstract fun requiredDataType(): DataType?
     abstract fun aggregationType(): AggregationType
     abstract fun displayNameId(): Int
-    abstract fun placeholder() : String
+    abstract fun placeholder(): String
 }
 
 fun getSupportedDisplayMetrics(dataTypes: Set<DataType>) = DisplayMetric.values().filter {
-        val requiredDataType = it.requiredDataType()
-        requiredDataType == null || dataTypes.contains(requiredDataType)
-    }.toSet()
+    val requiredDataType = it.requiredDataType()
+    requiredDataType == null || dataTypes.contains(requiredDataType)
+}.toSet()
 
 enum class AggregationType {
     NONE,
@@ -97,7 +94,7 @@ enum class AggregationType {
     SAMPLE
 }
 
-fun screenEditorDefaults() : DisplayUpdateMap = mutableStateMapOf(
+fun screenEditorDefaults(): DisplayUpdateMap = mutableStateMapOf(
     DisplayMetric.ACTIVE_DURATION to Value.ofLong(421),
     DisplayMetric.DISTANCE to Value.ofDouble(4124.0),
     DisplayMetric.SPEED to Value.ofDouble(2.5),

@@ -8,8 +8,8 @@ import androidx.compose.material.icons.filled.Sports
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.health.services.client.data.ExerciseType
 
-val ExerciseType.imageVector : ImageVector
-    get() = when(this) {
+val ExerciseType.imageVector: ImageVector
+    get() = when (this) {
         ExerciseType.RUNNING -> Icons.Default.DirectionsRun
         ExerciseType.BIKING -> Icons.Default.DirectionsBike
         ExerciseType.WALKING -> Icons.Default.DirectionsWalk

@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.screens
+package com.garan.tempo.ui.screens.postworkout
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,7 +7,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.Text
-import com.garan.tempo.rememberUiState
+import com.garan.tempo.ui.screens.WEAR_PREVIEW_API_LEVEL
+import com.garan.tempo.ui.screens.WEAR_PREVIEW_BACKGROUND_COLOR_BLACK
+import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_HEIGHT_DP
+import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_WIDTH_DP
+import com.garan.tempo.ui.screens.WEAR_PREVIEW_SHOW_BACKGROUND
+import com.garan.tempo.ui.screens.WEAR_PREVIEW_UI_MODE
 
 @Composable
 fun PostWorkoutScreen() {

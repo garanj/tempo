@@ -35,7 +35,6 @@ import com.garan.tempo.vibrations.stateVibrations
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
 import javax.inject.Inject
 
 typealias DisplayUpdateMap = SnapshotStateMap<DisplayMetric, Value>
@@ -183,7 +182,6 @@ class TempoService : LifecycleService() {
         }
     }
 
-    @ExperimentalSerializationApi
     fun startExercise(settingsId: Int) {
         lifecycleScope.launch {
             currentSettings = tempoSettingsManager.getExerciseSettings(settingsId).first()

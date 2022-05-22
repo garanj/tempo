@@ -1,4 +1,4 @@
-package com.garan.tempo.ui.screens
+package com.garan.tempo.ui.screens.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,10 +14,8 @@ import androidx.wear.compose.material.items
 import androidx.wear.compose.material.rememberScalingLazyListState
 import com.garan.tempo.UiState
 import com.garan.tempo.ui.navigation.Screen
-import com.garan.tempo.ui.screens.settings.SettingsViewModel
-import kotlinx.serialization.ExperimentalSerializationApi
+import com.garan.tempo.ui.screens.startmenu.collectAsStateLifecycleAware
 
-@ExperimentalSerializationApi
 @Composable
 fun SettingsScreen(
     uiState: UiState,

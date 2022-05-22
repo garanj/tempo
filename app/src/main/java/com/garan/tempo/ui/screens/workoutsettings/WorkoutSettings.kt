@@ -1,9 +1,10 @@
-package com.garan.tempo.ui.screens
+package com.garan.tempo.ui.screens.workoutsettings
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,11 +16,7 @@ import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListAnchorType
 import androidx.wear.compose.material.Text
 import com.garan.tempo.ui.components.AutoPauseToggle
-import com.garan.tempo.ui.model.WorkoutSettingsUiState
-import com.garan.tempo.ui.model.WorkoutSettingsViewModel
-import kotlinx.serialization.ExperimentalSerializationApi
 
-@ExperimentalSerializationApi
 @Composable
 fun WorkoutSettingsScreen(
     onScreenButtonClick: () -> Unit,
@@ -30,7 +27,8 @@ fun WorkoutSettingsScreen(
     ScalingLazyColumn(
         modifier = Modifier.fillMaxWidth(),
         autoCentering = AutoCenteringParams(0, 100),
-        anchorType = ScalingLazyListAnchorType.ItemStart
+        anchorType = ScalingLazyListAnchorType.ItemStart,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
             Text(

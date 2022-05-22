@@ -61,27 +61,38 @@ data class ExerciseSettingsWithScreens(
         val dataTypes = exerciseSettings.recordingMetrics.toMutableSet()
         val aggregateDataTypes = mutableSetOf<DataType>()
         screenSettings.forEach {
-            it.metrics.forEach {
-                when (it.aggregationType()) {
-                    AggregationType.SAMPLE -> dataTypes.add(it.requiredDataType()!!)
-                    AggregationType.AVG,
-                    AggregationType.MIN,
-                    AggregationType.MAX,
-                    AggregationType.TOTAL -> aggregateDataTypes.add(it.requiredDataType()!!)
-                    AggregationType.NONE -> {
-                        // No aggregation for Active Duration DisplayMetric
+            // Only take first n metrics based on the type of screen format
+            // it is.
+            it.metrics.subList(0, it.screenFormat.numSlots)
+                .forEach {
+                    when (it.aggregationType()) {
+                        AggregationType.SAMPLE -> dataTypes.add(it.requiredDataType()!!)
+                        AggregationType.AVG,
+                        AggregationType.MIN,
+                        AggregationType.MAX,
+                        AggregationType.TOTAL -> aggregateDataTypes.add(it.requiredDataType()!!)
+                        AggregationType.NONE -> {
+                            // No aggregation for Active Duration DisplayMetric
+                        }
                     }
                 }
-            }
         }
         return dataTypes to aggregateDataTypes
     }
 }
 
 enum class ScreenFormat {
-    ONE_SLOT,
-    TWO_SLOT,
-    ONE_PLUS_TWO_SLOT,
-    ONE_PLUS_FOUR_SLOT,
-    SIX_SLOT
+    ONE_SLOT(1),
+    TWO_SLOT(2),
+    ONE_PLUS_TWO_SLOT(3),
+    ONE_PLUS_FOUR_SLOT(4),
+    SIX_SLOT(6);
+
+    var numSlots: Int = 0
+
+    constructor()
+
+    constructor(numSlots: Int) {
+        this.numSlots = numSlots
+    }
 }

@@ -1,6 +1,5 @@
-package com.garan.tempo.ui.screens
+package com.garan.tempo.ui.screens.startmenu
 
-import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -26,7 +25,6 @@ import com.garan.tempo.R
 import com.garan.tempo.UiState
 import com.garan.tempo.data.imageVector
 import com.garan.tempo.ui.navigation.Screen
-import com.garan.tempo.ui.screens.startmenu.StartMenuViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext

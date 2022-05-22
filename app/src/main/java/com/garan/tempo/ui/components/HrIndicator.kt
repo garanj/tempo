@@ -12,14 +12,14 @@ import com.garan.tempo.R
 
 @Composable
 fun HrIndicator(dataTypeAvailability: DataTypeAvailability) {
-    when(dataTypeAvailability) {
+    when (dataTypeAvailability) {
         DataTypeAvailability.AVAILABLE -> {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = stringResource(R.string.hr_acquired),
-                    tint = MaterialTheme.colors.primary
-                )
-            }
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = stringResource(R.string.hr_acquired),
+                tint = MaterialTheme.colors.primary
+            )
+        }
         DataTypeAvailability.ACQUIRING -> {
             Icon(
                 imageVector = Icons.Default.FavoriteBorder,

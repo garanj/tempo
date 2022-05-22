@@ -55,6 +55,12 @@ class TempoSettingsManager @Inject constructor(
         exerciseSettingsDao.updateScreenSettings(newScreen)
     }
 
+    suspend fun setScreenFormat(settingsId: Int, screen: Int, screenFormat: ScreenFormat) {
+        val screenSettings = exerciseSettingsDao.getScreen(settingsId, screen)
+        val newScreen = screenSettings.copy(screenFormat = screenFormat)
+        exerciseSettingsDao.updateScreenSettings(newScreen)
+    }
+
     suspend fun setAutoPause(settingsId: Int, enabled: Boolean) {
         val settings = exerciseSettingsDao.getExerciseSettings(settingsId)
         val newSettings = settings.copy(useAutoPause = enabled)
