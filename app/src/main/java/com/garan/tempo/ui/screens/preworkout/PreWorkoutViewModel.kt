@@ -62,7 +62,7 @@ class PreWorkoutViewModel @Inject constructor(
         }
     }
 
-    fun prepare() = tempoService?.prepare()
+    fun prepare() = tempoService?.prepare(settingsId)
 
     fun startExercise() = tempoService?.startExercise(settingsId)
 

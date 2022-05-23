@@ -170,9 +170,10 @@ class TempoService : LifecycleService() {
         return true
     }
 
-    fun prepare() {
+    fun prepare(settingsId: Int) {
         lifecycleScope.launch {
-            healthManager.prepare()
+            currentSettings = tempoSettingsManager.getExerciseSettings(settingsId).first()
+            healthManager.prepare(currentSettings!!)
         }
     }
 

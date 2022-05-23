@@ -31,17 +31,17 @@ class HealthServicesManager @Inject constructor(
         return exerciseClient.currentExerciseInfo.await()
     }
 
-    suspend fun prepare() {
-        // TODO base config on exercise type
+    suspend fun prepare(exerciseSettingsWithScreens: ExerciseSettingsWithScreens) {
+        val warmupDataTypes = setOf(
+            DataType.LOCATION,
+            DataType.HEART_RATE_BPM
+        ).intersect(
+            exerciseSettingsWithScreens.getRequiredDataTypes().first
+        )
+
         val config = WarmUpConfig.builder()
-            .setDataTypes(
-                setOf(
-                    DataType.LOCATION,
-                    // TODO
-                    DataType.HEART_RATE_BPM
-                )
-            )
-            .setExerciseType(ExerciseType.RUNNING)
+            .setDataTypes(warmupDataTypes)
+            .setExerciseType(exerciseSettingsWithScreens.exerciseSettings.exerciseType)
             .build()
         exerciseClient.prepareExercise(config).await()
     }
