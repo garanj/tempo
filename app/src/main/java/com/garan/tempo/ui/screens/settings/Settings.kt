@@ -22,7 +22,7 @@ fun SettingsScreen(
     screenStarted: Boolean = uiState.navHostController
         .getBackStackEntry(Screen.SETTINGS.route)
         .lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED),
-    viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>()
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val exerciseSettings by viewModel.exerciseSettings.collectAsStateLifecycleAware(initial = emptyList())
     val scalingListState = rememberScalingLazyListState()

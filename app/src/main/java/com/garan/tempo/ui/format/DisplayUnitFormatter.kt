@@ -57,7 +57,7 @@ fun imperialUnitFormatter() = DisplayUnitFormatter()
 
 val LocalDisplayUnitFormatter = compositionLocalOf { DisplayUnitFormatter() }
 
-fun imperialLabelMap() = mapOf<DisplayMetric, Int>(
+fun imperialLabelMap() = mapOf(
     DisplayMetric.DISTANCE to R.string.imperial_distance_label,
     DisplayMetric.SPEED to R.string.imperial_speed_label,
     DisplayMetric.AVG_SPEED to R.string.imperial_speed_label,
@@ -70,7 +70,7 @@ fun imperialLabelMap() = mapOf<DisplayMetric, Int>(
     DisplayMetric.AVG_CADENCE to R.string.imperial_cadence_label
 )
 
-fun metricLabelMap() = mapOf<DisplayMetric, Int>(
+fun metricLabelMap() = mapOf(
     DisplayMetric.DISTANCE to R.string.metric_distance_label,
     DisplayMetric.SPEED to R.string.metric_speed_label,
     DisplayMetric.AVG_SPEED to R.string.metric_speed_label,

@@ -1,16 +1,20 @@
 package com.garan.tempo.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import com.garan.tempo.UiState
+import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.ui.screens.metricpicker.MetricPicker
 import com.garan.tempo.ui.screens.metricpicker.MetricPickerViewModel
 import com.garan.tempo.ui.screens.postworkout.PostWorkoutScreen
-import com.garan.tempo.ui.screens.preworkout.PreWorkoutScreen
+import com.garan.tempo.ui.screens.preworkout.PreWorkoutPermissionCheck
+import com.garan.tempo.ui.screens.preworkout.PreWorkoutViewModel
 import com.garan.tempo.ui.screens.screeneditor.ScreenEditor
 import com.garan.tempo.ui.screens.screenformat.ScreenFormatScreen
 import com.garan.tempo.ui.screens.screenformat.ScreenFormatViewModel
@@ -40,11 +44,20 @@ fun TempoNavigation(
                 navArgument("settingsId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            PreWorkoutScreen(
+            val viewModel = hiltViewModel<PreWorkoutViewModel>()
+            val exerciseSettings by viewModel.exerciseSettings.collectAsState(
+                ExerciseSettingsWithScreens()
+            )
+            val serviceState by viewModel.serviceState
+            PreWorkoutPermissionCheck(
                 onStartNavigate = {
                     uiState.navHostController.popBackStack(Screen.START_MENU.route, true, false)
                     uiState.navHostController.navigate(Screen.WORKOUT.route)
-                }
+                },
+                exerciseSettings = exerciseSettings,
+                serviceState = serviceState,
+                onStartExercise = { viewModel.startExercise() },
+                onPrepareExercise = { viewModel.prepare() }
             )
         }
         composable(Screen.WORKOUT.route) { backStackEntry ->

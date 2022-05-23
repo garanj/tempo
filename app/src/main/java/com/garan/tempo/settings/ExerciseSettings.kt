@@ -7,6 +7,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.garan.tempo.data.requiredPermissions
 import com.garan.tempo.ui.metrics.AggregationType
 import com.garan.tempo.ui.metrics.DisplayMetric
 
@@ -78,6 +79,15 @@ data class ExerciseSettingsWithScreens(
                 }
         }
         return dataTypes to aggregateDataTypes
+    }
+
+    fun getRequiredPermissions() = getRequiredDataTypes().let {
+        it.first.map { dataType ->
+            dataType.requiredPermissions
+        }.flatten().toSet() +
+                it.second.map { dataType ->
+                    dataType.requiredPermissions
+                }.flatten().toSet()
     }
 }
 

@@ -8,13 +8,10 @@ import androidx.health.services.client.data.ExerciseConfig
 import androidx.health.services.client.data.ExerciseInfo
 import androidx.health.services.client.data.ExerciseLapSummary
 import androidx.health.services.client.data.ExerciseState
-import androidx.health.services.client.data.ExerciseType
-import androidx.health.services.client.data.ExerciseTypeCapabilities
 import androidx.health.services.client.data.ExerciseUpdate
 import androidx.health.services.client.data.WarmUpConfig
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.callbackFlow
@@ -82,7 +79,7 @@ class HealthServicesManager @Inject constructor(
 
     }
 
-    val exerciseUpdateFlow = callbackFlow<ExerciseMessage> {
+    val exerciseUpdateFlow = callbackFlow {
         val listener = object : ExerciseUpdateListener {
             override fun onAvailabilityChanged(dataType: DataType, availability: Availability) {
                 coroutineScope.runCatching {

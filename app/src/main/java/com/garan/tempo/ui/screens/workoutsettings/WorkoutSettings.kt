@@ -20,7 +20,7 @@ import com.garan.tempo.ui.components.AutoPauseToggle
 @Composable
 fun WorkoutSettingsScreen(
     onScreenButtonClick: () -> Unit,
-    viewModel: WorkoutSettingsViewModel = hiltViewModel<WorkoutSettingsViewModel>()
+    viewModel: WorkoutSettingsViewModel = hiltViewModel()
 ) {
     val settings by viewModel.exerciseSettings.collectAsState(WorkoutSettingsUiState())
 

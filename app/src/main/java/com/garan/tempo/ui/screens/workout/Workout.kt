@@ -40,7 +40,7 @@ import com.google.accompanist.pager.rememberPagerState
 @Composable
 fun WorkoutScreen(
     onFinishNavigate: () -> Unit,
-    viewModel: WorkoutViewModel = hiltViewModel<WorkoutViewModel>()
+    viewModel: WorkoutViewModel = hiltViewModel()
 ) {
     val serviceState by viewModel.serviceState
 

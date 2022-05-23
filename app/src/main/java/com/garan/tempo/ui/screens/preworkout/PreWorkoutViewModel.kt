@@ -26,6 +26,10 @@ class PreWorkoutViewModel @Inject constructor(
 ) : ViewModel() {
     private val settingsId = savedStateHandle.get<Int>("settingsId")!!
     private var tempoService: TempoService? = null
+
+    var permissionsGranted = mutableStateOf(false)
+        private set
+
     val exerciseSettings = tempoSettingsManager.getExerciseSettings(settingsId)
 
     val serviceState: MutableState<ServiceState> = mutableStateOf(ServiceState.Disconnected)

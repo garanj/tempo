@@ -49,4 +49,9 @@
     <string name="display_metric_avg_heart_rate">Avg. Heart rate</string>
 
     <string name="auto_pause_label">Use auto-pause</string>
+
+    <!-- Prepare -->
+    <string name="permissions_required">Permissions are required for Tempo</string>
+    <string name="next">Next</string>
+    <string name="start">Start</string>
 </resources>

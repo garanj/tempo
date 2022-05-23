@@ -96,6 +96,8 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:0.23.1"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.23.1"
 
+    implementation "com.google.accompanist:accompanist-permissions:0.24.9-beta"
+
     // Room
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"

@@ -36,7 +36,7 @@ import com.google.accompanist.pager.rememberPagerState
 fun ScreenEditor(
     onConfigClick: (Int, Int) -> Unit,
     onScreenFormatClick: (Int) -> Unit,
-    viewModel: ScreenEditorViewModel = hiltViewModel<ScreenEditorViewModel>()
+    viewModel: ScreenEditorViewModel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState(1)
     val settings by viewModel.exerciseSettings.collectAsState(ExerciseSettingsWithScreens())

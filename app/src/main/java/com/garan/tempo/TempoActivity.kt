@@ -1,10 +1,7 @@
 package com.garan.tempo
 
-import android.Manifest
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -57,30 +54,11 @@ fun rememberUiState(
  */
 @AndroidEntryPoint
 class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
-    // TODO move
-    private val requiredPermissions = arrayOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.ACTIVITY_RECOGNITION,
-        Manifest.permission.BODY_SENSORS
-    )
-
     @Inject
     lateinit var healthServicesManager: HealthServicesManager
 
     @Inject
     lateinit var tempoSettingsManager: TempoSettingsManager
-
-    // TODO Move to remember...
-    private val permissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { result ->
-        if (result.all { it.value }) {
-            Log.i(TAG, "All required permissions granted")
-        } else {
-            Log.i(TAG, "Not all required permissions granted")
-            // TODO permissions Composable
-        }
-    }
 
     @ExperimentalPagerApi
     @Composable
@@ -126,9 +104,6 @@ class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProv
 
     @OptIn(ExperimentalPagerApi::class)
     private fun freshStart() {
-        // TODO move the permission to when the activity type is selected
-        permissionLauncher.launch(requiredPermissions)
-
         setContent {
             TempoScreen()
         }

@@ -58,7 +58,7 @@ fun StartMenuScreen(
     screenStarted: Boolean = uiState.navHostController
         .getBackStackEntry(Screen.START_MENU.route)
         .lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED),
-    viewModel: StartMenuViewModel = hiltViewModel<StartMenuViewModel>()
+    viewModel: StartMenuViewModel = hiltViewModel()
 ) {
     val exerciseSettings by viewModel.exerciseSettings.collectAsStateLifecycleAware(initial = emptyList())
 
