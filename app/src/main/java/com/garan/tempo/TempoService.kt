@@ -86,6 +86,7 @@ class TempoService : LifecycleService() {
 
     val metrics: DisplayUpdateMap = mutableStateMapOf()
 
+    // TODO - deal with HR being on change
     private fun processExerciseUpdateForDisplay(
         metrics: Set<DisplayMetric>,
         metricsMap: DisplayUpdateMap,

@@ -105,6 +105,4 @@ dependencies {
 
     // Reflect
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-
-    implementation 'com.google.protobuf:protobuf-javalite:3.10.0'
 }

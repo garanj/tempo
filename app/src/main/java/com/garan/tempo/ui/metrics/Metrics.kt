@@ -8,7 +8,7 @@ import com.garan.tempo.R
 
 enum class DisplayMetric {
     ACTIVE_DURATION {
-        override fun requiredDataType() = null
+        override fun requiredDataType(): DataType? = null
         override fun aggregationType() = AggregationType.NONE
         override fun displayNameId() = R.string.display_metric_active_duration
         override fun placeholder() = "8:88:88"

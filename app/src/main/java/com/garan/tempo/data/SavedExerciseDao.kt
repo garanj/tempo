@@ -1,14 +1,10 @@
 package com.garan.tempo.data
 
-import android.util.Log
-import androidx.health.services.client.data.Value
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
-import com.garan.tempo.TAG
-import com.garan.tempo.ui.metrics.DisplayMetric
 import kotlinx.coroutines.flow.Flow
 
 

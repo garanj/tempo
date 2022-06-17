@@ -24,9 +24,9 @@ class DisplayUnitFormatter(
         }
         DisplayMetric.SPEED,
         DisplayMetric.AVG_SPEED -> "%.1f".format(value.asDouble() * speedScaleFactor)
-        DisplayMetric.CALORIES -> value.asDouble().roundToInt().toString()
+        DisplayMetric.CALORIES,
         DisplayMetric.HEART_RATE_BPM,
-        DisplayMetric.AVG_HEART_RATE -> value.asDouble().roundToInt().toString()
+        DisplayMetric.AVG_HEART_RATE -> roundedDoubleOrDashes(value)
         DisplayMetric.ACTIVE_DURATION -> "%02d:%02d".format(
             value.asLong() / 60, value.asLong() % 60
         )
@@ -46,6 +46,12 @@ class DisplayUnitFormatter(
 
     fun labelId(metricType: DisplayMetric) =
         labelMap.getOrDefault(metricType, R.string.unknown_label)
+}
+
+private fun roundedDoubleOrDashes(value: Value) = if (value.isDouble && !value.asDouble().isNaN()) {
+    value.asDouble().roundToInt().toString()
+} else {
+    "--"
 }
 
 fun metricUnitFormatter() = DisplayUnitFormatter(

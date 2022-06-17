@@ -55,4 +55,12 @@
     <string name="permissions_required">Permissions are required for Tempo</string>
     <string name="next">Next</string>
     <string name="start">Start</string>
+
+    <!-- Summary metrics -->
+    <string name="summary_metric_active_duration">Active duration</string>
+    <string name="summary_metric_start_time">Start time</string>
+    <string name="summary_metric_total_distance">Distance</string>
+    <string name="summary_metric_total_calories">Calories</string>
+    <string name="summary_metric_avg_pace">Avg. Pace</string>
+    <string name="summary_metric_avg_heart_rate">Avg. Heart rate</string>
 </resources>

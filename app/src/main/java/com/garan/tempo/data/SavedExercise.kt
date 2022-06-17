@@ -1,12 +1,7 @@
 package com.garan.tempo.data
 
-import androidx.health.services.client.data.DataType
-import androidx.health.services.client.data.Value
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.Relation
-import com.garan.tempo.ui.metrics.DisplayMetric
 import java.time.Duration
 import java.time.ZonedDateTime
 

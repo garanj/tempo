@@ -2,14 +2,11 @@ package com.garan.tempo.settings
 
 import android.os.Parcel
 import androidx.health.services.client.data.DataType
-import androidx.health.services.client.data.ProtoParcelable
 import androidx.health.services.client.data.Value
-import androidx.health.services.client.proto.DataProto
 import androidx.room.TypeConverter
 import com.garan.tempo.ui.metrics.DisplayMetric
 import java.time.Duration
 import java.time.ZonedDateTime
-import kotlin.reflect.jvm.internal.impl.protobuf.MessageLite
 import kotlin.reflect.typeOf
 
 class Converters {
@@ -19,19 +16,6 @@ class Converters {
         val dataType = (it.call(this) as DataType)
         dataType.name to dataType
     }.toMap()
-
-    @TypeConverter
-    fun fromValue(value: Value) : ByteArray = value.proto.toByteArray()
-
-    @TypeConverter
-    fun toValue(byteArray: ByteArray) : Value {
-        val parcel = Parcel.obtain()
-        parcel.writeByteArray(byteArray)
-        parcel.setDataPosition(0)
-        val value = Value.CREATOR.createFromParcel(parcel)
-        parcel.recycle()
-        return value
-    }
 
     @TypeConverter
     fun fromDuration(duration: Duration): Long = duration.toMillis()
@@ -60,12 +44,6 @@ class Converters {
             dataTypeLookup[it]!!
         }.toSet()
     }
-
-    @TypeConverter
-    fun fromDataType(dataType: DataType): String = dataType.name
-
-    @TypeConverter
-    fun toDataType(value: String): DataType = dataTypeLookup[value]!!
 
     @TypeConverter
     fun fromDisplayMetrics(displayMetrics: List<DisplayMetric>): String =
