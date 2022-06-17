@@ -11,6 +11,12 @@ fun defaultWalkingExerciseSettings() = ExerciseSettings(
     name = "Walking",
     exerciseType = ExerciseType.WALKING,
     recordingMetrics = setOf(DataType.LOCATION),
+    endSummaryMetrics = listOf(
+        DisplayMetric.ACTIVE_DURATION,
+        DisplayMetric.DISTANCE,
+        DisplayMetric.AVG_PACE,
+        DisplayMetric.TOTAL_STEPS
+    ),
     useAutoPause = true
 )
 
@@ -20,7 +26,7 @@ fun defaultWalkingScreenSettings() = listOf(
         screenFormat = ScreenFormat.ONE_PLUS_FOUR_SLOT,
         metrics = listOf(
             DisplayMetric.AVG_PACE,
-            DisplayMetric.AVG_HEART_RATE,
+            DisplayMetric.TOTAL_STEPS,
             DisplayMetric.ACTIVE_DURATION,
             DisplayMetric.AVG_CADENCE,
             DisplayMetric.DISTANCE,
@@ -33,7 +39,7 @@ fun defaultWalkingScreenSettings() = listOf(
         metrics = listOf(
             DisplayMetric.ACTIVE_DURATION,
             DisplayMetric.PACE,
-            DisplayMetric.HEART_RATE_BPM,
+            DisplayMetric.TOTAL_STEPS,
             DisplayMetric.DISTANCE,
             DisplayMetric.CADENCE,
             DisplayMetric.CALORIES
@@ -46,7 +52,7 @@ fun defaultWalkingScreenSettings() = listOf(
             DisplayMetric.PACE,
             DisplayMetric.ACTIVE_DURATION,
             DisplayMetric.DISTANCE,
-            DisplayMetric.HEART_RATE_BPM,
+            DisplayMetric.TOTAL_STEPS,
             DisplayMetric.CADENCE,
             DisplayMetric.CALORIES
         )

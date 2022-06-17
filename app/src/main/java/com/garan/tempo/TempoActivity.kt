@@ -117,7 +117,7 @@ class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProv
     }
 
     private fun otherExerciseWarning() {
-
+        // TODO
     }
 
     override fun getAmbientCallback() = object : AmbientModeSupport.AmbientCallback() {}

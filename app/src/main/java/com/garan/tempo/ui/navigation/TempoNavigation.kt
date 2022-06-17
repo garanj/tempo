@@ -1,5 +1,6 @@
 package com.garan.tempo.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,11 +9,14 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
+import com.garan.tempo.TAG
 import com.garan.tempo.UiState
+import com.garan.tempo.data.SavedExercise
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.ui.screens.metricpicker.MetricPicker
 import com.garan.tempo.ui.screens.metricpicker.MetricPickerViewModel
 import com.garan.tempo.ui.screens.postworkout.PostWorkoutScreen
+import com.garan.tempo.ui.screens.postworkout.PostWorkoutViewModel
 import com.garan.tempo.ui.screens.preworkout.PreWorkoutPermissionCheck
 import com.garan.tempo.ui.screens.preworkout.PreWorkoutViewModel
 import com.garan.tempo.ui.screens.screeneditor.ScreenEditor
@@ -56,20 +60,25 @@ fun TempoNavigation(
                 },
                 exerciseSettings = exerciseSettings,
                 serviceState = serviceState,
-                onStartExercise = { viewModel.startExercise() },
+                onStartExercise = {
+                    Log.i(TAG, "* Starting exercise")
+                    viewModel.startExercise()
+                                  },
                 onPrepareExercise = { viewModel.prepare() }
             )
         }
         composable(Screen.WORKOUT.route) { backStackEntry ->
             WorkoutScreen(
-                onFinishNavigate = {
+                onFinishNavigate = { exerciseId ->
                     uiState.navHostController.popBackStack()
-                    uiState.navHostController.navigate(Screen.POST_WORKOUT.route)
+                    uiState.navHostController.navigate(Screen.POST_WORKOUT.route + "/" + exerciseId)
                 }
             )
         }
-        composable(Screen.POST_WORKOUT.route) {
-            PostWorkoutScreen()
+        composable(Screen.POST_WORKOUT.route + "/{exerciseId}") {
+            val viewModel = hiltViewModel<PostWorkoutViewModel>()
+            val savedExercise by viewModel.savedExercise.collectAsState(initial = SavedExercise())
+            PostWorkoutScreen(savedExercise)
         }
         composable(Screen.SETTINGS.route) {
             SettingsScreen(

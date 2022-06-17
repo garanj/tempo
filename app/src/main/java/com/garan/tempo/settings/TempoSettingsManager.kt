@@ -9,8 +9,7 @@ import javax.inject.Inject
 
 class TempoSettingsManager @Inject constructor(
     private val exerciseSettingsDao: ExerciseSettingsDao,
-    private val capabilities: Deferred<ExerciseCapabilities>,
-    private val tempoSettingsDao: TempoSettingsDao
+    private val capabilities: Deferred<ExerciseCapabilities>
 ) {
     val initialized = MutableStateFlow(false)
 

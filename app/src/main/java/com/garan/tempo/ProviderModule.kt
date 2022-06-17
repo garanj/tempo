@@ -50,10 +50,6 @@ class ProviderModule {
     fun provideApplicationCoroutineScope(): CoroutineScope =
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    //    @Provides
-//    fun provideTempoSettings(@ApplicationContext appContext: Context) =
-//        TempoSettingsManager()
-//
     @Singleton
     @Provides
     fun provideTempoDatabase(
@@ -74,7 +70,7 @@ class ProviderModule {
 
     @Singleton
     @Provides
-    fun provideTempoSettingsDao(db: ExerciseSettingsDatabase) = db.getTempoSettingsDao()
+    fun provideSavedExerciseDao(db: ExerciseSettingsDatabase) = db.getSavedExerciseDao()
 }
 
 class ExerciseSettingsCallback(

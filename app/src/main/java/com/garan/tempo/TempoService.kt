@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import android.os.SystemClock
 import android.os.Vibrator
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.core.app.NotificationCompat
 import androidx.health.services.client.data.CumulativeDataPoint
+import androidx.health.services.client.data.DataPoints
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.DataTypeAvailability
 import androidx.health.services.client.data.ExerciseState
@@ -27,14 +29,22 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.ongoing.OngoingActivity
 import androidx.wear.ongoing.Status
+import com.garan.tempo.data.SavedExercise
+import com.garan.tempo.data.SavedExerciseDao
+import com.garan.tempo.data.SavedExerciseMetricCache
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.TempoSettingsManager
 import com.garan.tempo.ui.metrics.AggregationType
 import com.garan.tempo.ui.metrics.DisplayMetric
 import com.garan.tempo.vibrations.stateVibrations
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.time.Duration
+import java.time.Instant
+import java.time.ZonedDateTime
+import java.util.UUID
 import javax.inject.Inject
 
 typealias DisplayUpdateMap = SnapshotStateMap<DisplayMetric, Value>
@@ -47,10 +57,16 @@ class TempoService : LifecycleService() {
     @Inject
     lateinit var healthManager: HealthServicesManager
 
+    @Inject
+    lateinit var savedExerciseDao: SavedExerciseDao
+
     private val binder = LocalBinder()
     private var started = false
 
     private val vibrator by lazy { getSystemService(VIBRATOR_SERVICE) as Vibrator }
+
+    private val bootInstant =
+        Instant.ofEpochMilli(System.currentTimeMillis() - SystemClock.elapsedRealtime())
 
     private val _exerciseState: MutableState<ExerciseState> =
         mutableStateOf(ExerciseState.USER_ENDED)
@@ -65,10 +81,10 @@ class TempoService : LifecycleService() {
     val hrAvailability: State<DataTypeAvailability> = _hrAvailability
 
     var currentSettings: ExerciseSettingsWithScreens? = null
+    lateinit var currentWorkoutId: UUID
+    lateinit var currentWorkoutStart: ZonedDateTime
 
     val metrics: DisplayUpdateMap = mutableStateMapOf()
-
-    // TODO - why is finish not coming through???
 
     private fun processExerciseUpdateForDisplay(
         metrics: Set<DisplayMetric>,
@@ -111,6 +127,40 @@ class TempoService : LifecycleService() {
         }
     }
 
+    private fun createSavedExerciseMetricCache(exerciseUpdate: ExerciseUpdate): SavedExerciseMetricCache? {
+        if (exerciseUpdate.latestMetrics.isEmpty()) {
+            return null
+        }
+        currentSettings?.let { settings ->
+            val recordingSettings = settings.exerciseSettings.recordingMetrics
+            val latest = exerciseUpdate.latestMetrics
+            var lng : Double? = null
+            var lat : Double? = null
+            val timestamp = latest.values.first().last().getEndInstant(bootInstant).epochSecond
+
+            if (recordingSettings.contains(DataType.LOCATION) && latest.containsKey(DataType.LOCATION)) {
+                val coords = latest[DataType.LOCATION]?.last()?.value?.asDoubleArray()
+                lat = coords?.get(DataPoints.LOCATION_DATA_POINT_LATITUDE_INDEX)
+                lng = coords?.get(DataPoints.LOCATION_DATA_POINT_LONGITUDE_INDEX)
+            }
+
+            return SavedExerciseMetricCache(
+                datetime = timestamp,
+                lat = lat,
+                lng = lng
+            )
+        }
+        return null
+    }
+
+    private fun processExerciseUpdateForCache(exerciseUpdate: ExerciseUpdate) {
+        createSavedExerciseMetricCache(exerciseUpdate)?.let { update ->
+            lifecycleScope.launch(Dispatchers.IO) {
+                savedExerciseDao.insert(update)
+            }
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         if (!started) {
@@ -121,13 +171,25 @@ class TempoService : LifecycleService() {
                 healthManager.exerciseUpdateFlow.collect { message ->
                     when (message) {
                         is ExerciseMessage.ExerciseUpdateMessage -> {
+                            Log.i(TAG, "* ${message.update.state}")
                             currentSettings?.let { current ->
                                 processExerciseUpdateForDisplay(
                                     current.getDisplayMetricsSet(),
                                     metrics,
                                     message.update
                                 )
+                                processExerciseUpdateForCache(
+                                    message.update
+                                )
                                 vibrateByStateTransition(message.update.state)
+                                if (message.update.state.isEnded) {
+                                    saveExercise(
+                                        startTime = currentWorkoutStart,
+                                        exerciseId = currentWorkoutId,
+                                        metrics = metrics,
+                                        activeDuration = message.update.activeDuration
+                                    )
+                                }
                             }
                             _exerciseState.value = message.update.state
                         }
@@ -177,16 +239,13 @@ class TempoService : LifecycleService() {
         }
     }
 
-    fun cancelPrepare() {
-        lifecycleScope.launch {
-            healthManager.endExercise()
-        }
-    }
-
     fun startExercise(settingsId: Int) {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             currentSettings = tempoSettingsManager.getExerciseSettings(settingsId).first()
+            savedExerciseDao.deleteAllExerciseMetricCache()
             healthManager.startExercise(currentSettings!!)
+            currentWorkoutId = UUID.randomUUID()
+            currentWorkoutStart = ZonedDateTime.now()
         }
     }
 
@@ -257,7 +316,8 @@ class TempoService : LifecycleService() {
 
         val ongoingActivityStatus = Status.Builder()
             .addTemplate(STATUS_TEMPLATE)
-            //.addPart("speed", Status.TextPart("${metrics.speedToDevice.value}"))
+                // TODO
+            //.addPart("duration", Status.TextPart("${}"))
             .build()
         val ongoingActivity =
             OngoingActivity.Builder(applicationContext, NOTIFICATION_ID, notificationBuilder)
@@ -269,6 +329,27 @@ class TempoService : LifecycleService() {
         ongoingActivity.apply(applicationContext)
 
         return notificationBuilder.build()
+    }
+
+    private fun saveExercise(
+        startTime: ZonedDateTime,
+        exerciseId: UUID,
+        metrics: DisplayUpdateMap,
+        activeDuration: Duration
+    ) {
+        val savedExercise = SavedExercise(
+            exerciseId = exerciseId.toString(),
+            startTime = startTime,
+            activeDuration = activeDuration,
+            totalDistance = metrics[DisplayMetric.DISTANCE]?.asDouble(),
+            totalCalories = metrics[DisplayMetric.CALORIES]?.asDouble(),
+            avgPace = metrics[DisplayMetric.AVG_PACE]?.asDouble(),
+            avgHeartRate = metrics[DisplayMetric.AVG_HEART_RATE]?.asDouble()
+        )
+        lifecycleScope.launch {
+            savedExerciseDao.insert(savedExercise)
+            Log.i(TAG, "* Saved!")
+        }
     }
 
     inner class LocalBinder : Binder() {

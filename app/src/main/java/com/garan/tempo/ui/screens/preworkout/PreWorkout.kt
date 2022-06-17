@@ -1,5 +1,6 @@
 package com.garan.tempo.ui.screens.preworkout
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.garan.tempo.R
+import com.garan.tempo.TAG
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.ui.components.GpsIndicator
 import com.garan.tempo.ui.components.HrIndicator
@@ -116,8 +118,11 @@ fun PreWorkout(
 ) {
     LaunchedEffect(exerciseState) {
         if (exerciseState == ExerciseState.ACTIVE) {
+            Log.i(TAG, "* ExerciseState ACTIVE")
             onStartNavigate()
         } else if (exerciseState == ExerciseState.USER_ENDED) {
+            Log.i(TAG, "* ExerciseState PREPATE")
+
             prepareExercise()
         }
     }

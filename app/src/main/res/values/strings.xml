@@ -47,6 +47,7 @@
     <string name="display_metric_avg_cadence">Avg. cadence</string>
     <string name="display_metric_heart_rate_bpm">Heart rate</string>
     <string name="display_metric_avg_heart_rate">Avg. Heart rate</string>
+    <string name="display_metric_total_steps">Steps</string>
 
     <string name="auto_pause_label">Use auto-pause</string>
 

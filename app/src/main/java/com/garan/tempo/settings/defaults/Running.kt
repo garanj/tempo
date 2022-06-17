@@ -15,6 +15,13 @@ fun defaultRunningExerciseSettings() = ExerciseSettings(
         DataType.HEART_RATE_BPM,
         DataType.STEPS_PER_MINUTE
     ),
+    endSummaryMetrics = listOf(
+        DisplayMetric.ACTIVE_DURATION,
+        DisplayMetric.DISTANCE,
+        DisplayMetric.AVG_PACE,
+        DisplayMetric.AVG_HEART_RATE,
+        DisplayMetric.CALORIES
+    ),
     useAutoPause = true
 )
 

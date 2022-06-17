@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.garan.tempo"
@@ -51,7 +51,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Required for activity
-    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.core:core-ktx:1.8.0"
     implementation "androidx.activity:activity-compose:1.4.0"
 
     // Required for Wear Compose
@@ -83,8 +83,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-service:2.4.1"
 
     // Hilt
-    implementation "com.google.dagger:hilt-android:2.38.1"
-    kapt "com.google.dagger:hilt-android-compiler:2.38.1"
+    implementation "com.google.dagger:hilt-android:2.42"
+    kapt "com.google.dagger:hilt-android-compiler:2.42"
 
     // For launching "About" via remote intent
     implementation "androidx.wear:wear-remote-interactions:1.0.0"
@@ -105,4 +105,6 @@ dependencies {
 
     // Reflect
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    implementation 'com.google.protobuf:protobuf-javalite:3.10.0'
 }

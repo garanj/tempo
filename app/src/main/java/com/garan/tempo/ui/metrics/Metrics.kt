@@ -72,6 +72,12 @@ enum class DisplayMetric {
         override fun aggregationType() = AggregationType.AVG
         override fun displayNameId() = R.string.display_metric_avg_heart_rate
         override fun placeholder() = "888"
+    },
+    TOTAL_STEPS {
+        override fun requiredDataType() = DataType.STEPS
+        override fun aggregationType() = AggregationType.TOTAL
+        override fun displayNameId() = R.string.display_metric_total_steps
+        override fun placeholder() = "88888"
     };
 
     abstract fun requiredDataType(): DataType?
@@ -91,7 +97,10 @@ enum class AggregationType {
     MIN,
     TOTAL,
     AVG,
-    SAMPLE
+    SAMPLE;
+
+    val isAggregation : Boolean
+        get() = setOf(MIN, MAX, TOTAL, AVG).contains(this)
 }
 
 fun screenEditorDefaults(): DisplayUpdateMap = mutableStateMapOf(

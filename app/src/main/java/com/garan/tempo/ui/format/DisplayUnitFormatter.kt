@@ -41,6 +41,7 @@ class DisplayUnitFormatter(
         }
         DisplayMetric.CADENCE,
         DisplayMetric.AVG_CADENCE -> value.asLong().toString()
+        DisplayMetric.TOTAL_STEPS -> value.asLong().toString()
     }
 
     fun labelId(metricType: DisplayMetric) =

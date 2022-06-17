@@ -1,5 +1,6 @@
 package com.garan.tempo.ui.screens.startmenu
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
@@ -8,6 +9,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,6 +77,7 @@ fun StartMenuScreen(
         ) {
             items(exerciseSettings) { setting ->
                 Chip(
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         val id = setting.exerciseSettings.exerciseSettingsId
                         uiState.navHostController.navigate(Screen.PRE_WORKOUT.route + "/" + id)
@@ -90,6 +93,7 @@ fun StartMenuScreen(
             }
             item {
                 Chip(
+                    modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         uiState.navHostController.navigate(Screen.SETTINGS.route)
                     },

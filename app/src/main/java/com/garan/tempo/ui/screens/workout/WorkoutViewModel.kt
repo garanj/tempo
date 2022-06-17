@@ -45,7 +45,8 @@ class WorkoutViewModel @Inject constructor(
                     hrAvailability = it.hrAvailability,
                     locationAvailability = it.locationAvailability,
                     metrics = it.metrics,
-                    settings = it.currentSettings!!
+                    settings = it.currentSettings!!,
+                    exerciseId = it.currentWorkoutId.toString()
                 )
             }
             Log.i(TAG, "onServiceConnected")
@@ -94,6 +95,7 @@ sealed class ServiceState {
         val hrAvailability: State<DataTypeAvailability>,
         val locationAvailability: State<LocationAvailability>,
         val metrics: DisplayUpdateMap,
-        val settings: ExerciseSettingsWithScreens? = null
+        val settings: ExerciseSettingsWithScreens? = null,
+        val exerciseId: String? = null
     ) : ServiceState()
 }

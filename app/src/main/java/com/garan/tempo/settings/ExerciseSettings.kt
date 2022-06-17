@@ -21,18 +21,21 @@ data class ExerciseSettings(
     @Ignore
     var supportsAutoPause: Boolean = false,
     val recordingMetrics: Set<DataType> = setOf(),
+    val endSummaryMetrics: List<DisplayMetric> = listOf()
 ) {
     constructor(
         name: String = "",
         exerciseType: ExerciseType = ExerciseType.UNKNOWN,
         useAutoPause: Boolean = false,
-        recordingMetrics: Set<DataType> = setOf()
+        recordingMetrics: Set<DataType> = setOf(),
+        endSummaryMetrics: List<DisplayMetric> = listOf()
     ) : this(
         name = name,
         exerciseType = exerciseType,
         useAutoPause = useAutoPause,
         supportsAutoPause = false,
-        recordingMetrics = recordingMetrics
+        recordingMetrics = recordingMetrics,
+        endSummaryMetrics = endSummaryMetrics
     )
 
     fun getRequiresGps() = recordingMetrics.contains(DataType.LOCATION)
@@ -59,8 +62,11 @@ data class ExerciseSettingsWithScreens(
     fun getDisplayMetricsSet() = screenSettings.flatMap { it.metrics }.toSet()
 
     fun getRequiredDataTypes(): Pair<Set<DataType>, Set<DataType>> {
+        // Start with the set of metrics required for recording (i.e. those that will be written to
+        // database, but aren't for UI display necessarily.
         val dataTypes = exerciseSettings.recordingMetrics.toMutableSet()
         val aggregateDataTypes = mutableSetOf<DataType>()
+        //
         screenSettings.forEach {
             // Only take first n metrics based on the type of screen format
             // it is.
@@ -77,6 +83,13 @@ data class ExerciseSettingsWithScreens(
                         }
                     }
                 }
+        }
+        // Ensure data types for the metrics to be shown in the workout summary post-workout are
+        // added.
+        exerciseSettings.endSummaryMetrics
+            .filter { it.aggregationType().isAggregation }
+            .forEach { displayMetric ->
+                displayMetric.requiredDataType()?.let { dataTypes.add(it) }
         }
         return dataTypes to aggregateDataTypes
     }
