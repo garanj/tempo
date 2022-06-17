@@ -1,6 +1,8 @@
 package com.garan.tempo.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +30,7 @@ fun AutoPauseToggle(
         uncheckedToggleControlColor = MaterialTheme.colors.primary
     )
     ToggleChip(
+        modifier = Modifier.fillMaxWidth(),
         checked = isEnabled,
         colors = toggleChipColors,
         onCheckedChange = onCheckedChange,

@@ -47,6 +47,7 @@ fun WorkoutSettingsScreen(
         }
         item {
             Chip(
+                modifier = Modifier.fillMaxWidth(),
                 colors = ChipDefaults.secondaryChipColors(),
                 onClick = onScreenButtonClick,
                 label = { Text("Edit screens") },

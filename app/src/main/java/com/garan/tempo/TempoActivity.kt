@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -19,9 +21,12 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.Vignette
 import androidx.wear.compose.material.VignettePosition
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
+import com.garan.tempo.settings.TempoSettings
 import com.garan.tempo.settings.TempoSettingsManager
+import com.garan.tempo.settings.Units
 import com.garan.tempo.ui.format.LocalDisplayUnitFormatter
 import com.garan.tempo.ui.format.imperialUnitFormatter
+import com.garan.tempo.ui.format.metricUnitFormatter
 import com.garan.tempo.ui.navigation.Screen
 import com.garan.tempo.ui.navigation.TempoNavigation
 import com.garan.tempo.ui.theme.TempoTheme
@@ -63,10 +68,14 @@ class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProv
     @ExperimentalPagerApi
     @Composable
     fun TempoScreen(startDestination: String = Screen.START_MENU.route) {
-        // TODO move this so settings take effect
         val appState = rememberUiState()
-        // TODO fix
-        val formatter = imperialUnitFormatter()
+        val tempoSettings by tempoSettingsManager.tempoSettings
+            .collectAsState(initial = TempoSettings(units = Units.METRIC))
+        val formatter = if (tempoSettings.units == Units.METRIC) {
+            metricUnitFormatter()
+        } else {
+            imperialUnitFormatter()
+        }
 
         CompositionLocalProvider(LocalDisplayUnitFormatter provides formatter) {
             TempoTheme {

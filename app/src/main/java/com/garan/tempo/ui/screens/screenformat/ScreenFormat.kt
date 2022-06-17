@@ -23,6 +23,7 @@ fun ScreenFormatScreen(
     ) {
         items(ScreenFormat.values().toList()) { screenFormat ->
             Chip(
+                modifier = Modifier.fillMaxWidth(),
                 colors = ChipDefaults.secondaryChipColors(),
                 onClick = {
                     onScreenFormatClick(screenFormat)

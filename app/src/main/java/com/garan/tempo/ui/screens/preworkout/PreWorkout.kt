@@ -31,6 +31,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.garan.tempo.R
 import com.garan.tempo.TAG
+import com.garan.tempo.isInProgress
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.ui.components.GpsIndicator
 import com.garan.tempo.ui.components.HrIndicator
@@ -117,12 +118,9 @@ fun PreWorkout(
     onStartNavigate: () -> Unit
 ) {
     LaunchedEffect(exerciseState) {
-        if (exerciseState == ExerciseState.ACTIVE) {
-            Log.i(TAG, "* ExerciseState ACTIVE")
+        if (exerciseState.isInProgress) {
             onStartNavigate()
         } else if (exerciseState == ExerciseState.USER_ENDED) {
-            Log.i(TAG, "* ExerciseState PREPATE")
-
             prepareExercise()
         }
     }

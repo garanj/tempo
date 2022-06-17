@@ -1,7 +1,10 @@
 package com.garan.tempo.ui.components
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.ToggleChip
 import androidx.wear.compose.material.ToggleChipDefaults
@@ -14,9 +17,15 @@ fun UnitsToggle(
     onCheckedChange: (Boolean) -> Unit
 ) {
     ToggleChip(
+        modifier = Modifier.fillMaxWidth(),
         checked = Units.IMPERIAL == units,
         onCheckedChange = onCheckedChange,
-        toggleControl = { ToggleChipDefaults.switchIcon(Units.IMPERIAL == units) },
+        toggleControl = {
+            Icon(
+                imageVector = ToggleChipDefaults.switchIcon(Units.IMPERIAL == units),
+                contentDescription = ""
+            )
+        },
         label = {
             val id = when (units) {
                 Units.IMPERIAL -> R.string.imperial_label

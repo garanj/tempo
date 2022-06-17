@@ -9,9 +9,12 @@ import javax.inject.Inject
 
 class TempoSettingsManager @Inject constructor(
     private val exerciseSettingsDao: ExerciseSettingsDao,
+    private val tempoSettingsDao: TempoSettingsDao,
     private val capabilities: Deferred<ExerciseCapabilities>
 ) {
     val initialized = MutableStateFlow(false)
+
+    val tempoSettings = tempoSettingsDao.getTempoSettingsFlow()
 
     init {
         capabilities.invokeOnCompletion {
@@ -64,6 +67,12 @@ class TempoSettingsManager @Inject constructor(
         val settings = exerciseSettingsDao.getExerciseSettings(settingsId)
         val newSettings = settings.copy(useAutoPause = enabled)
         exerciseSettingsDao.updateExerciseSettings(newSettings)
+    }
+
+    suspend fun setUnits(units: Units) {
+        val settings = tempoSettingsDao.getTempoSettings()
+        val newSettings = settings.copy(units = units)
+        tempoSettingsDao.update(newSettings)
     }
 }
 

@@ -11,6 +11,7 @@ import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.garan.tempo.ui.format.DisplayUnitFormatter
+import com.garan.tempo.ui.format.LocalDisplayUnitFormatter
 import com.garan.tempo.ui.metrics.DisplayMetric
 
 @Composable
@@ -43,7 +44,7 @@ fun SummaryMetricChip(
     metric: DisplayMetric,
     value: Value
 ) {
-    val formatter = remember { DisplayUnitFormatter() }
+    val formatter = LocalDisplayUnitFormatter.current
     val metricText = formatter.formatValue(metric, value)
     val metricUnits = stringResource(id = formatter.labelId(metric))
     SummaryMetricChip(

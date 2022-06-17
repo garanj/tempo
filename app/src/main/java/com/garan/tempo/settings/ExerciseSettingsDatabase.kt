@@ -13,13 +13,16 @@ import com.garan.tempo.data.SavedExerciseMetricCache
         ExerciseSettings::class,
         ScreenSettings::class,
         SavedExercise::class,
-        SavedExerciseMetricCache::class
+        SavedExerciseMetricCache::class,
+        TempoSettings::class
     ],
-    version = 23
+    version = 25
 )
 @TypeConverters(Converters::class)
 abstract class ExerciseSettingsDatabase : RoomDatabase() {
     abstract fun getExerciseSettingsDao(): ExerciseSettingsDao
 
     abstract fun getSavedExerciseDao(): SavedExerciseDao
+
+    abstract fun getTempoSettingsDao(): TempoSettingsDao
 }

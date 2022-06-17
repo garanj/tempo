@@ -9,6 +9,9 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.garan.tempo.settings.ExerciseSettingsDao
 import com.garan.tempo.settings.ExerciseSettingsDatabase
+import com.garan.tempo.settings.TempoSettings
+import com.garan.tempo.settings.TempoSettingsDao
+import com.garan.tempo.settings.Units
 import com.garan.tempo.settings.defaults.defaultExerciseSettingsList
 import dagger.Module
 import dagger.Provides
@@ -54,19 +57,26 @@ class ProviderModule {
     @Provides
     fun provideTempoDatabase(
         @ApplicationContext appContext: Context,
-        provider: Provider<ExerciseSettingsDao>
+        exerciseSettingsProvider: Provider<ExerciseSettingsDao>,
+        tempoSettingsProvider: Provider<TempoSettingsDao>,
     ) = Room.databaseBuilder(
         appContext,
         ExerciseSettingsDatabase::class.java,
         "exercise_settings_db"
     )
         .fallbackToDestructiveMigration()
-        .addCallback(ExerciseSettingsCallback(provider))
+        .addCallback(ExerciseSettingsCallback(exerciseSettingsProvider))
+        .addCallback(TempoSettingsCallback(tempoSettingsProvider))
         .build()
 
     @Singleton
     @Provides
     fun provideExerciseSettingsDao(db: ExerciseSettingsDatabase) = db.getExerciseSettingsDao()
+
+    @Singleton
+    @Provides
+    fun provideTempoSettingsDao(db: ExerciseSettingsDatabase) = db.getTempoSettingsDao()
+
 
     @Singleton
     @Provides
@@ -86,6 +96,20 @@ class ExerciseSettingsCallback(
             defaults.forEach {
                 dao.insert(it.first, it.second)
             }
+        }
+    }
+}
+
+class TempoSettingsCallback(
+    private val provider: Provider<TempoSettingsDao>
+) : RoomDatabase.Callback() {
+    private val applicationScope = CoroutineScope(SupervisorJob())
+
+    override fun onCreate(db: SupportSQLiteDatabase) {
+        super.onCreate(db)
+        applicationScope.launch {
+            val dao = provider.get()
+            dao.insert(TempoSettings(units = Units.METRIC))
         }
     }
 }
