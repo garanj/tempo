@@ -24,7 +24,6 @@ const val LONG_HOLD_SECONDS = 2
 
 @Composable
 fun EndRing(
-    modifier: Modifier = Modifier,
     onFinishTap: () -> Unit
 ) {
     val animateCircle = remember { Animatable(HIDDEN_ARC) }

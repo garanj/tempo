@@ -1,6 +1,5 @@
 package com.garan.tempo.ui.screens.preworkout
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,16 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.health.services.client.data.DataTypeAvailability
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseType
-import androidx.health.services.client.data.LocationAvailability
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.Text
 import com.garan.tempo.R
-import com.garan.tempo.TAG
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.isInProgress
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.ui.components.GpsIndicator
@@ -95,12 +92,10 @@ fun PreWorkoutScreen(
 ) {
     if (serviceState is ServiceState.Connected) {
         val exerciseState by serviceState.exerciseState
-        val locationAvailability by serviceState.locationAvailability
-        val hrAvailability by serviceState.hrAvailability
+        val availability by serviceState.availability
         PreWorkout(
             exerciseState = exerciseState,
-            locationAvailability = locationAvailability,
-            hrAvailability = hrAvailability,
+            availability = availability,
             prepareExercise = onPrepareExercise,
             startExercise = onStartExercise,
             onStartNavigate = onStartNavigate
@@ -111,8 +106,7 @@ fun PreWorkoutScreen(
 @Composable
 fun PreWorkout(
     exerciseState: ExerciseState,
-    locationAvailability: LocationAvailability,
-    hrAvailability: DataTypeAvailability,
+    availability: AvailabilityHolder,
     prepareExercise: () -> Unit,
     startExercise: () -> Unit,
     onStartNavigate: () -> Unit
@@ -120,7 +114,7 @@ fun PreWorkout(
     LaunchedEffect(exerciseState) {
         if (exerciseState.isInProgress) {
             onStartNavigate()
-        } else if (exerciseState == ExerciseState.USER_ENDED) {
+        } else if (exerciseState == ExerciseState.ENDED) {
             prepareExercise()
         }
     }
@@ -131,8 +125,8 @@ fun PreWorkout(
         verticalArrangement = Arrangement.Bottom
     ) {
         Row {
-            GpsIndicator(locationAvailability)
-            HrIndicator(hrAvailability)
+            GpsIndicator(availability.locationAvailability)
+            HrIndicator(availability.heartRateAvailability)
         }
     }
 

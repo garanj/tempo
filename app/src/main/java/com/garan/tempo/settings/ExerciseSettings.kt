@@ -8,8 +8,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import com.garan.tempo.data.requiredPermissions
-import com.garan.tempo.ui.metrics.AggregationType
-import com.garan.tempo.ui.metrics.DisplayMetric
+import com.garan.tempo.ui.metrics.TempoMetric
 
 @Entity(tableName = "exercise_settings")
 data class ExerciseSettings(
@@ -20,15 +19,15 @@ data class ExerciseSettings(
     val useAutoPause: Boolean,
     @Ignore
     var supportsAutoPause: Boolean = false,
-    val recordingMetrics: Set<DataType> = setOf(),
-    val endSummaryMetrics: List<DisplayMetric> = listOf()
+    val recordingMetrics: Set<DataType<*, *>> = setOf(),
+    val endSummaryMetrics: List<TempoMetric> = listOf()
 ) {
     constructor(
         name: String = "",
         exerciseType: ExerciseType = ExerciseType.UNKNOWN,
         useAutoPause: Boolean = false,
-        recordingMetrics: Set<DataType> = setOf(),
-        endSummaryMetrics: List<DisplayMetric> = listOf()
+        recordingMetrics: Set<DataType<*, *>> = setOf(),
+        endSummaryMetrics: List<TempoMetric> = listOf()
     ) : this(
         name = name,
         exerciseType = exerciseType,
@@ -48,7 +47,7 @@ data class ScreenSettings(
     var screenIndex: Int = 0,
     var exerciseSettingsId: Long = 0,
     val screenFormat: ScreenFormat = ScreenFormat.SIX_SLOT,
-    val metrics: List<DisplayMetric> = listOf()
+    val metrics: List<TempoMetric> = listOf()
 )
 
 data class ExerciseSettingsWithScreens(
@@ -59,49 +58,37 @@ data class ExerciseSettingsWithScreens(
     )
     val screenSettings: List<ScreenSettings> = listOf()
 ) {
-    fun getDisplayMetricsSet() = screenSettings.flatMap { it.metrics }.toSet()
+    @Ignore
+    val displayMetricsSet = screenSettings.flatMap { it.metrics }.toSet()
 
-    fun getRequiredDataTypes(): Pair<Set<DataType>, Set<DataType>> {
+    fun getRequiredDataTypes(): Set<DataType<*, *>> {
         // Start with the set of metrics required for recording (i.e. those that will be written to
         // database, but aren't for UI display necessarily.
         val dataTypes = exerciseSettings.recordingMetrics.toMutableSet()
-        val aggregateDataTypes = mutableSetOf<DataType>()
+        val aggregateDataTypes = mutableSetOf<DataType<*, *>>()
         //
-        screenSettings.forEach {
+        screenSettings.forEach { screenSetting ->
             // Only take first n metrics based on the type of screen format
             // it is.
-            it.metrics.subList(0, it.screenFormat.numSlots)
-                .forEach {
-                    when (it.aggregationType()) {
-                        AggregationType.SAMPLE -> dataTypes.add(it.requiredDataType()!!)
-                        AggregationType.AVG,
-                        AggregationType.MIN,
-                        AggregationType.MAX,
-                        AggregationType.TOTAL -> aggregateDataTypes.add(it.requiredDataType()!!)
-                        AggregationType.NONE -> {
-                            // No aggregation for Active Duration DisplayMetric
-                        }
+            screenSetting.metrics.subList(0, screenSetting.screenFormat.numSlots)
+                .forEach { displayMetric ->
+                    displayMetric.requiredDataType?.let {
+                        dataTypes.add(it)
                     }
                 }
         }
         // Ensure data types for the metrics to be shown in the workout summary post-workout are
         // added.
         exerciseSettings.endSummaryMetrics
-            .filter { it.aggregationType().isAggregation }
             .forEach { displayMetric ->
-                displayMetric.requiredDataType()?.let { dataTypes.add(it) }
-        }
-        return dataTypes to aggregateDataTypes
+                displayMetric.requiredDataType?.let { dataTypes.add(it) }
+            }
+        return dataTypes
     }
 
-    fun getRequiredPermissions() = getRequiredDataTypes().let {
-        it.first.map { dataType ->
-            dataType.requiredPermissions
-        }.flatten().toSet() +
-                it.second.map { dataType ->
-                    dataType.requiredPermissions
-                }.flatten().toSet()
-    }
+    fun getRequiredPermissions() = getRequiredDataTypes().map { dataType ->
+        dataType.requiredPermissions
+    }.flatten().toSet()
 }
 
 enum class ScreenFormat {

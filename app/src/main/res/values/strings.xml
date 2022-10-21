@@ -46,8 +46,28 @@
     <string name="display_metric_cadence">Cadence</string>
     <string name="display_metric_avg_cadence">Avg. cadence</string>
     <string name="display_metric_heart_rate_bpm">Heart rate</string>
-    <string name="display_metric_avg_heart_rate">Avg. Heart rate</string>
+    <string name="display_metric_avg_heart_rate">Avg. heart rate</string>
     <string name="display_metric_total_steps">Steps</string>
+    <string name="display_metric_max_speed">Max speed</string>
+    <string name="display_metric_max_pace">Max pace</string>
+    <string name="display_metric_max_cadence">Max cadence</string>
+    <string name="display_metric_max_heart_rate">Max heart rate</string>
+    <string name="display_metric_decline_duration">Decline duration</string>
+    <string name="display_metric_incline_duration">Incline duration</string>
+    <string name="display_metric_resting_duration">Resting duration</string>
+    <string name="display_metric_max_elevation">Max elevation</string>
+    <string name="display_metric_decline_distance">Decline distance</string>
+    <string name="display_metric_elevation_gain">Elevation gain</string>
+    <string name="display_metric_elevation_loss">Elevation loss</string>
+    <string name="display_metric_flat_ground_distance">Flat distance</string>
+    <string name="display_metric_floors">Floors</string>
+    <string name="display_metric_golf_shot_total">Golf shots</string>
+    <string name="display_metric_incline_distance">Incline distance</string>
+    <string name="display_metric_rep_count">Rep count</string>
+    <string name="display_metric_running_steps">Running steps</string>
+    <string name="display_metric_swimming_laps">Swimming laps</string>
+    <string name="display_metric_swimming_strokes">Swimming strokes</string>
+    <string name="display_metric_walking_steps">Walking steps</string>
 
     <string name="auto_pause_label">Use auto-pause</string>
 

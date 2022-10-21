@@ -1,23 +1,26 @@
 package com.garan.tempo.ui.screens.postworkout
 
 import android.text.format.DateUtils
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.health.services.client.data.Value
-import androidx.wear.compose.material.AutoCenteringParams
 import androidx.wear.compose.material.ScalingLazyColumn
-import androidx.wear.compose.material.ScalingLazyListAnchorType
+import androidx.wear.compose.material.ScalingLazyListState
+import coil.compose.rememberAsyncImagePainter
 import com.garan.tempo.R
 import com.garan.tempo.data.SavedExercise
 import com.garan.tempo.ui.components.SummaryMetricChip
-import com.garan.tempo.ui.metrics.DisplayMetric
-import com.garan.tempo.ui.screens.WEAR_PREVIEW_API_LEVEL
+import com.garan.tempo.ui.metrics.TempoMetric
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_BACKGROUND_COLOR_BLACK
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_HEIGHT_DP
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_WIDTH_DP
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_SHOW_BACKGROUND
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_UI_MODE
 import com.garan.tempo.ui.theme.TempoTheme
+import java.io.File
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -25,19 +28,19 @@ import java.time.format.FormatStyle
 
 @Composable
 fun PostWorkoutScreen(
-    savedExercise: SavedExercise
+    savedExercise: SavedExercise,
+    scrollState: ScalingLazyListState
 ) {
     ScalingLazyColumn(
-        anchorType = ScalingLazyListAnchorType.ItemStart,
-        autoCentering = AutoCenteringParams()
+        state = scrollState
     ) {
-        // TODO - remember
         val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         item {
             SummaryMetricChip(
                 labelId = R.string.summary_metric_active_duration,
                 metricText = DateUtils.formatElapsedTime(
-                        savedExercise.activeDuration?.seconds ?: 0L)
+                    savedExercise.activeDuration?.seconds ?: 0L
+                )
             )
         }
         item {
@@ -50,8 +53,8 @@ fun PostWorkoutScreen(
             item {
                 SummaryMetricChip(
                     labelId = R.string.summary_metric_total_distance,
-                    metric = DisplayMetric.DISTANCE,
-                    value = Value.ofDouble(totalDistance)
+                    metric = TempoMetric.DISTANCE,
+                    value = totalDistance
                 )
             }
         }
@@ -59,8 +62,8 @@ fun PostWorkoutScreen(
             item {
                 SummaryMetricChip(
                     labelId = R.string.summary_metric_total_calories,
-                    metric = DisplayMetric.CALORIES,
-                    value = Value.ofDouble(totalCalories)
+                    metric = TempoMetric.CALORIES,
+                    value = totalCalories
                 )
             }
         }
@@ -68,8 +71,8 @@ fun PostWorkoutScreen(
             item {
                 SummaryMetricChip(
                     labelId = R.string.summary_metric_avg_pace,
-                    metric = DisplayMetric.AVG_PACE,
-                    value = Value.ofDouble(avgPace)
+                    metric = TempoMetric.AVG_PACE,
+                    value = avgPace
                 )
             }
         }
@@ -77,8 +80,19 @@ fun PostWorkoutScreen(
             item {
                 SummaryMetricChip(
                     labelId = R.string.summary_metric_avg_heart_rate,
-                    metric = DisplayMetric.AVG_HEART_RATE,
-                    value = Value.ofDouble(avgHeartRate)
+                    metric = TempoMetric.AVG_HEART_RATE,
+                    value = avgHeartRate
+                )
+            }
+        }
+        if (savedExercise.hasMap) {
+            item {
+                val file = File(LocalContext.current.filesDir, "${savedExercise.exerciseId}.png")
+                Image(
+                    modifier = Modifier.fillParentMaxSize(),
+                    painter = rememberAsyncImagePainter(file),
+                    contentDescription = "...",
+                    contentScale = ContentScale.Fit
                 )
             }
         }
@@ -88,7 +102,6 @@ fun PostWorkoutScreen(
 @Preview(
     widthDp = WEAR_PREVIEW_DEVICE_WIDTH_DP,
     heightDp = WEAR_PREVIEW_DEVICE_HEIGHT_DP,
-    apiLevel = WEAR_PREVIEW_API_LEVEL,
     uiMode = WEAR_PREVIEW_UI_MODE,
     backgroundColor = WEAR_PREVIEW_BACKGROUND_COLOR_BLACK,
     showBackground = WEAR_PREVIEW_SHOW_BACKGROUND
@@ -101,7 +114,8 @@ fun PostWorkoutScreenPreview() {
                 exerciseId = "1234",
                 startTime = ZonedDateTime.now(),
                 activeDuration = Duration.ofMinutes(30)
-            )
+            ),
+            ScalingLazyListState()
         )
     }
 }

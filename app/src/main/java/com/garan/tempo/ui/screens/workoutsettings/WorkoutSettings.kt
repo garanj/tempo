@@ -20,13 +20,14 @@ import com.garan.tempo.ui.components.AutoPauseToggle
 @Composable
 fun WorkoutSettingsScreen(
     onScreenButtonClick: () -> Unit,
+    // TODO: Remove viewmodel
     viewModel: WorkoutSettingsViewModel = hiltViewModel()
 ) {
     val settings by viewModel.exerciseSettings.collectAsState(WorkoutSettingsUiState())
 
     ScalingLazyColumn(
         modifier = Modifier.fillMaxWidth(),
-        autoCentering = AutoCenteringParams(0, 100),
+        autoCentering = AutoCenteringParams(),
         anchorType = ScalingLazyListAnchorType.ItemStart,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -40,9 +41,9 @@ fun WorkoutSettingsScreen(
         }
         if (settings.supportsAutoPause) {
             item {
-                AutoPauseToggle(settings.useAutoPause, {
+                AutoPauseToggle(settings.useAutoPause) {
                     viewModel.setAutoPause(!settings.useAutoPause)
-                })
+                }
             }
         }
         item {

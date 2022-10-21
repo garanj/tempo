@@ -20,6 +20,7 @@ fun HrIndicator(dataTypeAvailability: DataTypeAvailability) {
                 tint = MaterialTheme.colors.primary
             )
         }
+
         DataTypeAvailability.ACQUIRING -> {
             Icon(
                 imageVector = Icons.Default.FavoriteBorder,
@@ -27,6 +28,7 @@ fun HrIndicator(dataTypeAvailability: DataTypeAvailability) {
                 tint = MaterialTheme.colors.primaryVariant
             )
         }
+
         else -> {
             Icon(
                 imageVector = Icons.Default.FavoriteBorder,

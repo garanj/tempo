@@ -16,9 +16,10 @@ import com.garan.tempo.settings.ScreenFormat
 fun ScreenFormatScreen(
     onScreenFormatClick: (ScreenFormat) -> Unit
 ) {
+
     ScalingLazyColumn(
         modifier = Modifier.fillMaxWidth(),
-        autoCentering = AutoCenteringParams(0, 100),
+        autoCentering = AutoCenteringParams(),
         anchorType = ScalingLazyListAnchorType.ItemStart
     ) {
         items(ScreenFormat.values().toList()) { screenFormat ->

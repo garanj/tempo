@@ -22,6 +22,7 @@ fun GpsIndicator(locationAvailability: LocationAvailability) {
                 tint = MaterialTheme.colors.primary
             )
         }
+
         LocationAvailability.ACQUIRING -> {
             Icon(
                 imageVector = Icons.Default.GpsNotFixed,
@@ -29,6 +30,7 @@ fun GpsIndicator(locationAvailability: LocationAvailability) {
                 tint = MaterialTheme.colors.primaryVariant
             )
         }
+
         else -> {
             Icon(
                 imageVector = Icons.Default.GpsOff,

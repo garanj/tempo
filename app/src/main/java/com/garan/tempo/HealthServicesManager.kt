@@ -1,9 +1,10 @@
 package com.garan.tempo
 
-import androidx.health.services.client.ExerciseUpdateListener
+import androidx.health.services.client.ExerciseUpdateCallback
 import androidx.health.services.client.HealthServicesClient
 import androidx.health.services.client.data.Availability
 import androidx.health.services.client.data.DataType
+import androidx.health.services.client.data.DeltaDataType
 import androidx.health.services.client.data.ExerciseConfig
 import androidx.health.services.client.data.ExerciseInfo
 import androidx.health.services.client.data.ExerciseLapSummary
@@ -25,63 +26,59 @@ class HealthServicesManager @Inject constructor(
     private val exerciseClient = healthServicesClient.exerciseClient
 
     suspend fun isExerciseInProgress(): ExerciseInfo {
-        return exerciseClient.currentExerciseInfo.await()
+        return exerciseClient.getCurrentExerciseInfoAsync().await()
     }
 
     suspend fun prepare(exerciseSettingsWithScreens: ExerciseSettingsWithScreens) {
-        val warmupDataTypes = setOf(
+        val warmupDataTypes = setOf<DeltaDataType<*, *>>(
             DataType.LOCATION,
             DataType.HEART_RATE_BPM
         ).intersect(
-            exerciseSettingsWithScreens.getRequiredDataTypes().first
+            exerciseSettingsWithScreens.getRequiredDataTypes()
         )
 
-        val config = WarmUpConfig.builder()
-            .setDataTypes(warmupDataTypes)
-            .setExerciseType(exerciseSettingsWithScreens.exerciseSettings.exerciseType)
-            .build()
-        exerciseClient.prepareExercise(config).await()
+        val config = WarmUpConfig(
+            dataTypes = warmupDataTypes as Set<DeltaDataType<*, *>>,
+            exerciseType = exerciseSettingsWithScreens.exerciseSettings.exerciseType
+        )
+        exerciseClient.prepareExerciseAsync(config).await()
     }
 
     suspend fun endExercise() {
-        exerciseClient.endExercise().await()
+        exerciseClient.endExerciseAsync().await()
     }
 
     suspend fun pauseExercise() {
-        exerciseClient.pauseExercise().await()
+        exerciseClient.pauseExerciseAsync().await()
     }
 
     suspend fun resumeExercise() {
-        exerciseClient.resumeExercise().await()
+        exerciseClient.resumeExerciseAsync().await()
     }
 
     suspend fun startExercise(exerciseSettingsWithScreens: ExerciseSettingsWithScreens) {
         val exerciseSettings = exerciseSettingsWithScreens.exerciseSettings
-        val capabilities = exerciseClient.capabilities.await()
+        val capabilities = exerciseClient.getCapabilitiesAsync().await()
         val exerciseCapabilities =
             capabilities.getExerciseTypeCapabilities(exerciseSettings.exerciseType)
 
-        val (dataTypes, aggregateDataTypes) = exerciseSettingsWithScreens.getRequiredDataTypes()
-        val config = ExerciseConfig.builder()
-            .setShouldEnableGps(exerciseSettings.getRequiresGps())
-            .apply {
-                if (exerciseSettings.supportsAutoPause) {
-                    setShouldEnableAutoPauseAndResume(
-                        exerciseSettings.useAutoPause
-                    )
-                }
-            }
-            .setDataTypes(dataTypes.intersect(exerciseCapabilities.supportedDataTypes))
-            .setAggregateDataTypes(aggregateDataTypes.intersect(exerciseCapabilities.supportedDataTypes))
-            .setExerciseType(exerciseSettings.exerciseType)
-            .build()
-        exerciseClient.startExercise(config).await()
+        val dataTypes = exerciseSettingsWithScreens.getRequiredDataTypes()
+        val config = ExerciseConfig(
+            isGpsEnabled = exerciseSettings.getRequiresGps(),
+            isAutoPauseAndResumeEnabled = exerciseSettings.supportsAutoPause && exerciseSettings.useAutoPause,
+            dataTypes = dataTypes.intersect(exerciseCapabilities.supportedDataTypes),
+            exerciseType = exerciseSettings.exerciseType
+        )
+        exerciseClient.startExerciseAsync(config).await()
 
     }
 
     val exerciseUpdateFlow = callbackFlow {
-        val listener = object : ExerciseUpdateListener {
-            override fun onAvailabilityChanged(dataType: DataType, availability: Availability) {
+        val listener = object : ExerciseUpdateCallback {
+            override fun onAvailabilityChanged(
+                dataType: DataType<*, *>,
+                availability: Availability
+            ) {
                 coroutineScope.runCatching {
                     trySendBlocking(
                         ExerciseMessage.AvailabilityChangedMessage(
@@ -92,22 +89,30 @@ class HealthServicesManager @Inject constructor(
                 }
             }
 
-            override fun onExerciseUpdate(update: ExerciseUpdate) {
+            override fun onExerciseUpdateReceived(update: ExerciseUpdate) {
                 coroutineScope.runCatching {
                     trySendBlocking(ExerciseMessage.ExerciseUpdateMessage(update))
                 }
             }
 
-            override fun onLapSummary(lapSummary: ExerciseLapSummary) {
+            override fun onLapSummaryReceived(lapSummary: ExerciseLapSummary) {
                 coroutineScope.runCatching {
                     trySendBlocking(ExerciseMessage.LapSummaryMessage(lapSummary))
                 }
             }
+
+            override fun onRegistered() {
+                //
+            }
+
+            override fun onRegistrationFailed(throwable: Throwable) {
+                //
+            }
         }
 
-        exerciseClient.setUpdateListener(listener)
+        exerciseClient.setUpdateCallback(listener)
         awaitClose {
-            exerciseClient.clearUpdateListener(listener)
+            exerciseClient.clearUpdateCallbackAsync(listener)
         }
     }
 }
@@ -115,7 +120,10 @@ class HealthServicesManager @Inject constructor(
 sealed class ExerciseMessage {
     data class ExerciseUpdateMessage(val update: ExerciseUpdate) : ExerciseMessage()
     data class LapSummaryMessage(val lapSummary: ExerciseLapSummary) : ExerciseMessage()
-    data class AvailabilityChangedMessage(val dataType: DataType, val availability: Availability) :
+    data class AvailabilityChangedMessage(
+        val dataType: DataType<*, *>,
+        val availability: Availability
+    ) :
         ExerciseMessage()
 }
 

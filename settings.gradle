@@ -1,2 +1,14 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        google()
+        mavenCentral()
+//        maven{
+//            url("/Users/garan/m2repo")}
+        maven { url 'https://androidx.dev/snapshots/builds/9154797/artifacts/repository' }
+    }
+}
 include ':app'
 rootProject.name='Tempo'

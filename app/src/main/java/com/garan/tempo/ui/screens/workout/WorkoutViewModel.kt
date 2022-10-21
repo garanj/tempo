@@ -9,28 +9,25 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.health.services.client.data.DataTypeAvailability
 import androidx.health.services.client.data.ExerciseState
-import androidx.health.services.client.data.LocationAvailability
-import androidx.lifecycle.SavedStateHandle
+import androidx.health.services.client.data.ExerciseUpdate
 import androidx.lifecycle.ViewModel
-import com.garan.tempo.DisplayUpdateMap
 import com.garan.tempo.TAG
 import com.garan.tempo.TempoService
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
+import com.garan.tempo.ui.metrics.TempoMetric
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.EnumMap
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-    @ApplicationContext val applicationContext: Context,
-    //val tempoSettingsManager: TempoSettingsManager,
-    savedStateHandle: SavedStateHandle
+    @ApplicationContext private val applicationContext: Context
 ) : ViewModel() {
-    //private val settingsId = savedStateHandle.get<Int>("settingsId")!!
     private var tempoService: TempoService? = null
-    //val exerciseSettings = tempoSettingsManager.getExerciseSettings(settingsId)
 
     val serviceState: MutableState<ServiceState> = mutableStateOf(ServiceState.Disconnected)
     var bound = mutableStateOf(false)
@@ -42,11 +39,11 @@ class WorkoutViewModel @Inject constructor(
                 tempoService = it
                 serviceState.value = ServiceState.Connected(
                     exerciseState = it.exerciseState,
-                    hrAvailability = it.hrAvailability,
-                    locationAvailability = it.locationAvailability,
+                    availability = it.dataAvailability,
                     metrics = it.metrics,
-                    settings = it.currentSettings!!,
-                    exerciseId = it.currentWorkoutId.toString()
+                    checkpoint = it.checkpoint,
+                    settings = it.currentSettings,
+                    exerciseId = it.currentWorkoutId
                 )
             }
             Log.i(TAG, "onServiceConnected")
@@ -62,7 +59,6 @@ class WorkoutViewModel @Inject constructor(
     }
 
     init {
-        Log.i(TAG, "**** $this")
         if (!bound.value) {
             createService()
         }
@@ -82,7 +78,6 @@ class WorkoutViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         if (bound.value) {
-            Log.i(TAG, "* clear Unbinding")
             applicationContext.unbindService(connection)
         }
     }
@@ -92,10 +87,10 @@ sealed class ServiceState {
     object Disconnected : ServiceState()
     data class Connected(
         val exerciseState: State<ExerciseState>,
-        val hrAvailability: State<DataTypeAvailability>,
-        val locationAvailability: State<LocationAvailability>,
-        val metrics: DisplayUpdateMap,
-        val settings: ExerciseSettingsWithScreens? = null,
-        val exerciseId: String? = null
+        val availability: State<AvailabilityHolder>,
+        val metrics: State<EnumMap<TempoMetric, Number>>,
+        val checkpoint: State<ExerciseUpdate.ActiveDurationCheckpoint?>,
+        val settings: State<ExerciseSettingsWithScreens?>,
+        val exerciseId: State<UUID?>
     ) : ServiceState()
 }

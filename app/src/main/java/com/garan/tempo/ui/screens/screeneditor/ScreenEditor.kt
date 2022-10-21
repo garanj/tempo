@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.health.services.client.data.ExerciseState
+import androidx.health.services.client.data.ExerciseUpdate
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
@@ -25,11 +26,13 @@ import com.garan.tempo.ui.components.display.OnePlusTwoSlotDisplay
 import com.garan.tempo.ui.components.display.OneSlotDisplay
 import com.garan.tempo.ui.components.display.SixSlotMetricDisplay
 import com.garan.tempo.ui.components.display.TwoSlotDisplay
-import com.garan.tempo.ui.metrics.screenEditorDefaults
+import com.garan.tempo.ui.metrics.TempoMetric
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.VerticalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
+import java.time.Duration
+import java.time.Instant
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -55,7 +58,10 @@ fun ScreenEditor(
     }
 
     val screens = settings.screenSettings
-    val metricsUpdate = screenEditorDefaults()
+    val metricsUpdate = TempoMetric.screenEditorDefaults
+    val defaultCheckpoint = ExerciseUpdate.ActiveDurationCheckpoint(
+        Instant.now(), Duration.ofSeconds(95)
+    )
     VerticalPager(
         modifier = Modifier.fillMaxSize(),
         count = screens.size,
@@ -65,34 +71,43 @@ fun ScreenEditor(
             ScreenFormat.ONE_PLUS_FOUR_SLOT -> OnePlusFourSlotDisplay(
                 metricsConfig = screens[page].metrics,
                 metricsUpdate = metricsUpdate,
+                checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true
             )
+
             ScreenFormat.SIX_SLOT -> SixSlotMetricDisplay(
                 metricsConfig = screens[page].metrics,
                 metricsUpdate = metricsUpdate,
+                checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true
             )
+
             ScreenFormat.ONE_PLUS_TWO_SLOT -> OnePlusTwoSlotDisplay(
                 metricsConfig = screens[page].metrics,
                 metricsUpdate = metricsUpdate,
+                checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true
             )
+
             ScreenFormat.TWO_SLOT -> TwoSlotDisplay(
                 metricsConfig = screens[page].metrics,
                 metricsUpdate = metricsUpdate,
+                checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true
             )
+
             else -> OneSlotDisplay(
                 metricsConfig = screens[page].metrics,
                 metricsUpdate = metricsUpdate,
+                checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true

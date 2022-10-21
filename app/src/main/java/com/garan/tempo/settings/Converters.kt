@@ -1,20 +1,18 @@
 package com.garan.tempo.settings
 
-import android.os.Parcel
 import androidx.health.services.client.data.DataType
-import androidx.health.services.client.data.Value
+import androidx.health.services.client.data.ExerciseType
 import androidx.room.TypeConverter
-import com.garan.tempo.ui.metrics.DisplayMetric
+import com.garan.tempo.data.dataTypes
+import com.garan.tempo.ui.metrics.TempoMetric
 import java.time.Duration
 import java.time.ZonedDateTime
-import kotlin.reflect.typeOf
 
 class Converters {
-    private val dataTypeLookup = DataType.Companion::class.members.filter {
-        it.returnType == typeOf<DataType>()
-    }.map {
-        val dataType = (it.call(this) as DataType)
-        dataType.name to dataType
+
+
+    private val dataTypeLookup = dataTypes.map {
+        it.name to it
     }.toMap()
 
     @TypeConverter
@@ -32,30 +30,36 @@ class Converters {
         ZonedDateTime.parse(dateString)
 
     @TypeConverter
-    fun fromDataTypeSet(dataTypes: Set<DataType>): String =
+    fun fromDataTypeSet(dataTypes: Set<DataType<*, *>>): String =
         dataTypes.joinToString(
             separator = ",",
             transform = { dataType -> dataType.name }
         )
 
     @TypeConverter
-    fun toDataTypeSet(encodedString: String): Set<DataType> {
+    fun toDataTypeSet(encodedString: String): Set<DataType<*, *>> {
         return encodedString.split(",").map {
             dataTypeLookup[it]!!
         }.toSet()
     }
 
     @TypeConverter
-    fun fromDisplayMetrics(displayMetrics: List<DisplayMetric>): String =
-        displayMetrics.joinToString(
+    fun fromDisplayMetrics(tempoMetrics: List<TempoMetric>): String =
+        tempoMetrics.joinToString(
             separator = ",",
             transform = { it.name }
         )
 
     @TypeConverter
-    fun toDisplayMetrics(encodedString: String): List<DisplayMetric> {
-        return encodedString.split(",").map {
-            DisplayMetric.valueOf(it)
+    fun toDisplayMetrics(encodedString: String): List<TempoMetric> {
+        return encodedString.split(",").map { name ->
+            TempoMetric.valueOf(name)
         }
     }
+
+    @TypeConverter
+    fun toExerciseType(id: Int) = ExerciseType.fromId(id)
+
+    @TypeConverter
+    fun fromExerciseType(exerciseType: ExerciseType) = exerciseType.id
 }

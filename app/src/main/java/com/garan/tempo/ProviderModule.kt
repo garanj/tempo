@@ -38,13 +38,13 @@ class ProviderModule {
 
     @Singleton
     @Provides
-    fun provideCapabilities(
+    fun provideCapabilitiesAsync(
         healthProvider: Provider<HealthServicesClient>,
         scopeProvider: Provider<CoroutineScope>
     ): Deferred<ExerciseCapabilities> {
         val client = healthProvider.get()
         return scopeProvider.get().async {
-            client.exerciseClient.capabilities.await()
+            client.exerciseClient.getCapabilitiesAsync().await()
         }
     }
 

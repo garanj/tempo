@@ -42,9 +42,11 @@ class PreWorkoutViewModel @Inject constructor(
                 tempoService = it
                 serviceState.value = ServiceState.Connected(
                     exerciseState = it.exerciseState,
-                    hrAvailability = it.hrAvailability,
-                    locationAvailability = it.locationAvailability,
-                    metrics = it.metrics
+                    availability = it.dataAvailability,
+                    metrics = it.metrics,
+                    checkpoint = it.checkpoint,
+                    settings = it.currentSettings,
+                    exerciseId = it.currentWorkoutId
                 )
             }
             Log.i(TAG, "onServiceConnected")

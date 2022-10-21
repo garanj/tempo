@@ -1,18 +1,21 @@
 package com.garan.tempo.settings
 
 import androidx.health.services.client.data.ExerciseCapabilities
-import com.garan.tempo.ui.metrics.DisplayMetric
+import com.garan.tempo.ui.metrics.TempoMetric
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class TempoSettingsManager @Inject constructor(
     private val exerciseSettingsDao: ExerciseSettingsDao,
     private val tempoSettingsDao: TempoSettingsDao,
     private val capabilities: Deferred<ExerciseCapabilities>
 ) {
-    val initialized = MutableStateFlow(false)
+    private val initialized = MutableStateFlow(false)
 
     val tempoSettings = tempoSettingsDao.getTempoSettingsFlow()
 
@@ -22,17 +25,18 @@ class TempoSettingsManager @Inject constructor(
         }
     }
 
-    fun getAllExerciseSettings() = exerciseSettingsDao.getExerciseSettingsWithScreenSettings()
-        .combine(initialized) { settingsList, initialized ->
-            if (initialized) {
-                settingsList.filter { settings ->
-                    capabilities.getCompleted().supportedExerciseTypes
-                        .contains(settings.exerciseSettings.exerciseType)
+    fun getAllExerciseSettings(): Flow<List<ExerciseSettingsWithScreens>> =
+        exerciseSettingsDao.getExerciseSettingsWithScreenSettings()
+            .combine(initialized) { settingsList, initialized ->
+                if (initialized) {
+                    settingsList.filter { settings ->
+                        capabilities.getCompleted().supportedExerciseTypes
+                            .contains(settings.exerciseSettings.exerciseType)
+                    }
+                } else {
+                    listOf()
                 }
-            } else {
-                listOf()
             }
-        }
 
     fun getExerciseSettings(settingsId: Int) =
         exerciseSettingsDao.getExerciseSettingsWithScreenSettings(settingsId)
@@ -44,7 +48,7 @@ class TempoSettingsManager @Inject constructor(
                 settings
             }
 
-    suspend fun setMetric(settingsId: Int, screen: Int, slot: Int, metric: DisplayMetric) {
+    suspend fun setMetric(settingsId: Int, screen: Int, slot: Int, metric: TempoMetric) {
         val screenSettings = exerciseSettingsDao.getScreen(settingsId, screen)
         val metrics = screenSettings.metrics.mapIndexed { index, displayMetric ->
             if (index == slot) {
@@ -69,14 +73,10 @@ class TempoSettingsManager @Inject constructor(
         exerciseSettingsDao.updateExerciseSettings(newSettings)
     }
 
-    suspend fun setUnits(units: Units) {
+    fun setUnits(units: Units) {
         val settings = tempoSettingsDao.getTempoSettings()
         val newSettings = settings.copy(units = units)
         tempoSettingsDao.update(newSettings)
     }
 }
 
-enum class Units {
-    METRIC,
-    IMPERIAL
-}

@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class TempoSettings(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
-    val units: Units
+    val units: Units = Units.METRIC
 )

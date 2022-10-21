@@ -14,22 +14,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.health.services.client.data.ExerciseState
-import androidx.health.services.client.data.Value
+import androidx.health.services.client.data.ExerciseUpdate
 import androidx.wear.compose.material.MaterialTheme
-import com.garan.tempo.DisplayUpdateMap
 import com.garan.tempo.ui.components.BoxBorder
 import com.garan.tempo.ui.components.Slot
 import com.garan.tempo.ui.components.boxBorder
-import com.garan.tempo.ui.metrics.DisplayMetric
-import com.garan.tempo.ui.theme.TempoTheme
+import com.garan.tempo.ui.metrics.TempoMetric
+import java.util.EnumMap
 import java.util.EnumSet
 
 @Composable
 fun TwoSlotDisplay(
-    metricsConfig: List<DisplayMetric>,
-    metricsUpdate: DisplayUpdateMap,
+    metricsConfig: List<TempoMetric>,
+    metricsUpdate: EnumMap<TempoMetric, Number>,
+    checkpoint: ExerciseUpdate.ActiveDurationCheckpoint?,
     exerciseState: ExerciseState,
-    screenIndex: Int = 0,
     onConfigClick: (Int) -> Unit = { _ -> },
     isForConfig: Boolean = false
 ) {
@@ -59,9 +58,10 @@ fun TwoSlotDisplay(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Slot(
-                        metricsConfig.getOrNull(0),
-                        metricsUpdate[metricsConfig.getOrNull(0)],
-                        exerciseState,
+                        metricType = metricsConfig.getOrNull(0),
+                        metricValue = metricsUpdate[metricsConfig.getOrNull(0)],
+                        checkpoint = checkpoint,
+                        state = exerciseState,
                         textAlign = TextAlign.Center,
                         onConfigClick = { onConfigClick(0) },
                         isForConfig = isForConfig
@@ -82,9 +82,10 @@ fun TwoSlotDisplay(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Slot(
-                        metricsConfig.getOrNull(1),
-                        metricsUpdate[metricsConfig.getOrNull(1)],
-                        exerciseState,
+                        metricType = metricsConfig.getOrNull(1),
+                        metricValue = metricsUpdate[metricsConfig.getOrNull(1)],
+                        checkpoint = checkpoint,
+                        state = exerciseState,
                         textAlign = TextAlign.Center,
                         onConfigClick = { onConfigClick(1) },
                         isForConfig = isForConfig
@@ -104,20 +105,23 @@ fun TwoSlotDisplay(
 @Composable
 fun TwoSlotDisplayPreview() {
     val config = listOf(
-        DisplayMetric.ACTIVE_DURATION,
-        DisplayMetric.PACE
+        TempoMetric.ACTIVE_DURATION,
+        TempoMetric.PACE
     )
     val update = remember {
-        mutableStateMapOf(
-            DisplayMetric.ACTIVE_DURATION to Value.ofLong(73L),
-            DisplayMetric.PACE to Value.ofDouble(3.7)
+        mutableStateMapOf<TempoMetric, Number>(
+            TempoMetric.ACTIVE_DURATION to 73L,
+            TempoMetric.PACE to 3.7
         )
     }
-    TempoTheme {
-        TwoSlotDisplay(
-            metricsConfig = config,
-            metricsUpdate = update,
-            exerciseState = ExerciseState.ACTIVE
-        )
-    }
+//    TempoTheme {
+//        TwoSlotDisplay(
+//            metricsConfig = config,
+//            metricsUpdate = update,
+//            checkpoint = ExerciseUpdate.ActiveDurationCheckpoint(
+//                Instant.now(), Duration.ofSeconds(15)
+//            ),
+//            exerciseState = ExerciseState.ACTIVE
+//        )
+//    }
 }

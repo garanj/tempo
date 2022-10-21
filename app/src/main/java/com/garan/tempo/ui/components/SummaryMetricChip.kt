@@ -2,17 +2,14 @@ package com.garan.tempo.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.health.services.client.data.Value
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
-import com.garan.tempo.ui.format.DisplayUnitFormatter
 import com.garan.tempo.ui.format.LocalDisplayUnitFormatter
-import com.garan.tempo.ui.metrics.DisplayMetric
+import com.garan.tempo.ui.metrics.TempoMetric
 
 @Composable
 fun SummaryMetricChip(
@@ -41,8 +38,8 @@ fun SummaryMetricChip(
 @Composable
 fun SummaryMetricChip(
     labelId: Int,
-    metric: DisplayMetric,
-    value: Value
+    metric: TempoMetric,
+    value: Number
 ) {
     val formatter = LocalDisplayUnitFormatter.current
     val metricText = formatter.formatValue(metric, value)

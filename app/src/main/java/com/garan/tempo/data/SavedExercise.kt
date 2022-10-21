@@ -5,8 +5,11 @@ import androidx.room.PrimaryKey
 import java.time.Duration
 import java.time.ZonedDateTime
 
+/**
+ * Represents the final summary of a workout.
+ */
 @Entity(tableName = "saved_exercises")
-data class SavedExercise (
+data class SavedExercise(
     @PrimaryKey
     val exerciseId: String = "",
     val startTime: ZonedDateTime = ZonedDateTime.now(),
@@ -14,17 +17,6 @@ data class SavedExercise (
     val totalCalories: Double? = null,
     val avgPace: Double? = null,
     val avgHeartRate: Double? = null,
-    val activeDuration: Duration? = null
-)
-
-@Entity(tableName = "exercise_metric_cache")
-data class SavedExerciseMetricCache(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null,
-    val datetime: Long,
-    val lat: Double? = null,
-    val lng: Double? = null,
-    val elevation: Double? = null,
-    val hr: Double? = null,
-    val stepsPerMin: Double? = null
+    val activeDuration: Duration? = null,
+    val hasMap: Boolean = false
 )

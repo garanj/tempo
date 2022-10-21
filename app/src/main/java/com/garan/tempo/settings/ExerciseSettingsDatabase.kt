@@ -5,7 +5,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.garan.tempo.data.SavedExercise
 import com.garan.tempo.data.SavedExerciseDao
-import com.garan.tempo.data.SavedExerciseMetricCache
 
 @Database
     (
@@ -13,10 +12,9 @@ import com.garan.tempo.data.SavedExerciseMetricCache
         ExerciseSettings::class,
         ScreenSettings::class,
         SavedExercise::class,
-        SavedExerciseMetricCache::class,
         TempoSettings::class
     ],
-    version = 25
+    version = 32
 )
 @TypeConverters(Converters::class)
 abstract class ExerciseSettingsDatabase : RoomDatabase() {

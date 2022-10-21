@@ -40,7 +40,7 @@ fun AutoSizeText(
     textAlign: TextAlign? = null,
     lineHeight: TextUnit = TextUnit.Unspecified,
     sizingPlaceholder: String,
-    unitText: String,
+    unitText: String = "",
     unitSize: TextUnit = 6.sp,
     onClick: () -> Unit,
     isForConfig: Boolean = false
@@ -86,7 +86,7 @@ fun AutoSizeText(
 
             var intrinsics = calculateIntrinsics()
             with(LocalDensity.current) {
-                while (intrinsics.maxIntrinsicWidth > maxWidth.toPx()) {
+                while (intrinsics.maxIntrinsicWidth >= maxWidth.toPx()) {
                     fontSize *= 0.9
                     annotated = createAnnotatedString(
                         sizingPlaceholder,
@@ -102,7 +102,6 @@ fun AutoSizeText(
             ready = true
             shrunkFontSize = fontSize
         }
-        // TODO remembr styl?
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -131,7 +130,9 @@ fun createAnnotatedString(
     withStyle(SpanStyle(fontSize = mainSize, color = mainColor)) {
         append(mainText)
     }
-    withStyle(SpanStyle(fontSize = unitSize, color = unitColor)) {
-        append(unitText)
+    if (unitText.isNotEmpty()) {
+        withStyle(SpanStyle(fontSize = unitSize, color = unitColor)) {
+            append(unitText)
+        }
     }
 }

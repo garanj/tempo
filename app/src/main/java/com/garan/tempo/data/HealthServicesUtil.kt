@@ -10,7 +10,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.ExerciseType
 
-
+// Icons for various exercise types
+// TODO - make all exercise types work
 val ExerciseType.imageVector: ImageVector
     get() = when (this) {
         ExerciseType.RUNNING -> Icons.Default.DirectionsRun
@@ -19,7 +20,8 @@ val ExerciseType.imageVector: ImageVector
         else -> Icons.Default.Sports
     }
 
-val DataType.requiredPermissions: Set<String>
+// Extension to obtain the set of permissions required for a given [DataType].
+val DataType<*, *>.requiredPermissions: Set<String>
     get() = mutableSetOf<String>().also {
         if (ACTIVITY_RECOGNITION_SET.contains(this)) {
             it.add(Manifest.permission.ACTIVITY_RECOGNITION)
@@ -32,35 +34,69 @@ val DataType.requiredPermissions: Set<String>
         }
     }.toSet()
 
+val NO_PERMISSION_SET = setOf(
+    DataType.ACTIVE_EXERCISE_DURATION_TOTAL,
+    DataType.DECLINE_DURATION_TOTAL,
+    DataType.DECLINE_DURATION,
+    DataType.FLAT_GROUND_DURATION_TOTAL,
+    DataType.FLAT_GROUND_DURATION,
+    DataType.INCLINE_DURATION_TOTAL,
+    DataType.INCLINE_DURATION,
+    DataType.RESTING_EXERCISE_DURATION_TOTAL,
+    DataType.RESTING_EXERCISE_DURATION
+)
+
 val ACTIVITY_RECOGNITION_SET = setOf(
+    DataType.ABSOLUTE_ELEVATION_STATS,
     DataType.ABSOLUTE_ELEVATION,
-    DataType.DAILY_CALORIES,
-    DataType.DAILY_DISTANCE,
-    DataType.DAILY_FLOORS,
-    DataType.DAILY_STEPS,
+    DataType.CALORIES_DAILY,
+    DataType.CALORIES_TOTAL,
+    DataType.CALORIES,
+    DataType.DECLINE_DISTANCE_TOTAL,
     DataType.DECLINE_DISTANCE,
+    DataType.DISTANCE_DAILY,
+    DataType.DISTANCE_TOTAL,
     DataType.DISTANCE,
+    DataType.ELEVATION_GAIN_TOTAL,
     DataType.ELEVATION_GAIN,
+    DataType.ELEVATION_LOSS_TOTAL,
+    DataType.ELEVATION_LOSS,
+    DataType.FLAT_GROUND_DISTANCE_TOTAL,
     DataType.FLAT_GROUND_DISTANCE,
+    DataType.FLOORS_DAILY,
+    DataType.FLOORS_TOTAL,
     DataType.FLOORS,
+    DataType.GOLF_SHOT_COUNT_TOTAL,
+    DataType.GOLF_SHOT_COUNT,
+    DataType.INCLINE_DISTANCE_TOTAL,
     DataType.INCLINE_DISTANCE,
+    DataType.PACE_STATS,
     DataType.PACE,
+    DataType.REP_COUNT_TOTAL,
     DataType.REP_COUNT,
+    DataType.RUNNING_STEPS_TOTAL,
     DataType.RUNNING_STEPS,
+    DataType.SPEED_STATS,
     DataType.SPEED,
+    DataType.STEPS_DAILY,
+    DataType.STEPS_PER_MINUTE_STATS,
     DataType.STEPS_PER_MINUTE,
+    DataType.STEPS_TOTAL,
     DataType.STEPS,
     DataType.SWIMMING_LAP_COUNT,
+    DataType.SWIMMING_STROKES_TOTAL,
     DataType.SWIMMING_STROKES,
-    DataType.TOTAL_CALORIES,
-    DataType.WALKING_STEPS,
+    DataType.WALKING_STEPS_TOTAL,
+    DataType.WALKING_STEPS
 )
 
 val BODY_SENSOR_SET = setOf(
     DataType.HEART_RATE_BPM,
-    DataType.SPO2,
-    DataType.VO2,
-    DataType.VO2_MAX
+    DataType.HEART_RATE_BPM_STATS,
+    DataType.VO2_MAX,
+    DataType.VO2_MAX_STATS
 )
 
 val ACCESS_FINE_LOCATION_SET = setOf(DataType.LOCATION)
+
+val dataTypes = ACTIVITY_RECOGNITION_SET + BODY_SENSOR_SET + ACCESS_FINE_LOCATION_SET
