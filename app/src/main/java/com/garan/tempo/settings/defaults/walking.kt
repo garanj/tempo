@@ -2,10 +2,10 @@ package com.garan.tempo.settings.defaults
 
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.ExerciseType
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.ExerciseSettings
 import com.garan.tempo.settings.ScreenFormat
 import com.garan.tempo.settings.ScreenSettings
-import com.garan.tempo.ui.metrics.TempoMetric
 
 fun defaultWalkingExerciseSettings() = ExerciseSettings(
     name = "Walking",

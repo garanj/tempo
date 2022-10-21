@@ -12,8 +12,8 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.Slot
-import com.garan.tempo.ui.metrics.TempoMetric
 import java.util.EnumMap
 
 @Composable

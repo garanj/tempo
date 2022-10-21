@@ -2,7 +2,7 @@ package com.garan.tempo.ui.format
 
 import androidx.compose.runtime.compositionLocalOf
 import com.garan.tempo.R
-import com.garan.tempo.ui.metrics.TempoMetric
+import com.garan.tempo.data.metrics.TempoMetric
 import kotlin.math.roundToInt
 
 class DisplayUnitFormatter(

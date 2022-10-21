@@ -1,7 +1,7 @@
 package com.garan.tempo.settings
 
 import androidx.health.services.client.data.ExerciseCapabilities
-import com.garan.tempo.ui.metrics.TempoMetric
+import com.garan.tempo.data.metrics.TempoMetric
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

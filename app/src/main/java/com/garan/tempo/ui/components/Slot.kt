@@ -14,8 +14,8 @@ import androidx.health.services.client.data.DataTypeAvailability
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
 import androidx.wear.compose.material.MaterialTheme
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.format.LocalDisplayUnitFormatter
-import com.garan.tempo.ui.metrics.TempoMetric
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_BACKGROUND_COLOR_BLACK
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_HEIGHT_DP
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_WIDTH_DP

@@ -8,8 +8,8 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.format.LocalDisplayUnitFormatter
-import com.garan.tempo.ui.metrics.TempoMetric
 
 @Composable
 fun SummaryMetricChip(

@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import com.garan.tempo.R
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.ScreenFormat
 import com.garan.tempo.ui.components.display.OnePlusFourSlotDisplay
@@ -26,7 +27,6 @@ import com.garan.tempo.ui.components.display.OnePlusTwoSlotDisplay
 import com.garan.tempo.ui.components.display.OneSlotDisplay
 import com.garan.tempo.ui.components.display.SixSlotMetricDisplay
 import com.garan.tempo.ui.components.display.TwoSlotDisplay
-import com.garan.tempo.ui.metrics.TempoMetric
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.VerticalPagerIndicator

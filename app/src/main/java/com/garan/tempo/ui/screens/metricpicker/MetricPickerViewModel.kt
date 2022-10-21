@@ -5,8 +5,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.garan.tempo.HealthServicesManager
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.TempoSettingsManager
-import com.garan.tempo.ui.metrics.TempoMetric
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

@@ -16,10 +16,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
 import androidx.wear.compose.material.MaterialTheme
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.BoxBorder
 import com.garan.tempo.ui.components.Slot
 import com.garan.tempo.ui.components.boxBorder
-import com.garan.tempo.ui.metrics.TempoMetric
 import java.util.EnumMap
 import java.util.EnumSet
 

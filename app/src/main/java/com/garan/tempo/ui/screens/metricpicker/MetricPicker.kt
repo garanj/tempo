@@ -15,7 +15,7 @@ import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListAnchorType
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.items
-import com.garan.tempo.ui.metrics.TempoMetric
+import com.garan.tempo.data.metrics.TempoMetric
 
 
 @Composable

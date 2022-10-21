@@ -7,8 +7,8 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.data.requiredPermissions
-import com.garan.tempo.ui.metrics.TempoMetric
 
 @Entity(tableName = "exercise_settings")
 data class ExerciseSettings(

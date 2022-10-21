@@ -15,8 +15,8 @@ import androidx.lifecycle.ViewModel
 import com.garan.tempo.TAG
 import com.garan.tempo.TempoService
 import com.garan.tempo.data.AvailabilityHolder
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
-import com.garan.tempo.ui.metrics.TempoMetric
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.EnumMap

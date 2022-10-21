@@ -1,22 +1,13 @@
-package com.garan.tempo.ui.metrics
+package com.garan.tempo.data.metrics
 
-import androidx.compose.runtime.SnapshotMutationPolicy
-import androidx.health.services.client.data.AggregateDataType
-import androidx.health.services.client.data.CumulativeDataPoint
 import androidx.health.services.client.data.DataType
-import androidx.health.services.client.data.DataTypeAvailability
-import androidx.health.services.client.data.DeltaDataType
-import androidx.health.services.client.data.ExerciseUpdate
-import androidx.health.services.client.data.IntervalDataPoint
-import androidx.health.services.client.data.SampleDataPoint
-import androidx.health.services.client.data.StatisticalDataPoint
 import com.garan.tempo.R
-import com.garan.tempo.data.AvailabilityHolder
+import com.garan.tempo.settings.Units
 import java.util.EnumMap
+import kotlin.math.roundToInt
 
 // TODO add permissions here too and have some function to extract them?
 // Add some useGps thing?
-// Rename as TempoMetric?
 enum class TempoMetric {
     ACTIVE_DURATION {
         override val requiredDataType = null
@@ -24,6 +15,7 @@ enum class TempoMetric {
         override val placeholder = "8:88:88"
         override val aggregationType = AggregationType.NONE
         override val screenEditorDefault = 421
+        override fun format(value: Number, units: Units) = "" // Not used
     },
     DISTANCE {
         override val requiredDataType = DataType.DISTANCE_TOTAL
@@ -31,6 +23,14 @@ enum class TempoMetric {
         override val placeholder = "88.88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 4124.0
+        override fun format(value: Number, units: Units): String {
+            val distance = value.toDouble() / units.distanceFactor
+            return if (distance >= 10) {
+                "%.1f".format(distance)
+            } else {
+                "%.2f".format(distance)
+            }
+        }
     },
     SPEED {
         override val requiredDataType = DataType.SPEED
@@ -38,6 +38,8 @@ enum class TempoMetric {
         override val placeholder = "88.8"
         override val aggregationType = AggregationType.SAMPLE
         override val screenEditorDefault = 2.5
+        override fun format(value: Number, units: Units) =
+            "%.1f".format(value.toDouble() * units.speedFactor)
     },
     AVG_SPEED {
         override val requiredDataType = DataType.SPEED_STATS
@@ -45,6 +47,8 @@ enum class TempoMetric {
         override val placeholder = "88.8"
         override val aggregationType = AggregationType.AVG
         override val screenEditorDefault = 2.7
+        override fun format(value: Number, units: Units) =
+            "%.1f".format(value.toDouble() * units.speedFactor)
     },
     MAX_SPEED {
         override val requiredDataType = DataType.SPEED_STATS
@@ -52,6 +56,8 @@ enum class TempoMetric {
         override val placeholder = "88.8"
         override val aggregationType = AggregationType.MAX
         override val screenEditorDefault = 3.1
+        override fun format(value: Number, units: Units) =
+            "%.1f".format(value.toDouble() * units.speedFactor)
     },
     CALORIES {
         override val requiredDataType = DataType.CALORIES_TOTAL
@@ -59,6 +65,7 @@ enum class TempoMetric {
         override val placeholder = "8888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 128.0
+        override fun format(value: Number, units: Units) = roundedDoubleOrDashes(value.toDouble())
     },
     PACE {
         override val requiredDataType = DataType.PACE
@@ -66,6 +73,12 @@ enum class TempoMetric {
         override val placeholder = "88:88"
         override val aggregationType = AggregationType.SAMPLE
         override val screenEditorDefault = 2.7
+        override fun format(value: Number, units: Units) = if (value.toDouble() < LIMIT_PACE) {
+            "--"
+        } else {
+            val pace = (units.speedFactor / value.toDouble()).toLong()
+            "%d:%02d".format(pace / 60, pace % 60)
+        }
     },
     AVG_PACE {
         override val requiredDataType = DataType.PACE_STATS
@@ -73,6 +86,12 @@ enum class TempoMetric {
         override val placeholder = "88:88"
         override val aggregationType = AggregationType.AVG
         override val screenEditorDefault = 2.6
+        override fun format(value: Number, units: Units) = if (value.toDouble() < LIMIT_PACE) {
+            "--"
+        } else {
+            val pace = (units.speedFactor / value.toDouble()).toLong()
+            "%d:%02d".format(pace / 60, pace % 60)
+        }
     },
     MAX_PACE {
         override val requiredDataType = DataType.PACE_STATS
@@ -80,6 +99,12 @@ enum class TempoMetric {
         override val placeholder = "88:88"
         override val aggregationType = AggregationType.MAX
         override val screenEditorDefault = 2.9
+        override fun format(value: Number, units: Units) = if (value.toDouble() < LIMIT_PACE) {
+            "--"
+        } else {
+            val pace = (units.speedFactor / value.toDouble()).toLong()
+            "%d:%02d".format(pace / 60, pace % 60)
+        }
     },
     CADENCE {
         override val requiredDataType = DataType.STEPS_PER_MINUTE
@@ -87,6 +112,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.SAMPLE
         override val screenEditorDefault = 180
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     AVG_CADENCE {
         override val requiredDataType = DataType.STEPS_PER_MINUTE_STATS
@@ -94,6 +120,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.AVG
         override val screenEditorDefault = 176
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     MAX_CADENCE {
         override val requiredDataType = DataType.STEPS_PER_MINUTE_STATS
@@ -101,6 +128,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.MAX
         override val screenEditorDefault = 192
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     HEART_RATE_BPM {
         override val requiredDataType = DataType.HEART_RATE_BPM
@@ -108,6 +136,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.SAMPLE
         override val screenEditorDefault = 121.0
+        override fun format(value: Number, units: Units) = roundedDoubleOrDashes(value.toDouble())
     },
     AVG_HEART_RATE {
         override val requiredDataType = DataType.HEART_RATE_BPM_STATS
@@ -115,6 +144,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.AVG
         override val screenEditorDefault = 105.0
+        override fun format(value: Number, units: Units) = roundedDoubleOrDashes(value.toDouble())
     },
     MAX_HEART_RATE {
         override val requiredDataType = DataType.HEART_RATE_BPM_STATS
@@ -122,6 +152,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.MAX
         override val screenEditorDefault = 166.0
+        override fun format(value: Number, units: Units) = roundedDoubleOrDashes(value.toDouble())
     },
     TOTAL_STEPS {
         override val requiredDataType = DataType.STEPS_TOTAL
@@ -129,13 +160,17 @@ enum class TempoMetric {
         override val placeholder = "88888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 5627
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     DECLINE_DURATION {
         override val requiredDataType = DataType.DECLINE_DURATION_TOTAL
         override val displayNameId = R.string.display_metric_decline_duration
-        override val placeholder = "88:88"
+        override val placeholder = "8:88:88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 512.0
+        override fun format(value: Number, units: Units) = "%01d:%02d:%02d".format(
+            value.toLong() / 3600, (value.toLong() % 3600) / 60, value.toLong() % 60
+        )
     },
     INCLINE_DURATION {
         override val requiredDataType = DataType.INCLINE_DURATION_TOTAL
@@ -143,6 +178,9 @@ enum class TempoMetric {
         override val placeholder = "88:88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 214.2
+        override fun format(value: Number, units: Units) = "%01d:%02d:%02d".format(
+            value.toLong() / 3600, (value.toLong() % 3600) / 60, value.toLong() % 60
+        )
     },
     RESTING_DURATION {
         override val requiredDataType = DataType.RESTING_EXERCISE_DURATION_TOTAL
@@ -150,6 +188,9 @@ enum class TempoMetric {
         override val placeholder = "88:88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 33.2
+        override fun format(value: Number, units: Units) = "%01d:%02d:%02d".format(
+            value.toLong() / 3600, (value.toLong() % 3600) / 60, value.toLong() % 60
+        )
     },
     MAX_ELEVATION {
         override val requiredDataType = DataType.ABSOLUTE_ELEVATION_STATS
@@ -157,6 +198,8 @@ enum class TempoMetric {
         override val placeholder = "88:88"
         override val aggregationType = AggregationType.MAX
         override val screenEditorDefault = 421.2
+        override fun format(value: Number, units: Units) =
+            roundedDoubleOrDashes(value.toDouble() * units.heightFactor)
     },
     DECLINE_DISTANCE {
         override val requiredDataType = DataType.DECLINE_DISTANCE_TOTAL
@@ -164,6 +207,14 @@ enum class TempoMetric {
         override val placeholder = "88.88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 8530.2
+        override fun format(value: Number, units: Units): String {
+            val distance = value.toDouble() / units.distanceFactor
+            return if (distance >= 10) {
+                "%.1f".format(distance)
+            } else {
+                "%.2f".format(distance)
+            }
+        }
     },
     ELEVATION_GAIN {
         override val requiredDataType = DataType.ELEVATION_GAIN_TOTAL
@@ -171,6 +222,8 @@ enum class TempoMetric {
         override val placeholder = "8888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 221.0
+        override fun format(value: Number, units: Units) =
+            roundedDoubleOrDashes(value.toDouble() * units.heightFactor)
     },
     ELEVATION_LOSS {
         override val requiredDataType = DataType.ELEVATION_LOSS_TOTAL
@@ -178,6 +231,8 @@ enum class TempoMetric {
         override val placeholder = "8888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 240.1
+        override fun format(value: Number, units: Units) =
+            roundedDoubleOrDashes(value.toDouble() * units.heightFactor)
     },
     FLAT_GROUND_DISTANCE {
         override val requiredDataType = DataType.FLAT_GROUND_DISTANCE_TOTAL
@@ -185,6 +240,14 @@ enum class TempoMetric {
         override val placeholder = "88.88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 3152.0
+        override fun format(value: Number, units: Units): String {
+            val distance = value.toDouble() / units.distanceFactor
+            return if (distance >= 10) {
+                "%.1f".format(distance)
+            } else {
+                "%.2f".format(distance)
+            }
+        }
     },
     FLOORS {
         override val requiredDataType = DataType.FLOORS_TOTAL
@@ -192,6 +255,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 12
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     GOLF_SHOT_TOTAL {
         override val requiredDataType = DataType.GOLF_SHOT_COUNT_TOTAL
@@ -199,6 +263,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 72
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     INCLINE_DISTANCE {
         override val requiredDataType = DataType.INCLINE_DISTANCE_TOTAL
@@ -206,6 +271,14 @@ enum class TempoMetric {
         override val placeholder = "88.88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 1312.3
+        override fun format(value: Number, units: Units): String {
+            val distance = value.toDouble() / units.distanceFactor
+            return if (distance >= 10) {
+                "%.1f".format(distance)
+            } else {
+                "%.2f".format(distance)
+            }
+        }
     },
     REP_COUNT {
         override val requiredDataType = DataType.REP_COUNT_TOTAL
@@ -213,6 +286,7 @@ enum class TempoMetric {
         override val placeholder = "88"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 25
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     RUNNING_STEPS {
         override val requiredDataType = DataType.RUNNING_STEPS_TOTAL
@@ -220,6 +294,7 @@ enum class TempoMetric {
         override val placeholder = "88888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 11020
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     SWIMMING_LAPS {
         override val requiredDataType = DataType.SWIMMING_LAP_COUNT
@@ -227,6 +302,7 @@ enum class TempoMetric {
         override val placeholder = "888"
         override val aggregationType = AggregationType.SAMPLE
         override val screenEditorDefault = 20
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     SWIMMING_STROKES {
         override val requiredDataType = DataType.SWIMMING_STROKES_TOTAL
@@ -234,6 +310,7 @@ enum class TempoMetric {
         override val placeholder = "88888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 221
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     },
     WALKING_STEPS {
         override val requiredDataType = DataType.WALKING_STEPS_TOTAL
@@ -241,6 +318,7 @@ enum class TempoMetric {
         override val placeholder = "88888"
         override val aggregationType = AggregationType.TOTAL
         override val screenEditorDefault = 8127
+        override fun format(value: Number, units: Units) = value.toLong().toString()
     };
 
     enum class AggregationType {
@@ -258,8 +336,17 @@ enum class TempoMetric {
     abstract val displayNameId: Int
     abstract val aggregationType: AggregationType
     abstract val screenEditorDefault: Number
+    abstract fun format(value: Number, units: Units): String
+
+    fun roundedDoubleOrDashes(value: Double) = if (!value.isNaN()) {
+        value.roundToInt().toString()
+    } else {
+        "--"
+    }
 
     companion object {
+        val LIMIT_PACE = 0.2
+
         val screenEditorDefaults by lazy {
             EnumMap<TempoMetric, Number>(TempoMetric::class.java).apply {
                 putAll(values().associateWith {
@@ -273,92 +360,4 @@ enum class TempoMetric {
             requiredDataType == null || dataTypes.contains(requiredDataType)
         }.toSet()
     }
-}
-
-class MetricsRepository(
-    private val metrics: Set<TempoMetric> = setOf()
-) {
-    private val metricsMap = EnumMap<TempoMetric, Number>(TempoMetric::class.java)
-    private var dataAvailability = AvailabilityHolder()
-    var version: Long = 0
-        private set
-
-    fun updateAvailability(availabilityHolder: AvailabilityHolder) {
-        dataAvailability = availabilityHolder
-    }
-
-    fun processUpdate(update: ExerciseUpdate): EnumMap<TempoMetric, Number> {
-        metrics.forEach { metric ->
-            if (metric == TempoMetric.HEART_RATE_BPM) {
-                if (dataAvailability.heartRateAvailability.equals(DataTypeAvailability.AVAILABLE)) {
-                    update.latestMetrics.getData(DataType.HEART_RATE_BPM)
-                        .lastOrNull()?.value?.let { hr ->
-                            metricsMap[metric] = hr
-                        }
-                } else {
-                    metricsMap[metric] = 0.0
-                }
-            } else {
-                when (metric.aggregationType) {
-                    TempoMetric.AggregationType.SAMPLE -> {
-                        val dataType =
-                            metric.requiredDataType as DeltaDataType<Number, SampleDataPoint<Number>>
-                        update.latestMetrics.getData(dataType).lastOrNull()?.value?.let { value ->
-                            metricsMap[metric] = value
-                        }
-                    }
-
-                    TempoMetric.AggregationType.INTERVAL -> {
-                        val dataType =
-                            metric.requiredDataType as DeltaDataType<Number, IntervalDataPoint<Number>>
-                        update.latestMetrics.getData(dataType).lastOrNull()?.value?.let { value ->
-                            metricsMap[metric] = value
-                        }
-                    }
-
-                    TempoMetric.AggregationType.MAX -> {
-                        val dataType =
-                            metric.requiredDataType as AggregateDataType<Number, StatisticalDataPoint<Number>>
-                        update.latestMetrics.getData(dataType)?.let { stats ->
-                            metricsMap[metric] = stats.max
-                        }
-                    }
-
-                    TempoMetric.AggregationType.MIN -> {
-                        val dataType =
-                            metric.requiredDataType as AggregateDataType<Number, StatisticalDataPoint<Number>>
-                        update.latestMetrics.getData(dataType)?.let { stats ->
-                            metricsMap[metric] = stats.min
-                        }
-                    }
-
-                    TempoMetric.AggregationType.AVG -> {
-                        val dataType =
-                            metric.requiredDataType as AggregateDataType<Number, StatisticalDataPoint<Number>>
-                        update.latestMetrics.getData(dataType)?.let { stats ->
-                            metricsMap[metric] = stats.average
-                        }
-                    }
-
-                    TempoMetric.AggregationType.TOTAL -> {
-                        val dataType =
-                            metric.requiredDataType as AggregateDataType<Number, CumulativeDataPoint<Number>>
-                        update.latestMetrics.getData(dataType)?.let { cumulative ->
-                            metricsMap[metric] = cumulative.total
-                        }
-                    }
-
-                    TempoMetric.AggregationType.NONE -> {
-                        // Do nothing
-                    }
-                }
-            }
-        }
-        return metricsMap
-    }
-}
-
-
-fun metricsHolderPolicy() = object : SnapshotMutationPolicy<MetricsRepository> {
-    override fun equivalent(a: MetricsRepository, b: MetricsRepository) = a.version == b.version
 }

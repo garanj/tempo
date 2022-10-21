@@ -4,7 +4,7 @@ import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.ExerciseType
 import androidx.room.TypeConverter
 import com.garan.tempo.data.dataTypes
-import com.garan.tempo.ui.metrics.TempoMetric
+import com.garan.tempo.data.metrics.TempoMetric
 import java.time.Duration
 import java.time.ZonedDateTime
 

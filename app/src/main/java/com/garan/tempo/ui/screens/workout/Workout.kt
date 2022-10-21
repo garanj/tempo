@@ -18,6 +18,7 @@ import androidx.health.services.client.data.ExerciseUpdate
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.garan.tempo.TAG
 import com.garan.tempo.data.AvailabilityHolder
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.ScreenFormat
 import com.garan.tempo.settings.ScreenSettings
 import com.garan.tempo.ui.components.EndRing
@@ -26,7 +27,6 @@ import com.garan.tempo.ui.components.display.OnePlusTwoSlotDisplay
 import com.garan.tempo.ui.components.display.OneSlotDisplay
 import com.garan.tempo.ui.components.display.SixSlotMetricDisplay
 import com.garan.tempo.ui.components.display.TwoSlotDisplay
-import com.garan.tempo.ui.metrics.TempoMetric
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.rememberPagerState

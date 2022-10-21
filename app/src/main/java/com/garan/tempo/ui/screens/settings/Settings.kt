@@ -27,6 +27,8 @@ fun SettingsScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    // TODO remove jankiness from screen drawing
+
     ScalingLazyColumn(
         state = scrollState
     ) {

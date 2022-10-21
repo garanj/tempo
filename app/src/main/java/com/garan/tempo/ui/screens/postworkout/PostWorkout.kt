@@ -12,8 +12,8 @@ import androidx.wear.compose.material.ScalingLazyListState
 import coil.compose.rememberAsyncImagePainter
 import com.garan.tempo.R
 import com.garan.tempo.data.SavedExercise
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.SummaryMetricChip
-import com.garan.tempo.ui.metrics.TempoMetric
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_BACKGROUND_COLOR_BLACK
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_HEIGHT_DP
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_WIDTH_DP

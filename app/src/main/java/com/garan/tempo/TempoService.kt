@@ -25,11 +25,11 @@ import androidx.wear.ongoing.OngoingActivity
 import androidx.wear.ongoing.Status
 import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.SavedExerciseDao
+import com.garan.tempo.data.metrics.MetricsRepository
+import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.mapping.RouteMapCreator
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.TempoSettingsManager
-import com.garan.tempo.ui.metrics.MetricsRepository
-import com.garan.tempo.ui.metrics.TempoMetric
 import com.garan.tempo.vibrations.stateVibrations
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
