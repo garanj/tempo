@@ -6,8 +6,13 @@ import com.garan.tempo.settings.Units
 import java.util.EnumMap
 import kotlin.math.roundToInt
 
-// TODO add permissions here too and have some function to extract them?
-// Add some useGps thing?
+/**
+ * Represents a metric used in Tempo, either for display during the workout, or recording.
+ *
+ * Closely aligned with DataTypes in Health Services, but not the same: Includes formatting
+ * functionality, and specification of exact metric (e.g. Max or avg) where statistical data types
+ * are used.
+ */
 enum class TempoMetric {
     ACTIVE_DURATION {
         override val requiredDataType = null
@@ -355,6 +360,10 @@ enum class TempoMetric {
             }
         }
 
+        /**
+         * For a given set of [DataType]s, returns the [TempoMetric]s that are supported from these
+         * datatypes.
+         */
         fun getSupportedTempoMetrics(dataTypes: Set<DataType<*, *>>) = TempoMetric.values().filter {
             val requiredDataType = it.requiredDataType
             requiredDataType == null || dataTypes.contains(requiredDataType)

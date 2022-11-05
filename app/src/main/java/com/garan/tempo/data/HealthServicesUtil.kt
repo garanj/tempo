@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.DirectionsWalk
 import androidx.compose.material.icons.filled.Sports
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.health.services.client.data.DataType
+import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseType
 
 // Icons for various exercise types
@@ -33,6 +34,8 @@ val DataType<*, *>.requiredPermissions: Set<String>
             it.add(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }.toSet()
+
+// TODO add requires GPS to data type.
 
 val NO_PERMISSION_SET = setOf(
     DataType.ACTIVE_EXERCISE_DURATION_TOTAL,
@@ -100,3 +103,9 @@ val BODY_SENSOR_SET = setOf(
 val ACCESS_FINE_LOCATION_SET = setOf(DataType.LOCATION)
 
 val dataTypes = ACTIVITY_RECOGNITION_SET + BODY_SENSOR_SET + ACCESS_FINE_LOCATION_SET
+
+fun ExerciseState.isAutoPauseState() = setOf(
+    ExerciseState.AUTO_PAUSED,
+    ExerciseState.AUTO_PAUSING,
+    ExerciseState.AUTO_RESUMING
+).contains(this)

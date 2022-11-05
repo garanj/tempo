@@ -15,8 +15,7 @@ fun defaultRunningExerciseSettings() = ExerciseSettings(
         DataType.HEART_RATE_BPM,
         DataType.STEPS_PER_MINUTE
     ),
-    endSummaryMetrics = listOf(
-        TempoMetric.ACTIVE_DURATION,
+    endSummaryMetrics = setOf(
         TempoMetric.DISTANCE,
         TempoMetric.AVG_PACE,
         TempoMetric.AVG_HEART_RATE,

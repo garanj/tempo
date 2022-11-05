@@ -11,8 +11,7 @@ fun defaultWalkingExerciseSettings() = ExerciseSettings(
     name = "Walking",
     exerciseType = ExerciseType.WALKING,
     recordingMetrics = setOf(DataType.LOCATION),
-    endSummaryMetrics = listOf(
-        TempoMetric.ACTIVE_DURATION,
+    endSummaryMetrics = setOf(
         TempoMetric.DISTANCE,
         TempoMetric.AVG_PACE,
         TempoMetric.TOTAL_STEPS

@@ -2,34 +2,38 @@ package com.garan.tempo.ui.screens.workoutsettings
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.AutoCenteringParams
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListAnchorType
+import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.Text
 import com.garan.tempo.ui.components.AutoPauseToggle
+import com.google.android.horologist.compose.navscaffold.scrollableColumn
 
 @Composable
 fun WorkoutSettingsScreen(
     onScreenButtonClick: () -> Unit,
-    // TODO: Remove viewmodel
-    viewModel: WorkoutSettingsViewModel = hiltViewModel()
+    settings: WorkoutSettingsUiState,
+    scrollState: ScalingLazyListState,
+    onAutoPauseToggle: (Boolean) -> Unit
 ) {
-    val settings by viewModel.exerciseSettings.collectAsState(WorkoutSettingsUiState())
-
+    val focusRequester = remember { FocusRequester() }
     ScalingLazyColumn(
-        modifier = Modifier.fillMaxWidth(),
-        autoCentering = AutoCenteringParams(),
+        modifier = Modifier.scrollableColumn(
+            scrollableState = scrollState,
+            focusRequester = focusRequester
+        ),
+        state = scrollState,
         anchorType = ScalingLazyListAnchorType.ItemStart,
-        horizontalAlignment = Alignment.CenterHorizontally
+        autoCentering = AutoCenteringParams()
     ) {
         item {
             Text(
@@ -42,7 +46,7 @@ fun WorkoutSettingsScreen(
         if (settings.supportsAutoPause) {
             item {
                 AutoPauseToggle(settings.useAutoPause) {
-                    viewModel.setAutoPause(!settings.useAutoPause)
+                    onAutoPauseToggle(it)
                 }
             }
         }
@@ -54,5 +58,8 @@ fun WorkoutSettingsScreen(
                 label = { Text("Edit screens") },
             )
         }
+    }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }

@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -19,7 +17,11 @@ import androidx.wear.compose.material.MaterialTheme
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.BoxBorder
 import com.garan.tempo.ui.components.Slot
+import com.garan.tempo.ui.components.ambient.AmbientState
 import com.garan.tempo.ui.components.boxBorder
+import com.garan.tempo.ui.theme.TempoTheme
+import java.time.Duration
+import java.time.Instant
 import java.util.EnumMap
 import java.util.EnumSet
 
@@ -29,6 +31,7 @@ fun OnePlusFourSlotDisplay(
     metricsUpdate: EnumMap<TempoMetric, Number>,
     checkpoint: ExerciseUpdate.ActiveDurationCheckpoint?,
     exerciseState: ExerciseState,
+    ambientState: AmbientState,
     onConfigClick: (Int) -> Unit = { _ -> },
     isForConfig: Boolean = false
 ) {
@@ -69,7 +72,8 @@ fun OnePlusFourSlotDisplay(
                             state = exerciseState,
                             textAlign = TextAlign.Start,
                             onConfigClick = { onConfigClick(0) },
-                            isForConfig = isForConfig
+                            isForConfig = isForConfig,
+                            ambientState = ambientState
                         )
                     }
                     Box(
@@ -84,7 +88,8 @@ fun OnePlusFourSlotDisplay(
                             checkpoint = checkpoint,
                             state = exerciseState,
                             onConfigClick = { onConfigClick(1) },
-                            isForConfig = isForConfig
+                            isForConfig = isForConfig,
+                            ambientState = ambientState
                         )
                     }
                 }
@@ -101,7 +106,8 @@ fun OnePlusFourSlotDisplay(
                         state = exerciseState,
                         textAlign = TextAlign.Center,
                         onConfigClick = { onConfigClick(2) },
-                        isForConfig = isForConfig
+                        isForConfig = isForConfig,
+                        ambientState = ambientState
                     )
                 }
                 Row(
@@ -130,7 +136,8 @@ fun OnePlusFourSlotDisplay(
                             state = exerciseState,
                             textAlign = TextAlign.Start,
                             onConfigClick = { onConfigClick(3) },
-                            isForConfig = isForConfig
+                            isForConfig = isForConfig,
+                            ambientState = ambientState
                         )
                     }
                     Box(
@@ -145,7 +152,8 @@ fun OnePlusFourSlotDisplay(
                             checkpoint = checkpoint,
                             state = exerciseState,
                             onConfigClick = { onConfigClick(4) },
-                            isForConfig = isForConfig
+                            isForConfig = isForConfig,
+                            ambientState = ambientState
                         )
                     }
                 }
@@ -169,23 +177,23 @@ fun OnePlusFourSlotDisplayPreview() {
         TempoMetric.DISTANCE,
         TempoMetric.AVG_PACE
     )
-    val update = remember {
-        mutableStateMapOf<TempoMetric, Number>(
-            TempoMetric.ACTIVE_DURATION to 73L,
+    val update = EnumMap<TempoMetric, Number>(
+        mapOf(
             TempoMetric.CALORIES to 176.1,
             TempoMetric.PACE to 3.7,
             TempoMetric.DISTANCE to 3281.0,
-            TempoMetric.AVG_PACE to 3.6,
+            TempoMetric.AVG_PACE to 3.6
+        )
+    )
+    TempoTheme {
+        OnePlusFourSlotDisplay(
+            metricsConfig = config,
+            metricsUpdate = update,
+            checkpoint = ExerciseUpdate.ActiveDurationCheckpoint(
+                Instant.now(), Duration.ofSeconds(15)
+            ),
+            exerciseState = ExerciseState.ACTIVE,
+            ambientState = AmbientState.Interactive
         )
     }
-//    TempoTheme {
-//        OnePlusFourSlotDisplay(
-//            metricsConfig = config,
-//            metricsUpdate = update,
-//            checkpoint = ExerciseUpdate.ActiveDurationCheckpoint(
-//                Instant.now(), Duration.ofSeconds(15)
-//            ),
-//            exerciseState = ExerciseState.ACTIVE
-//        )
-//    }
 }

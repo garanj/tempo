@@ -17,6 +17,7 @@ import com.garan.tempo.TempoService
 import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
+import com.garan.tempo.vibrations.TempoVibrationsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.EnumMap
@@ -25,7 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-    @ApplicationContext private val applicationContext: Context
+    @ApplicationContext private val applicationContext: Context,
+    private val tempoVibrationsManager: TempoVibrationsManager
 ) : ViewModel() {
     private var tempoService: TempoService? = null
 
@@ -67,6 +69,8 @@ class WorkoutViewModel @Inject constructor(
     fun endExercise() = tempoService?.endExercise()
 
     fun pauseResumeExercise() = tempoService?.pauseResumeExercise()
+
+    fun onPagerChange() = tempoVibrationsManager.vibrateForScroll()
 
     private fun createService() {
         Intent(applicationContext, TempoService::class.java).also { intent ->

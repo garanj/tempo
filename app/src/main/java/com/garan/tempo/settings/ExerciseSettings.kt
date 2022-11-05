@@ -20,14 +20,14 @@ data class ExerciseSettings(
     @Ignore
     var supportsAutoPause: Boolean = false,
     val recordingMetrics: Set<DataType<*, *>> = setOf(),
-    val endSummaryMetrics: List<TempoMetric> = listOf()
+    val endSummaryMetrics: Set<TempoMetric> = setOf()
 ) {
     constructor(
         name: String = "",
         exerciseType: ExerciseType = ExerciseType.UNKNOWN,
         useAutoPause: Boolean = false,
         recordingMetrics: Set<DataType<*, *>> = setOf(),
-        endSummaryMetrics: List<TempoMetric> = listOf()
+        endSummaryMetrics: Set<TempoMetric> = setOf()
     ) : this(
         name = name,
         exerciseType = exerciseType,
@@ -65,8 +65,7 @@ data class ExerciseSettingsWithScreens(
         // Start with the set of metrics required for recording (i.e. those that will be written to
         // database, but aren't for UI display necessarily.
         val dataTypes = exerciseSettings.recordingMetrics.toMutableSet()
-        val aggregateDataTypes = mutableSetOf<DataType<*, *>>()
-        //
+
         screenSettings.forEach { screenSetting ->
             // Only take first n metrics based on the type of screen format
             // it is.

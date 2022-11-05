@@ -12,6 +12,7 @@
     <string name="imperial_hr_label">bpm</string>
     <string name="imperial_pace_label">/mi</string>
     <string name="imperial_cadence_label">spm</string>
+    <string name="imperial_elevation_label">ft</string>
 
     <string name="metric_distance_label">km</string>
     <string name="metric_speed_label">kph</string>
@@ -19,6 +20,7 @@
     <string name="metric_hr_label">bpm</string>
     <string name="metric_pace_label">/km</string>
     <string name="metric_cadence_label">spm</string>
+    <string name="metric_elevation_label">m</string>
 
     <!-- GPS indicator -->
     <string name="gps_fixed">GPS fixed</string>
@@ -71,6 +73,10 @@
 
     <string name="auto_pause_label">Use auto-pause</string>
 
+    <string name="auto_paused">Auto-paused</string>
+    <string name="user_paused">Paused</string>
+
+
     <!-- Prepare -->
     <string name="permissions_required">Permissions are required for Tempo</string>
     <string name="next">Next</string>
@@ -83,4 +89,6 @@
     <string name="summary_metric_total_calories">Calories</string>
     <string name="summary_metric_avg_pace">Avg. Pace</string>
     <string name="summary_metric_avg_heart_rate">Avg. Heart rate</string>
+
+    <string name="other_app_in_progress_message">An exercise is already underway in another app</string>
 </resources>

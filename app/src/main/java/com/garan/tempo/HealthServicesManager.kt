@@ -37,6 +37,7 @@ class HealthServicesManager @Inject constructor(
             exerciseSettingsWithScreens.getRequiredDataTypes()
         )
 
+        @Suppress("UNCHECKED_CAST")
         val config = WarmUpConfig(
             dataTypes = warmupDataTypes as Set<DeltaDataType<*, *>>,
             exerciseType = exerciseSettingsWithScreens.exerciseSettings.exerciseType
@@ -134,13 +135,10 @@ val ExerciseState.isInProgress: Boolean
         ExerciseState.USER_PAUSED,
         ExerciseState.USER_STARTING,
         ExerciseState.USER_RESUMING,
-        ExerciseState.USER_ENDING,
+        ExerciseState.ENDING,
         ExerciseState.AUTO_PAUSING,
         ExerciseState.AUTO_PAUSED,
-        ExerciseState.AUTO_RESUMING,
-        ExerciseState.AUTO_ENDING,
-        ExerciseState.AUTO_ENDING_PERMISSION_LOST,
-        ExerciseState.TERMINATING
+        ExerciseState.AUTO_RESUMING
     )
 
 val ExerciseState.isUserPaused: Boolean

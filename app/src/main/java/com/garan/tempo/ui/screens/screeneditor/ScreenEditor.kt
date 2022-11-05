@@ -22,6 +22,7 @@ import com.garan.tempo.R
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.ScreenFormat
+import com.garan.tempo.ui.components.ambient.AmbientState
 import com.garan.tempo.ui.components.display.OnePlusFourSlotDisplay
 import com.garan.tempo.ui.components.display.OnePlusTwoSlotDisplay
 import com.garan.tempo.ui.components.display.OneSlotDisplay
@@ -74,7 +75,8 @@ fun ScreenEditor(
                 checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
-                isForConfig = true
+                isForConfig = true,
+                ambientState = AmbientState.Interactive
             )
 
             ScreenFormat.SIX_SLOT -> SixSlotMetricDisplay(
@@ -83,7 +85,8 @@ fun ScreenEditor(
                 checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
-                isForConfig = true
+                isForConfig = true,
+                ambientState = AmbientState.Interactive
             )
 
             ScreenFormat.ONE_PLUS_TWO_SLOT -> OnePlusTwoSlotDisplay(
@@ -92,7 +95,8 @@ fun ScreenEditor(
                 checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
-                isForConfig = true
+                isForConfig = true,
+                ambientState = AmbientState.Interactive
             )
 
             ScreenFormat.TWO_SLOT -> TwoSlotDisplay(
@@ -101,7 +105,8 @@ fun ScreenEditor(
                 checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
-                isForConfig = true
+                isForConfig = true,
+                ambientState = AmbientState.Interactive
             )
 
             else -> OneSlotDisplay(
@@ -110,7 +115,8 @@ fun ScreenEditor(
                 checkpoint = defaultCheckpoint,
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
-                isForConfig = true
+                isForConfig = true,
+                ambientState = AmbientState.Interactive
             )
         }
 

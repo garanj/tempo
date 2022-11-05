@@ -2,11 +2,16 @@ package com.garan.tempo.ui.screens.settings
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.wear.compose.material.AutoCenteringParams
 import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.ScalingLazyColumn
+import androidx.wear.compose.material.ScalingLazyListAnchorType
 import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.items
@@ -14,6 +19,7 @@ import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.TempoSettings
 import com.garan.tempo.settings.Units
 import com.garan.tempo.ui.components.UnitsToggle
+import com.google.android.horologist.compose.navscaffold.scrollableColumn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -26,11 +32,15 @@ fun SettingsScreen(
     scrollState: ScalingLazyListState
 ) {
     val scope = rememberCoroutineScope()
-
-    // TODO remove jankiness from screen drawing
-
+    val focusRequester = remember { FocusRequester() }
     ScalingLazyColumn(
-        state = scrollState
+        modifier = Modifier.scrollableColumn(
+            scrollableState = scrollState,
+            focusRequester = focusRequester
+        ),
+        state = scrollState,
+        anchorType = ScalingLazyListAnchorType.ItemStart,
+        autoCentering = AutoCenteringParams()
     ) {
         item {
             UnitsToggle(
@@ -59,5 +69,8 @@ fun SettingsScreen(
                 }
             )
         }
+    }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }

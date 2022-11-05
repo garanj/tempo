@@ -66,27 +66,28 @@ android {
 dependencies {
     // Required for activity
     implementation "androidx.core:core-ktx:1.9.0"
-    implementation "androidx.activity:activity-compose:1.6.0"
+    implementation "androidx.activity:activity-compose:1.6.1"
 
     // Required for Wear Compose
     implementation "androidx.wear.compose:compose-foundation:$wear_compose_version"
     implementation "androidx.wear.compose:compose-material:$wear_compose_version"
     implementation "androidx.wear.compose:compose-navigation:$wear_compose_version"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-    implementation "androidx.navigation:navigation-compose:2.5.2"
+    implementation "androidx.navigation:navigation-compose:2.5.3"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha03"
 
     // Integration with ViewModels
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
 
-    implementation "androidx.compose.foundation:foundation:1.3.0-rc01"
-    implementation "androidx.compose.material:material-icons-extended:1.3.0-rc01"
-    implementation "androidx.compose.ui:ui-tooling:1.3.0-rc01"
+    implementation "androidx.compose.foundation:foundation:1.4.0-alpha01"
+    implementation "androidx.compose.material:material-icons-extended:1.4.0-alpha01"
+    implementation "androidx.compose.ui:ui-tooling:1.4.0-alpha01"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "androidx.wear:wear:1.2.0"
-    implementation "androidx.fragment:fragment-ktx:1.5.3"
+    implementation "androidx.fragment:fragment-ktx:1.5.4"
 
     // Ongoing activity
     implementation "androidx.wear:wear-ongoing:1.0.0"
@@ -104,10 +105,10 @@ dependencies {
     implementation "androidx.wear:wear-remote-interactions:1.0.0"
 
     // Health Services
-    implementation "androidx.health:health-services-client:1.0.0-SNAPSHOT"
+    implementation "androidx.health:health-services-client:1.0.0-beta01"
 
     // For pagers
-    implementation "com.google.accompanist:accompanist-pager:0.25.0"
+    implementation "com.google.accompanist:accompanist-pager:0.25.1"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.23.1"
 
     implementation "com.google.accompanist:accompanist-permissions:0.24.9-beta"
@@ -128,7 +129,7 @@ dependencies {
     // For mapping images
     implementation("io.coil-kt:coil-compose:2.1.0")
 
-    implementation "com.google.android.horologist:horologist-compose-layout:0.1.13"
+    implementation "com.google.android.horologist:horologist-compose-layout:0.2.0"
 
     // Exercise cache
     implementation 'com.google.guava:guava:31.1-android'

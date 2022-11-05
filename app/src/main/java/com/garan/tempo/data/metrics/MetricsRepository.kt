@@ -12,17 +12,23 @@ import androidx.health.services.client.data.StatisticalDataPoint
 import com.garan.tempo.data.AvailabilityHolder
 import java.util.EnumMap
 
-
+/**
+ * Repository used by the ExerciseService for maintaining the state of metrics, given updates from
+ * Health Services.
+ */
 class MetricsRepository(
     private val metrics: Set<TempoMetric> = setOf()
 ) {
+    // The latest snapshot of metrics, for visualisation in the UI.
     private val metricsMap = EnumMap<TempoMetric, Number>(TempoMetric::class.java)
+    // Used to keep track of the state of the HR sensor.
     private var dataAvailability = AvailabilityHolder()
 
     fun updateAvailability(availabilityHolder: AvailabilityHolder) {
         dataAvailability = availabilityHolder
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun processUpdate(update: ExerciseUpdate): EnumMap<TempoMetric, Number> {
         metrics.forEach { metric ->
             if (metric == TempoMetric.HEART_RATE_BPM) {

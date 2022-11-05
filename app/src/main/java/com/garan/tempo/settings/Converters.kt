@@ -9,8 +9,6 @@ import java.time.Duration
 import java.time.ZonedDateTime
 
 class Converters {
-
-
     private val dataTypeLookup = dataTypes.map {
         it.name to it
     }.toMap()
@@ -44,14 +42,28 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromDisplayMetrics(tempoMetrics: List<TempoMetric>): String =
+    fun fromTempoMetrics(tempoMetrics: Set<TempoMetric>): String =
         tempoMetrics.joinToString(
             separator = ",",
             transform = { it.name }
         )
 
     @TypeConverter
-    fun toDisplayMetrics(encodedString: String): List<TempoMetric> {
+    fun toTempoMetrics(encodedString: String): Set<TempoMetric> {
+        return encodedString.split(",").map { name ->
+            TempoMetric.valueOf(name)
+        }.toSet()
+    }
+
+    @TypeConverter
+    fun fromTempoMetricsList(tempoMetrics: List<TempoMetric>): String =
+        tempoMetrics.joinToString(
+            separator = ",",
+            transform = { it.name }
+        )
+
+    @TypeConverter
+    fun toTempoMetricsList(encodedString: String): List<TempoMetric> {
         return encodedString.split(",").map { name ->
             TempoMetric.valueOf(name)
         }

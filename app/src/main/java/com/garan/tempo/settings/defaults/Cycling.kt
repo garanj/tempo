@@ -11,8 +11,7 @@ fun defaultCyclingExerciseSettings() = ExerciseSettings(
     name = "Cycling",
     exerciseType = ExerciseType.BIKING,
     recordingMetrics = setOf(DataType.LOCATION),
-    endSummaryMetrics = listOf(
-        TempoMetric.ACTIVE_DURATION,
+    endSummaryMetrics = setOf(
         TempoMetric.DISTANCE,
         TempoMetric.AVG_SPEED
     ),

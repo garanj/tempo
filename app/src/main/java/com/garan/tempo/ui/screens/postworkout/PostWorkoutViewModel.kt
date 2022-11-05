@@ -1,7 +1,6 @@
 package com.garan.tempo.ui.screens.postworkout
 
 import android.content.Context
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.garan.tempo.data.SavedExerciseDao
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,10 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PostWorkoutViewModel @Inject constructor(
     @ApplicationContext val applicationContext: Context,
-    savedExerciseDao: SavedExerciseDao,
-    savedStateHandle: SavedStateHandle
+    val savedExerciseDao: SavedExerciseDao
 ) : ViewModel() {
-    private val exerciseId = savedStateHandle.get<String>("exerciseId")!!
-
-    val savedExercise = savedExerciseDao.getSavedExercise(exerciseId)
+    fun savedExercise(exerciseId: String) = savedExerciseDao.getSavedExercise(exerciseId)
 }

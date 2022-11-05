@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import androidx.health.services.client.data.ExerciseTrackedStatus
@@ -16,11 +18,13 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.garan.tempo.settings.TempoSettings
 import com.garan.tempo.settings.TempoSettingsManager
 import com.garan.tempo.settings.Units
+import com.garan.tempo.ui.components.ambient.AmbientState
 import com.garan.tempo.ui.format.LocalDisplayUnitFormatter
 import com.garan.tempo.ui.format.imperialUnitFormatter
 import com.garan.tempo.ui.format.metricUnitFormatter
 import com.garan.tempo.ui.navigation.Screen
 import com.garan.tempo.ui.navigation.TempoScaffold
+import com.garan.tempo.ui.screens.otherapp.OtherAppInProgressScreen
 import com.garan.tempo.ui.theme.TempoTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,8 +35,7 @@ import javax.inject.Inject
 const val TAG = "Tempo"
 
 /**
- * Activity for controlling searching for the Headwind fan, and launching the fan control activity
- * on successfully locating and connecting to it.
+ * Activity for Tempo UI.
  */
 @AndroidEntryPoint
 class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProvider {
@@ -41,6 +44,9 @@ class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProv
 
     @Inject
     lateinit var tempoSettingsManager: TempoSettingsManager
+
+    private lateinit var ambientController: AmbientModeSupport.AmbientController
+    private lateinit var ambientState: MutableState<AmbientState>
 
     val timeText: @Composable (Modifier) -> Unit = { modifier ->
         TimeText(modifier = modifier)
@@ -63,7 +69,8 @@ class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProv
                 TempoScaffold(
                     navController = navController,
                     startDestination = startDestination,
-                    timeText = timeText
+                    timeText = timeText,
+                    ambientState = ambientState.value
                 )
             }
         }
@@ -72,10 +79,20 @@ class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProv
     @OptIn(ExperimentalCoroutinesApi::class, ExperimentalPagerApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AmbientModeSupport.attach(this)
+
+        setTheme(android.R.style.Theme_DeviceDefault)
+
+        ambientController = AmbientModeSupport.attach(this)
+        ambientState = mutableStateOf(
+            if (ambientController.isAmbient) {
+                AmbientState.Ambient
+            } else {
+                AmbientState.Interactive
+            }
+        )
+
         val exerciseInfo = lifecycleScope.async {
             healthServicesManager.isExerciseInProgress()
-
         }
         exerciseInfo.invokeOnCompletion {
             when (exerciseInfo.getCompleted().exerciseTrackedStatus) {
@@ -102,8 +119,20 @@ class TempoActivity : FragmentActivity(), AmbientModeSupport.AmbientCallbackProv
     }
 
     private fun otherExerciseWarning() {
-        // TODO
+        setContent {
+            OtherAppInProgressScreen()
+        }
     }
 
-    override fun getAmbientCallback() = object : AmbientModeSupport.AmbientCallback() {}
+    override fun getAmbientCallback() = object : AmbientModeSupport.AmbientCallback() {
+        override fun onEnterAmbient(ambientDetails: Bundle?) {
+            super.onEnterAmbient(ambientDetails)
+            ambientState.value = AmbientState.Ambient
+        }
+
+        override fun onExitAmbient() {
+            super.onExitAmbient()
+            ambientState.value = AmbientState.Interactive
+        }
+    }
 }

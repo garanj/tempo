@@ -44,7 +44,7 @@ fun EndRing(
         contentAlignment = Alignment.Center
     ) {
         if (animateCircle.value >= 0) {
-            val progressColor = MaterialTheme.colors.primary
+            val progressColor = MaterialTheme.colors.onSurface
             Canvas(
                 modifier = Modifier.fillMaxSize()
             ) {

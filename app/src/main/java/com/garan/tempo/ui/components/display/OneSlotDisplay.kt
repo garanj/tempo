@@ -3,8 +3,6 @@ package com.garan.tempo.ui.components.display
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -14,6 +12,10 @@ import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.Slot
+import com.garan.tempo.ui.components.ambient.AmbientState
+import com.garan.tempo.ui.theme.TempoTheme
+import java.time.Duration
+import java.time.Instant
 import java.util.EnumMap
 
 @Composable
@@ -22,6 +24,7 @@ fun OneSlotDisplay(
     metricsUpdate: EnumMap<TempoMetric, Number>,
     checkpoint: ExerciseUpdate.ActiveDurationCheckpoint?,
     exerciseState: ExerciseState,
+    ambientState: AmbientState,
     onConfigClick: (Int) -> Unit = { _ -> },
     isForConfig: Boolean = false
 ) {
@@ -40,7 +43,8 @@ fun OneSlotDisplay(
                 state = exerciseState,
                 textAlign = TextAlign.Center,
                 onConfigClick = { onConfigClick(0) },
-                isForConfig = isForConfig
+                isForConfig = isForConfig,
+                ambientState = ambientState
             )
         }
     }
@@ -57,19 +61,20 @@ fun OneSlotDisplayPreview() {
     val config = listOf(
         TempoMetric.PACE
     )
-    val update = remember {
-        mutableStateMapOf<TempoMetric, Number>(
+    val update = EnumMap(
+        mapOf<TempoMetric, Number>(
             TempoMetric.PACE to 3.7
         )
+    )
+    TempoTheme {
+        OneSlotDisplay(
+            metricsConfig = config,
+            metricsUpdate = update,
+            checkpoint = ExerciseUpdate.ActiveDurationCheckpoint(
+                Instant.now(), Duration.ofSeconds(15)
+            ),
+            exerciseState = ExerciseState.ACTIVE,
+            ambientState = AmbientState.Interactive
+        )
     }
-//    TempoTheme {
-//        OneSlotDisplay(
-//            metricsConfig = config,
-//            metricsUpdate = update,
-//            checkpoint = ExerciseUpdate.ActiveDurationCheckpoint(
-//                Instant.now(), Duration.ofSeconds(15)
-//            ),
-//            exerciseState = ExerciseState.ACTIVE
-//        )
-//    }
 }

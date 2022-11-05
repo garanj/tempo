@@ -13,6 +13,7 @@ import com.garan.tempo.settings.TempoSettings
 import com.garan.tempo.settings.TempoSettingsDao
 import com.garan.tempo.settings.Units
 import com.garan.tempo.settings.defaults.defaultExerciseSettingsList
+import com.garan.tempo.vibrations.TempoVibrationsManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +36,11 @@ class ProviderModule {
     @Provides
     fun provideHpService(@ApplicationContext appContext: Context) =
         HealthServices.getClient(appContext)
+
+    @Singleton
+    @Provides
+    fun provideVibrationManager(@ApplicationContext appContext: Context) =
+        TempoVibrationsManager(appContext)
 
     @Singleton
     @Provides

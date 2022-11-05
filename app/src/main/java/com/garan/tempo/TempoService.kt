@@ -8,7 +8,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
-import android.os.Vibrator
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -24,13 +23,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.wear.ongoing.OngoingActivity
 import androidx.wear.ongoing.Status
 import com.garan.tempo.data.AvailabilityHolder
+import com.garan.tempo.data.SavedExercise
 import com.garan.tempo.data.SavedExerciseDao
+import com.garan.tempo.data.SavedExerciseMetric
+import com.garan.tempo.data.isAutoPauseState
 import com.garan.tempo.data.metrics.MetricsRepository
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.mapping.RouteMapCreator
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.TempoSettingsManager
-import com.garan.tempo.vibrations.stateVibrations
+import com.garan.tempo.vibrations.TempoVibrationsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -48,6 +50,9 @@ class TempoService : LifecycleService() {
     @Inject
     lateinit var tempoSettingsManager: TempoSettingsManager
 
+    @Inject
+    lateinit var tempoVibrationsManager: TempoVibrationsManager
+
     // Provides access to sensor data through [ExerciseClient].
     @Inject
     lateinit var healthManager: HealthServicesManager
@@ -63,11 +68,10 @@ class TempoService : LifecycleService() {
     private val binder = LocalBinder()
     private var started = false
 
-    private val vibrator by lazy { getSystemService(VIBRATOR_SERVICE) as Vibrator }
-
     private lateinit var currentWorkoutStart: ZonedDateTime
 
-    //private var cache: ExerciseCache? = null
+    // TODO: Exercise cache for post workout upload
+    // private var cache: ExerciseCache? = null
     // Maintain a status of datatypes where availability can vary. This is used to determine whether
     // the last held reading of for example heart rate, is still valid.
     val dataAvailability = mutableStateOf(AvailabilityHolder())
@@ -80,10 +84,6 @@ class TempoService : LifecycleService() {
 
     var currentWorkoutId: MutableState<UUID?> = mutableStateOf(null)
         private set
-
-    // The most recent metrics, for consumption in the UI.
-    // Change this to an enum map
-    //val metrics = DisplayUpdateMap()
 
     var metricsRepository = MetricsRepository()
 
@@ -104,11 +104,6 @@ class TempoService : LifecycleService() {
     val checkpoint = mutableStateOf<ExerciseUpdate.ActiveDurationCheckpoint?>(
         ExerciseUpdate.ActiveDurationCheckpoint(Instant.now(), Duration.ZERO)
     )
-
-    // TODO - save latest aggregates
-    private fun processExerciseUpdateForCache(exerciseUpdate: ExerciseUpdate) {
-        //cache?.processUpdate(exerciseUpdate)
-    }
 
     private fun processAvailability(message: ExerciseMessage.AvailabilityChangedMessage) {
         if (message.availability is LocationAvailability) {
@@ -134,31 +129,34 @@ class TempoService : LifecycleService() {
                 healthManager.exerciseUpdateFlow.collect { message ->
                     when (message) {
                         is ExerciseMessage.ExerciseUpdateMessage -> {
-                            currentSettings.value?.let { current ->
-                                //processExerciseUpdateForDisplay(message.update)
-
+                            currentSettings.value?.let {
                                 // Because [metrics] has a never equal snapshot policy, assigning it
                                 // the EnumMap here serves to send an updated state to the UI. This
                                 // is non-ideal, as really a snapshot policy should be used that has
                                 // an efficient sense of equality for when a whole set of metrics
                                 // have been added from WHS.
                                 metrics.value = metricsRepository.processUpdate(message.update)
-                                processExerciseUpdateForCache(message.update)
+
+                                // TODO: Store the update in a cache for analysis at the end.
+                                // cache?.processUpdate(exerciseUpdate)
 
                                 if (message.update.exerciseStateInfo.state.isEnded) {
+                                    Log.i(
+                                        TAG,
+                                        "Ending exercise: ${message.update.exerciseStateInfo.endReason}"
+                                    )
                                     currentWorkoutId.value?.let { workoutId ->
-                                        // TODO - move to a separate function
-//                                        saveExercise(
-//                                            startTime = currentWorkoutStart,
-//                                            exerciseId = workoutId,
-//                                            metrics = metrics,
-//                                            // TODO - fix final duration
-//                                            activeDuration = message.update.activeDurationCheckpoint!!
-//                                        )
+                                        saveExercise(
+                                            startTime = currentWorkoutStart,
+                                            exerciseId = workoutId,
+                                            // TODO - fix final duration
+                                            activeDuration = message.update.activeDurationCheckpoint!!
+                                        )
                                     }
                                 }
                             }
                             if (exerciseState.value != message.update.exerciseStateInfo.state) {
+                                tempoVibrationsManager.vibrateByStateTransition(exerciseState.value)
                                 checkpoint.value = message.update.activeDurationCheckpoint
                             }
                             exerciseState.value = message.update.exerciseStateInfo.state
@@ -183,18 +181,14 @@ class TempoService : LifecycleService() {
 
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
-        Log.i(TAG, "service onBind")
         return binder
     }
 
     override fun onRebind(intent: Intent?) {
-        Log.i(TAG, "service onRebind")
-        // TODO - not working?
         super.onRebind(intent)
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        Log.i(TAG, "* service onUnbind")
         if (!exerciseState.value.isInProgress) {
             maybeStopService()
         }
@@ -237,15 +231,9 @@ class TempoService : LifecycleService() {
         lifecycleScope.launch {
             if (exerciseState.value.isUserPaused) {
                 healthManager.resumeExercise()
-            } else {
+            } else if (!exerciseState.value.isAutoPauseState()) {
                 healthManager.pauseExercise()
             }
-        }
-    }
-
-    private fun vibrateByStateTransition(state: ExerciseState) {
-        stateVibrations[state]?.let {
-            vibrator.vibrate(it)
         }
     }
 
@@ -307,26 +295,31 @@ class TempoService : LifecycleService() {
         return notificationBuilder.build()
     }
 
-//    private fun saveExercise(
-//        startTime: ZonedDateTime,
-//        exerciseId: UUID,
-//        metrics: DisplayUpdateMap,
-//        activeDuration: ExerciseUpdate.ActiveDurationCheckpoint
-//    ) {
-//        val savedExercise = SavedExercise(
-//            exerciseId = exerciseId.toString(),
-//            startTime = startTime,
-//            activeDuration = activeDuration.activeDuration,
-//            totalDistance = metrics.get(TempoMetric.DISTANCE)?.toDouble(),
-//            totalCalories = metrics.get(TempoMetric.CALORIES)?.toDouble(),
-//            avgPace = metrics.get(TempoMetric.AVG_PACE)?.toDouble(),
-//            avgHeartRate = metrics.get(TempoMetric.AVG_HEART_RATE)?.toDouble(),
-//        )
-//        lifecycleScope.launch {
-//            savedExerciseDao.insert(savedExercise)
-//        }
-//        routeMapCreator.createMap(exerciseId)
-//    }
+    private fun saveExercise(
+        startTime: ZonedDateTime,
+        exerciseId: UUID,
+        activeDuration: ExerciseUpdate.ActiveDurationCheckpoint
+    ) {
+        val summaryMetrics = currentSettings.value?.exerciseSettings?.endSummaryMetrics ?: setOf()
+        val finalMetrics = metrics.value.entries.filter {
+            summaryMetrics.contains(it.key)
+        }.map {
+            SavedExerciseMetric(
+                metric = it.key,
+                longValue = if (it.value is Long) it.value.toLong() else null,
+                doubleValue = if (it.value is Double) it.value.toDouble() else null
+            )
+        }
+        val savedExercise = SavedExercise(
+            recordingId = exerciseId.toString(),
+            startTime = startTime,
+            activeDuration = activeDuration.activeDuration
+        )
+        lifecycleScope.launch {
+            savedExerciseDao.insert(savedExercise, finalMetrics)
+        }
+        //routeMapCreator.createMap(exerciseId)
+    }
 
     inner class LocalBinder : Binder() {
         fun getService(): TempoService = this@TempoService

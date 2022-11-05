@@ -62,7 +62,6 @@ class PreWorkoutViewModel @Inject constructor(
     }
 
     init {
-        Log.i(TAG, "**** $this")
         if (!bound.value) {
             createService()
         }
@@ -82,7 +81,6 @@ class PreWorkoutViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         if (bound.value) {
-            Log.i(TAG, "* clear Unbinding")
             applicationContext.unbindService(connection)
         }
     }

@@ -9,10 +9,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListState
+import androidx.wear.compose.material.items
 import coil.compose.rememberAsyncImagePainter
 import com.garan.tempo.R
 import com.garan.tempo.data.SavedExercise
-import com.garan.tempo.data.metrics.TempoMetric
+import com.garan.tempo.data.SavedExerciseWithMetrics
 import com.garan.tempo.ui.components.SummaryMetricChip
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_BACKGROUND_COLOR_BLACK
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_HEIGHT_DP
@@ -26,20 +27,23 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+
 @Composable
 fun PostWorkoutScreen(
-    savedExercise: SavedExercise,
+    savedExerciseWithMetrics: SavedExerciseWithMetrics,
     scrollState: ScalingLazyListState
 ) {
     ScalingLazyColumn(
         state = scrollState
     ) {
         val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        val savedExercise = savedExerciseWithMetrics.savedExercise
+        val metrics = savedExerciseWithMetrics.savedExerciseMetrics
         item {
             SummaryMetricChip(
                 labelId = R.string.summary_metric_active_duration,
                 metricText = DateUtils.formatElapsedTime(
-                    savedExercise.activeDuration?.seconds ?: 0L
+                    savedExercise.activeDuration.seconds
                 )
             )
         }
@@ -49,41 +53,12 @@ fun PostWorkoutScreen(
                 formatter.format(savedExercise.startTime)
             )
         }
-        savedExercise.totalDistance?.let { totalDistance ->
-            item {
-                SummaryMetricChip(
-                    labelId = R.string.summary_metric_total_distance,
-                    metric = TempoMetric.DISTANCE,
-                    value = totalDistance
-                )
-            }
-        }
-        savedExercise.totalCalories?.let { totalCalories ->
-            item {
-                SummaryMetricChip(
-                    labelId = R.string.summary_metric_total_calories,
-                    metric = TempoMetric.CALORIES,
-                    value = totalCalories
-                )
-            }
-        }
-        savedExercise.avgPace?.let { avgPace ->
-            item {
-                SummaryMetricChip(
-                    labelId = R.string.summary_metric_avg_pace,
-                    metric = TempoMetric.AVG_PACE,
-                    value = avgPace
-                )
-            }
-        }
-        savedExercise.avgHeartRate?.let { avgHeartRate ->
-            item {
-                SummaryMetricChip(
-                    labelId = R.string.summary_metric_avg_heart_rate,
-                    metric = TempoMetric.AVG_HEART_RATE,
-                    value = avgHeartRate
-                )
-            }
+        items(metrics) { metric ->
+            SummaryMetricChip(
+                labelId = metric.metric.displayNameId,
+                metric = metric.metric,
+                value = metric.value
+            )
         }
         if (savedExercise.hasMap) {
             item {
@@ -110,10 +85,14 @@ fun PostWorkoutScreen(
 fun PostWorkoutScreenPreview() {
     TempoTheme {
         PostWorkoutScreen(
-            SavedExercise(
-                exerciseId = "1234",
-                startTime = ZonedDateTime.now(),
-                activeDuration = Duration.ofMinutes(30)
+            SavedExerciseWithMetrics(
+                savedExercise = SavedExercise(
+                    exerciseId = 1,
+                    recordingId = "1234",
+                    startTime = ZonedDateTime.now(),
+                    activeDuration = Duration.ofMinutes(30)
+                ),
+                savedExerciseMetrics = listOf()
             ),
             ScalingLazyListState()
         )
