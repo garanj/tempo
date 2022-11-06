@@ -85,10 +85,6 @@
     <!-- Summary metrics -->
     <string name="summary_metric_active_duration">Active duration</string>
     <string name="summary_metric_start_time">Start time</string>
-    <string name="summary_metric_total_distance">Distance</string>
-    <string name="summary_metric_total_calories">Calories</string>
-    <string name="summary_metric_avg_pace">Avg. Pace</string>
-    <string name="summary_metric_avg_heart_rate">Avg. Heart rate</string>
 
     <string name="other_app_in_progress_message">An exercise is already underway in another app</string>
 </resources>

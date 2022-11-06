@@ -15,6 +15,9 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -111,6 +114,7 @@ fun PreWorkout(
     startExercise: () -> Unit,
     onStartNavigate: () -> Unit
 ) {
+    var startButtonPressed by remember { mutableStateOf(false) }
     LaunchedEffect(exerciseState) {
         if (exerciseState.isInProgress) {
             onStartNavigate()
@@ -136,7 +140,12 @@ fun PreWorkout(
     ) {
         Button(
             modifier = Modifier.size(ButtonDefaults.LargeButtonSize),
-            onClick = startExercise
+            onClick = {
+                if (!startButtonPressed) {
+                    startButtonPressed = true
+                    startExercise()
+                }
+            }
         ) {
             Icon(
                 imageVector = Icons.Default.PlayArrow,

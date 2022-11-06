@@ -21,6 +21,7 @@ class MetricsRepository(
 ) {
     // The latest snapshot of metrics, for visualisation in the UI.
     private val metricsMap = EnumMap<TempoMetric, Number>(TempoMetric::class.java)
+
     // Used to keep track of the state of the HR sensor.
     private var dataAvailability = AvailabilityHolder()
 

@@ -1,6 +1,5 @@
 package com.garan.tempo.ui.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,7 +13,6 @@ import androidx.navigation.navArgument
 import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.navigation.composable
-import com.garan.tempo.TAG
 import com.garan.tempo.data.SavedExerciseWithMetrics
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.TempoSettings
@@ -126,7 +124,6 @@ fun TempoScaffold(
             scrollStateBuilder = { ScalingLazyListState() }
         ) {
             val exerciseId = it.backStackEntry.arguments?.getString("exerciseId")!!
-            Log.i(TAG, "ExerciseId is $exerciseId")
             val viewModel = hiltViewModel<PostWorkoutViewModel>()
             val savedExercise by viewModel.savedExercise(exerciseId).collectAsStateWithLifecycle(
                 SavedExerciseWithMetrics()

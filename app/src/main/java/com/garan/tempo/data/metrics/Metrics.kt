@@ -350,7 +350,7 @@ enum class TempoMetric {
     }
 
     companion object {
-        val LIMIT_PACE = 0.2
+        const val LIMIT_PACE = 0.2
 
         val screenEditorDefaults by lazy {
             EnumMap<TempoMetric, Number>(TempoMetric::class.java).apply {

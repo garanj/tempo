@@ -21,6 +21,17 @@ import com.garan.tempo.ui.components.ambient.AmbientState
 import kotlinx.coroutines.delay
 import java.time.Duration
 
+/**
+ * The ActiveDurationSlot is a separate implementation to how other metrics are represented, as the
+ * active duration needs to tick up, every second, independently of the frequency at which new
+ * ActiveDuration readings are sent from Health Services.
+ *
+ * It is expected that ActiveDuration will be sent from Health Services _less_ frequently than every
+ * second, so should not be relied on to tick the duration up.
+ *
+ * Therefore it is necessary to run a ticking loop locally, but also ensure that this loop does not
+ * run when either the screen is not on or screen is in ambient mode.
+ */
 @Composable
 fun ActiveDurationSlot(
     checkpoint: ExerciseUpdate.ActiveDurationCheckpoint?,

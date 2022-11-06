@@ -30,7 +30,9 @@ data class SavedExercise(
     val hasMap: Boolean = false
 )
 
-
+/**
+ * A summary metric saved at the end of the workout.
+ */
 @Entity(tableName = "saved_exercise_metrics")
 data class SavedExerciseMetric(
     @PrimaryKey(autoGenerate = true)
@@ -41,5 +43,5 @@ data class SavedExerciseMetric(
     val longValue: Long?
 ) {
     val value: Number
-        get() = if (doubleValue != null) doubleValue else longValue!!
+        get() = doubleValue ?: longValue!!
 }

@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PostWorkoutViewModel @Inject constructor(
     @ApplicationContext val applicationContext: Context,
-    val savedExerciseDao: SavedExerciseDao
+    private val savedExerciseDao: SavedExerciseDao
 ) : ViewModel() {
     fun savedExercise(exerciseId: String) = savedExerciseDao.getSavedExercise(exerciseId)
 }

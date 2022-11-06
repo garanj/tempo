@@ -3,11 +3,16 @@ package com.garan.tempo.ui.screens.postworkout
 import android.text.format.DateUtils
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.compose.material.AutoCenteringParams
 import androidx.wear.compose.material.ScalingLazyColumn
+import androidx.wear.compose.material.ScalingLazyListAnchorType
 import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.items
 import coil.compose.rememberAsyncImagePainter
@@ -21,6 +26,7 @@ import com.garan.tempo.ui.screens.WEAR_PREVIEW_DEVICE_WIDTH_DP
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_SHOW_BACKGROUND
 import com.garan.tempo.ui.screens.WEAR_PREVIEW_UI_MODE
 import com.garan.tempo.ui.theme.TempoTheme
+import com.google.android.horologist.compose.navscaffold.scrollableColumn
 import java.io.File
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -33,8 +39,15 @@ fun PostWorkoutScreen(
     savedExerciseWithMetrics: SavedExerciseWithMetrics,
     scrollState: ScalingLazyListState
 ) {
+    val focusRequester = remember { FocusRequester() }
     ScalingLazyColumn(
-        state = scrollState
+        modifier = Modifier.scrollableColumn(
+            scrollableState = scrollState,
+            focusRequester = focusRequester
+        ),
+        state = scrollState,
+        anchorType = ScalingLazyListAnchorType.ItemStart,
+        autoCentering = AutoCenteringParams()
     ) {
         val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
         val savedExercise = savedExerciseWithMetrics.savedExercise
@@ -71,6 +84,9 @@ fun PostWorkoutScreen(
                 )
             }
         }
+    }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }
 

@@ -18,22 +18,20 @@ interface SavedExerciseDao {
     fun getSavedExercise(recordingId: String): Flow<SavedExerciseWithMetrics>
 
     @Insert(onConflict = REPLACE)
-    suspend fun insert(savedExercise: SavedExercise): Long
+    fun insert(savedExercise: SavedExercise): Long
 
     @Update(entity = SavedExercise::class)
-    fun update(savedExerciseUpdate: SavedExerciseUpdate)
+    suspend fun update(savedExerciseUpdate: SavedExerciseUpdate)
 
     @Insert(onConflict = REPLACE)
-    suspend fun insert(metric: SavedExerciseMetric)
+    suspend fun insertAll(metrics: List<SavedExerciseMetric>)
 
     @Transaction
     @Insert
     suspend fun insert(savedExercise: SavedExercise, metrics: List<SavedExerciseMetric>) {
         val id = insert(savedExercise)
-        metrics.forEach { metric ->
-            metric.exerciseId = id
-            insert(metric)
-        }
+        metrics.forEach { it.exerciseId = id }
+        insertAll(metrics)
     }
 }
 

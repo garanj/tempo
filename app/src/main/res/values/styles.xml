@@ -4,5 +4,4 @@
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
 
-    <style name="MainTheme" parent="@android:style/Theme.DeviceDefault"></style>
 </resources>

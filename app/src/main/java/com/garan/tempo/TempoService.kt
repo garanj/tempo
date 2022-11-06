@@ -37,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.Instant
 import java.time.ZonedDateTime
@@ -85,7 +86,7 @@ class TempoService : LifecycleService() {
     var currentWorkoutId: MutableState<UUID?> = mutableStateOf(null)
         private set
 
-    var metricsRepository = MetricsRepository()
+    private var metricsRepository = MetricsRepository()
 
     // The state of metrics is provided by an [EnumMap]. This is a useful representation as each
     // [TempoMetric] can be a key, and as that's an Enum, this can be efficiently represented, with
@@ -101,7 +102,7 @@ class TempoService : LifecycleService() {
         policy = neverEqualPolicy()
     )
 
-    val checkpoint = mutableStateOf<ExerciseUpdate.ActiveDurationCheckpoint?>(
+    val checkpoint = mutableStateOf<ExerciseUpdate.ActiveDurationCheckpoint>(
         ExerciseUpdate.ActiveDurationCheckpoint(Instant.now(), Duration.ZERO)
     )
 
@@ -140,24 +141,23 @@ class TempoService : LifecycleService() {
                                 // TODO: Store the update in a cache for analysis at the end.
                                 // cache?.processUpdate(exerciseUpdate)
 
+                                message.update.activeDurationCheckpoint?.let { checkpoint.value = it }
+
                                 if (message.update.exerciseStateInfo.state.isEnded) {
-                                    Log.i(
-                                        TAG,
-                                        "Ending exercise: ${message.update.exerciseStateInfo.endReason}"
-                                    )
+                                    // TODO handle different end reasons
                                     currentWorkoutId.value?.let { workoutId ->
-                                        saveExercise(
-                                            startTime = currentWorkoutStart,
-                                            exerciseId = workoutId,
-                                            // TODO - fix final duration
-                                            activeDuration = message.update.activeDurationCheckpoint!!
-                                        )
+                                        withContext(Dispatchers.IO) {
+                                            saveExercise(
+                                                startTime = currentWorkoutStart,
+                                                exerciseId = workoutId
+                                            )
+                                        }
                                     }
+                                    stopSelf()
                                 }
                             }
                             if (exerciseState.value != message.update.exerciseStateInfo.state) {
                                 tempoVibrationsManager.vibrateByStateTransition(exerciseState.value)
-                                checkpoint.value = message.update.activeDurationCheckpoint
                             }
                             exerciseState.value = message.update.exerciseStateInfo.state
                         }
@@ -189,9 +189,7 @@ class TempoService : LifecycleService() {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        if (!exerciseState.value.isInProgress) {
-            maybeStopService()
-        }
+        maybeStopService()
         return true
     }
 
@@ -222,7 +220,6 @@ class TempoService : LifecycleService() {
 
     fun endExercise() {
         lifecycleScope.launch {
-            Log.i(TAG, "Ending exercise")
             healthManager.endExercise()
         }
     }
@@ -239,12 +236,14 @@ class TempoService : LifecycleService() {
 
     private fun maybeStopService() {
         lifecycleScope.launch {
-            if (!exerciseState.value.isEnded) {
-                // For example, if still in the PREPARING state.
+            if (exerciseState.value == ExerciseState.PREPARING) {
                 healthManager.endExercise()
+                stopSelf()
+            }
+            if (exerciseState.value.isEnded) {
+                stopSelf()
             }
         }
-        stopSelf()
     }
 
     private fun enableForegroundService() {
@@ -279,9 +278,8 @@ class TempoService : LifecycleService() {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
         val ongoingActivityStatus = Status.Builder()
+            // TODO add the status here, e.g. "Active", "Paused" etc
             .addTemplate(STATUS_TEMPLATE)
-            // TODO
-            //.addPart("duration", Status.TextPart("${}"))
             .build()
         val ongoingActivity =
             OngoingActivity.Builder(applicationContext, NOTIFICATION_ID, notificationBuilder)
@@ -295,10 +293,9 @@ class TempoService : LifecycleService() {
         return notificationBuilder.build()
     }
 
-    private fun saveExercise(
+    private suspend fun saveExercise(
         startTime: ZonedDateTime,
-        exerciseId: UUID,
-        activeDuration: ExerciseUpdate.ActiveDurationCheckpoint
+        exerciseId: UUID
     ) {
         val summaryMetrics = currentSettings.value?.exerciseSettings?.endSummaryMetrics ?: setOf()
         val finalMetrics = metrics.value.entries.filter {
@@ -313,11 +310,10 @@ class TempoService : LifecycleService() {
         val savedExercise = SavedExercise(
             recordingId = exerciseId.toString(),
             startTime = startTime,
-            activeDuration = activeDuration.activeDuration
+            activeDuration = checkpoint.value.activeDuration
         )
-        lifecycleScope.launch {
-            savedExerciseDao.insert(savedExercise, finalMetrics)
-        }
+        savedExerciseDao.insert(savedExercise, finalMetrics)
+
         //routeMapCreator.createMap(exerciseId)
     }
 
