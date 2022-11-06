@@ -5,9 +5,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-//        maven{
-//            url("/Users/garan/m2repo")}
-        maven { url 'https://androidx.dev/snapshots/builds/9154797/artifacts/repository' }
     }
 }
 include ':app'

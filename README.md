@@ -1,52 +1,37 @@
-# Wearwind
+# Tempo
 
-_Control your [Wahoo Headwind fan][headwind] from a [Wear OS 3][wearos] watch._
+Experimental app for learning about [Health Services][health-services] and [Wear Compose][wear-compose]
 
-<img src="images/combined.png" alt="Connect to Headwind" height="250" />
+Things that this tries to explore:
 
-[![Wearwind](https://img.youtube.com/vi/xjippga2gSw/0.jpg)](https://www.youtube.com/watch?v=xjippga2gSw)
+## Pager for different screens
 
+During the workout, the user is able to either swipe or use crown/bezel to move between different screens containing different metrics.
 
-## Background
+<img src="images/metrics-swipe.gif" alt="Paging between screens" height="250" />
 
-The [Headwind fan][headwind] features a Bluetooth GATT service, which, among
-other things, allows remote:
+## Configurable screen options
 
-- Turning on and off of the fan
-- Setting the fan speed
+Each screen can be configured in two ways:
 
-This project uses the Bluetooth functionality of your Wear OS watch to connect
-to the Headwind service, and control it.
+1.  The number and arrangement of metrics on the screen. This can range from a single metric in the centre of the screen, through a range of options, through to six separate metrics on the screen.
 
-Optionally, instead of manually setting the speed through up/down swipes, the
-wrist HR sensor can be used such that fan speed increases as HR does. 
+<img src="images/change-slots.gif" alt="Change screen layout" height="250" />
 
-## Setup and use
+1.  The specific metrics to be shown can be configured by the user, chosen from the list of data types supported by the device.
 
-1.  Clone this project 
-1.  Open in Android Studio
-1.  Build
-1.  Deploy to your Wear OS device.
-1.  _Hop on your bike trainer, launch the app on your watch, and power on the fan!_
+<img src="images/change-metrics.gif" alt="Change screen layout" height="250" />
 
-## Setting up HR zones
+## Avoiding small tap targets
 
-The settings menu allows you to configure two points:
-A HR/speed min and a HR/speed max.
+Pause/resume is via a double-tap to the screen; Finishing workout is through a long press. No small buttons on-screen.
 
--  When your HR is at or below the min, the speed will be set to the min value.
--  When your HR is at or above the max, the speed will be set to the max value.
--  When your HR is between the min and max, the speed will operate on a linear
-sliding scale between the min and max speed, according to your HR value.
+<img src="images/paused.gif" alt="Double-tap to pause" height="250" />
+<img src="images/finish.png" alt="Double-tap to pause" height="250" />
 
-## License
+## TODO
 
-This project makes extensive use of [Punchthrough Android BLE starter][starter],
-which is released under the [Apache 2.0 license][punchthrough-license].
+There's lots still to explore, lots to improve. Certainly very rough round the edges.
 
-This code can be seen in the `com.punchthrough.ble` package in the repository.
-
-[wearos]: https://wearos.google.com/
-[headwind]: https://www.wahoofitness.com/devices/bike-trainers/kickr-accessories/kickr-headwind
-[starter]: https://github.com/PunchThrough/ble-starter-android
-[punchthrough-license]: https://github.com/PunchThrough/ble-starter-android/blob/master/LICENSE
+[health-services]: https://developer.android.com/training/wearables/health-services
+[wear-compose]: https://developer.android.com/training/wearables/compose
