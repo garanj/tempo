@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import com.garan.tempo.R
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.ScreenFormat
@@ -63,6 +64,7 @@ fun ScreenEditor(
     val defaultCheckpoint = ExerciseUpdate.ActiveDurationCheckpoint(
         Instant.now(), Duration.ofSeconds(95)
     )
+
     VerticalPager(
         modifier = Modifier.fillMaxSize(),
         count = screens.size,
@@ -76,7 +78,8 @@ fun ScreenEditor(
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true,
-                ambientState = AmbientState.Interactive
+                ambientState = AmbientState.Interactive,
+                availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
             )
 
             ScreenFormat.SIX_SLOT -> SixSlotMetricDisplay(
@@ -86,7 +89,8 @@ fun ScreenEditor(
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true,
-                ambientState = AmbientState.Interactive
+                ambientState = AmbientState.Interactive,
+                availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
             )
 
             ScreenFormat.ONE_PLUS_TWO_SLOT -> OnePlusTwoSlotDisplay(
@@ -96,7 +100,8 @@ fun ScreenEditor(
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true,
-                ambientState = AmbientState.Interactive
+                ambientState = AmbientState.Interactive,
+                availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
             )
 
             ScreenFormat.TWO_SLOT -> TwoSlotDisplay(
@@ -106,7 +111,8 @@ fun ScreenEditor(
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true,
-                ambientState = AmbientState.Interactive
+                ambientState = AmbientState.Interactive,
+                availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
             )
 
             else -> OneSlotDisplay(
@@ -116,7 +122,8 @@ fun ScreenEditor(
                 exerciseState = ExerciseState.USER_PAUSED,
                 onConfigClick = { slot -> onConfigClick(page, slot) },
                 isForConfig = true,
-                ambientState = AmbientState.Interactive
+                ambientState = AmbientState.Interactive,
+                availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
             )
         }
 

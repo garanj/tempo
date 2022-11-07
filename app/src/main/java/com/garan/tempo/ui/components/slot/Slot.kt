@@ -6,6 +6,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.ambient.AmbientState
 import com.garan.tempo.ui.components.slot.ActiveDurationSlot
@@ -26,7 +27,8 @@ fun Slot(
     ambientState: AmbientState,
     textAlign: TextAlign = TextAlign.End,
     onConfigClick: () -> Unit,
-    isForConfig: Boolean = false
+    isForConfig: Boolean = false,
+    availabilityHolder: AvailabilityHolder
 ) {
     val configClick = remember { { onConfigClick() } }
     val value = metricValue?.toLong() ?: 0L
@@ -47,7 +49,8 @@ fun Slot(
             isPaused = state.isPaused,
             textAlign = textAlign,
             onConfigClick = configClick,
-            isForConfig = isForConfig
+            isForConfig = isForConfig,
+            availabilityHolder = availabilityHolder
         )
     }
 }
@@ -68,7 +71,8 @@ fun WorkoutMetricPreview() {
             metricValue = 1500,
             isPaused = false,
             textAlign = TextAlign.Start,
-            onConfigClick = {}
+            onConfigClick = {},
+            availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
         )
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
 import androidx.wear.compose.material.MaterialTheme
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.BoxBorder
 import com.garan.tempo.ui.components.Slot
@@ -33,7 +34,8 @@ fun SixSlotMetricDisplay(
     exerciseState: ExerciseState,
     ambientState: AmbientState,
     onConfigClick: (Int) -> Unit = { _ -> },
-    isForConfig: Boolean = false
+    isForConfig: Boolean = false,
+    availabilityHolder: AvailabilityHolder
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -73,7 +75,8 @@ fun SixSlotMetricDisplay(
                             textAlign = TextAlign.Start,
                             onConfigClick = { onConfigClick(0) },
                             isForConfig = isForConfig,
-                            ambientState = ambientState
+                            ambientState = ambientState,
+                            availabilityHolder = availabilityHolder
                         )
                     }
                     Box(
@@ -89,7 +92,8 @@ fun SixSlotMetricDisplay(
                             state = exerciseState,
                             onConfigClick = { onConfigClick(1) },
                             isForConfig = isForConfig,
-                            ambientState = ambientState
+                            ambientState = ambientState,
+                            availabilityHolder = availabilityHolder
                         )
                     }
                 }
@@ -113,7 +117,8 @@ fun SixSlotMetricDisplay(
                             textAlign = TextAlign.Start,
                             onConfigClick = { onConfigClick(2) },
                             isForConfig = isForConfig,
-                            ambientState = ambientState
+                            ambientState = ambientState,
+                            availabilityHolder = availabilityHolder
                         )
                     }
                     Box(
@@ -129,7 +134,8 @@ fun SixSlotMetricDisplay(
                             state = exerciseState,
                             onConfigClick = { onConfigClick(3) },
                             isForConfig = isForConfig,
-                            ambientState = ambientState
+                            ambientState = ambientState,
+                            availabilityHolder = availabilityHolder
                         )
                     }
                 }
@@ -161,7 +167,8 @@ fun SixSlotMetricDisplay(
                             textAlign = TextAlign.Start,
                             onConfigClick = { onConfigClick(4) },
                             isForConfig = isForConfig,
-                            ambientState = ambientState
+                            ambientState = ambientState,
+                            availabilityHolder = availabilityHolder
                         )
                     }
                     Box(
@@ -177,7 +184,8 @@ fun SixSlotMetricDisplay(
                             state = exerciseState,
                             onConfigClick = { onConfigClick(5) },
                             isForConfig = isForConfig,
-                            ambientState = ambientState
+                            ambientState = ambientState,
+                            availabilityHolder = availabilityHolder
                         )
                     }
                 }
@@ -219,7 +227,8 @@ fun SixSlotMetricDisplayPreview() {
                 Instant.now(), Duration.ofSeconds(15)
             ),
             exerciseState = ExerciseState.ACTIVE,
-            ambientState = AmbientState.Interactive
+            ambientState = AmbientState.Interactive,
+            availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
         )
     }
 }
