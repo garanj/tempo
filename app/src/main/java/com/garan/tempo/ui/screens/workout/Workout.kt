@@ -10,7 +10,6 @@ import com.garan.tempo.ui.components.ambient.AmbientState
 /**
  * Composable functions for use when connected to the fan, either when in HR-guided or non-HR mode.
  */
-val LocalDataAvailability = compositionLocalOf { AvailabilityHolder() }
 
 @Composable
 fun WorkoutScreen(
@@ -28,22 +27,21 @@ fun WorkoutScreen(
         val settings by serviceState.settings
         val exerciseId by serviceState.exerciseId
         val availability by serviceState.availability
-        CompositionLocalProvider(LocalDataAvailability provides availability) {
-            ActiveScreen(
-                metricsUpdate = metrics,
-                checkpoint = checkpoint,
-                exerciseState = exerciseState,
-                screenList = settings?.screenSettings ?: listOf(),
-                onFinishTap = onFinishTap,
-                onPauseResumeTap = onPauseResumeTap,
-                onFinishStateChange = {
-                    exerciseId?.let {
-                        onFinishStateChange(it.toString())
-                    }
-                },
-                onActiveScreenChange = onActiveScreenChange,
-                ambientState = ambientState
-            )
-        }
+        ActiveScreen(
+            metricsUpdate = metrics,
+            checkpoint = checkpoint,
+            exerciseState = exerciseState,
+            screenList = settings?.screenSettings ?: listOf(),
+            onFinishTap = onFinishTap,
+            onPauseResumeTap = onPauseResumeTap,
+            onFinishStateChange = {
+                exerciseId?.let {
+                    onFinishStateChange(it.toString())
+                }
+            },
+            onActiveScreenChange = onActiveScreenChange,
+            ambientState = ambientState,
+            availabilityHolder = availability
+        )
     }
 }

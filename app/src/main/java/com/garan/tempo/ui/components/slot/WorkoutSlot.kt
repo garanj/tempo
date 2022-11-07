@@ -8,10 +8,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.health.services.client.data.DataTypeAvailability
 import androidx.wear.compose.material.MaterialTheme
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.AutoSizeText
 import com.garan.tempo.ui.format.LocalDisplayUnitFormatter
-import com.garan.tempo.ui.screens.workout.LocalDataAvailability
 
 @Composable
 fun WorkoutSlot(
@@ -20,15 +20,15 @@ fun WorkoutSlot(
     isPaused: Boolean,
     textAlign: TextAlign,
     onConfigClick: () -> Unit,
-    isForConfig: Boolean = false
+    isForConfig: Boolean = false,
+    availabilityHolder: AvailabilityHolder
 ) {
     val formatter = LocalDisplayUnitFormatter.current
-    val availability = LocalDataAvailability.current.heartRateAvailability
     val context = LocalContext.current
 
     val formattedValue by remember(metricType, metricValue) {
         val formattedString = if (metricType == TempoMetric.HEART_RATE_BPM &&
-            availability != DataTypeAvailability.AVAILABLE
+            availabilityHolder.heartRateAvailability != DataTypeAvailability.AVAILABLE
         ) {
             "--"
         } else if (metricType != null &&

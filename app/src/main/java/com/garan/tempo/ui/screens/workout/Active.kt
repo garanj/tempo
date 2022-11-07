@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
 import com.garan.tempo.R
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.isAutoPauseState
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.isUserPaused
@@ -55,7 +56,8 @@ fun ActiveScreen(
     onFinishTap: () -> Unit,
     onFinishStateChange: () -> Unit,
     onActiveScreenChange: () -> Unit,
-    ambientState: AmbientState
+    ambientState: AmbientState,
+    availabilityHolder: AvailabilityHolder
 ) {
     LaunchedEffect(exerciseState) {
         if (exerciseState.isEnded) {
@@ -106,7 +108,8 @@ fun ActiveScreen(
                 metricsUpdate = metricsUpdate,
                 checkpoint = checkpoint,
                 exerciseState = exerciseState,
-                ambientState = ambientState
+                ambientState = ambientState,
+                availabilityHolder = availabilityHolder
             )
 
             ScreenFormat.SIX_SLOT -> SixSlotMetricDisplay(
@@ -114,7 +117,8 @@ fun ActiveScreen(
                 metricsUpdate = metricsUpdate,
                 checkpoint = checkpoint,
                 exerciseState = exerciseState,
-                ambientState = ambientState
+                ambientState = ambientState,
+                availabilityHolder = availabilityHolder
             )
 
             ScreenFormat.ONE_PLUS_TWO_SLOT -> OnePlusTwoSlotDisplay(
@@ -122,7 +126,8 @@ fun ActiveScreen(
                 metricsUpdate = metricsUpdate,
                 checkpoint = checkpoint,
                 exerciseState = exerciseState,
-                ambientState = ambientState
+                ambientState = ambientState,
+                availabilityHolder = availabilityHolder
             )
 
             ScreenFormat.TWO_SLOT -> TwoSlotDisplay(
@@ -130,7 +135,8 @@ fun ActiveScreen(
                 metricsUpdate = metricsUpdate,
                 checkpoint = checkpoint,
                 exerciseState = exerciseState,
-                ambientState = ambientState
+                ambientState = ambientState,
+                availabilityHolder = availabilityHolder
             )
 
             else -> OneSlotDisplay(
@@ -138,7 +144,8 @@ fun ActiveScreen(
                 metricsUpdate = metricsUpdate,
                 checkpoint = checkpoint,
                 exerciseState = exerciseState,
-                ambientState = ambientState
+                ambientState = ambientState,
+                availabilityHolder = availabilityHolder
             )
         }
     }
@@ -189,7 +196,8 @@ fun ActiveScreenPreview() {
             onFinishTap = {},
             onFinishStateChange = {},
             onActiveScreenChange = {},
-            ambientState = AmbientState.Interactive
+            ambientState = AmbientState.Interactive,
+            availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
         )
     }
 }

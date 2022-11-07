@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
+import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.ui.components.Slot
 import com.garan.tempo.ui.components.ambient.AmbientState
@@ -26,7 +27,8 @@ fun OneSlotDisplay(
     exerciseState: ExerciseState,
     ambientState: AmbientState,
     onConfigClick: (Int) -> Unit = { _ -> },
-    isForConfig: Boolean = false
+    isForConfig: Boolean = false,
+    availabilityHolder: AvailabilityHolder
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -44,7 +46,8 @@ fun OneSlotDisplay(
                 textAlign = TextAlign.Center,
                 onConfigClick = { onConfigClick(0) },
                 isForConfig = isForConfig,
-                ambientState = ambientState
+                ambientState = ambientState,
+                availabilityHolder = availabilityHolder
             )
         }
     }
@@ -74,7 +77,8 @@ fun OneSlotDisplayPreview() {
                 Instant.now(), Duration.ofSeconds(15)
             ),
             exerciseState = ExerciseState.ACTIVE,
-            ambientState = AmbientState.Interactive
+            ambientState = AmbientState.Interactive,
+            availabilityHolder = AvailabilityHolder.ALL_AVAILABLE
         )
     }
 }

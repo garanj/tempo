@@ -6,4 +6,11 @@ import androidx.health.services.client.data.LocationAvailability
 data class AvailabilityHolder(
     val heartRateAvailability: DataTypeAvailability = DataTypeAvailability.UNKNOWN,
     val locationAvailability: LocationAvailability = LocationAvailability.UNKNOWN
-)
+) {
+    companion object {
+        val ALL_AVAILABLE = AvailabilityHolder(
+            heartRateAvailability = DataTypeAvailability.AVAILABLE,
+            locationAvailability = LocationAvailability.ACQUIRED_UNTETHERED
+        )
+    }
+}
