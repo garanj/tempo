@@ -42,10 +42,8 @@ class MetricPickerViewModel @Inject constructor(
                 )
             }
 
-    fun setMetric(settingsId: Int, screen: Int, slot: Int, metric: TempoMetric) {
-        viewModelScope.launch(Dispatchers.IO) {
-            tempoSettingsManager.setMetric(settingsId, screen, slot, metric)
-        }
+    suspend fun setMetric(settingsId: Int, screen: Int, slot: Int, metric: TempoMetric) {
+        tempoSettingsManager.setMetric(settingsId, screen, slot, metric)
     }
 }
 
