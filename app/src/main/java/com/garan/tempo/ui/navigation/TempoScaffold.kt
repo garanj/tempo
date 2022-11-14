@@ -193,21 +193,22 @@ fun TempoScaffold(
                 }
             )
         }
-        composable(
-            Screen.SCREEN_FORMAT.route + "/{settingsId}/{screen}",
+        scalingLazyColumnComposable(
+            route = Screen.SCREEN_FORMAT.route + "/{settingsId}/{screen}",
             arguments = listOf(
                 // TODO remove all magic strings
                 navArgument("settingsId") { type = NavType.IntType },
                 navArgument("screen") { type = NavType.IntType }
-            )
-        )
-        {
+            ),
+            scrollStateBuilder = { ScalingLazyListState() }
+        ) {
             val viewModel = hiltViewModel<ScreenFormatViewModel>()
             ScreenFormatScreen(
                 onScreenFormatClick = { screenFormat ->
                     viewModel.setScreenFormat(screenFormat)
                     navController.popBackStack()
-                }
+                },
+                scrollState = it.scrollableState
             )
         }
         scalingLazyColumnComposable(

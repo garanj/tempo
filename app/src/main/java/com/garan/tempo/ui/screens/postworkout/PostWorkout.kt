@@ -15,6 +15,7 @@ import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListAnchorType
 import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.items
+import androidx.wear.compose.material.rememberScalingLazyListState
 import coil.compose.rememberAsyncImagePainter
 import com.garan.tempo.R
 import com.garan.tempo.data.SavedExercise
@@ -99,9 +100,10 @@ fun PostWorkoutScreen(
 )
 @Composable
 fun PostWorkoutScreenPreview() {
+    val scrollState = rememberScalingLazyListState()
     TempoTheme {
         PostWorkoutScreen(
-            SavedExerciseWithMetrics(
+            savedExerciseWithMetrics = SavedExerciseWithMetrics(
                 savedExercise = SavedExercise(
                     exerciseId = 1,
                     recordingId = "1234",
@@ -110,7 +112,7 @@ fun PostWorkoutScreenPreview() {
                 ),
                 savedExerciseMetrics = listOf()
             ),
-            ScalingLazyListState()
+            scrollState = scrollState
         )
     }
 }

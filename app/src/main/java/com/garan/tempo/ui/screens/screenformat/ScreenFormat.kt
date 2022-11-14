@@ -2,8 +2,11 @@ package com.garan.tempo.ui.screens.screenformat
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -12,22 +15,30 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.ChipDefaults
 import androidx.wear.compose.material.ScalingLazyColumn
 import androidx.wear.compose.material.ScalingLazyListAnchorType
+import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.items
+import androidx.wear.compose.material.rememberScalingLazyListState
 import com.garan.tempo.settings.ScreenFormat
-import com.garan.tempo.ui.screens.workout.ActiveScreen
 import com.garan.tempo.ui.theme.TempoTheme
+import com.google.android.horologist.compose.navscaffold.scrollableColumn
 import kotlinx.coroutines.launch
 
 @Composable
 fun ScreenFormatScreen(
+    scrollState: ScalingLazyListState,
     onScreenFormatClick: suspend (ScreenFormat) -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
     ScalingLazyColumn(
-        modifier = Modifier.fillMaxWidth(),
-        autoCentering = AutoCenteringParams(),
-        anchorType = ScalingLazyListAnchorType.ItemStart
+        modifier = Modifier.scrollableColumn(
+            scrollableState = scrollState,
+            focusRequester = focusRequester
+        ),
+        state = scrollState,
+        anchorType = ScalingLazyListAnchorType.ItemStart,
+        autoCentering = AutoCenteringParams()
     ) {
         items(ScreenFormat.values().toList()) { screenFormat ->
             Chip(
@@ -45,6 +56,9 @@ fun ScreenFormatScreen(
             )
         }
     }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 }
 
 @Preview(
@@ -55,8 +69,9 @@ fun ScreenFormatScreen(
 )
 @Composable
 fun ScreenFormatPreview() {
+    val scrollState = rememberScalingLazyListState()
     TempoTheme {
-        ScreenFormatScreen()
+        ScreenFormatScreen(scrollState = scrollState)
     }
 }
 
