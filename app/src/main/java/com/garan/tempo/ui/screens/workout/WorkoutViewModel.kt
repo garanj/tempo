@@ -14,14 +14,11 @@ import androidx.health.services.client.data.ExerciseUpdate
 import androidx.lifecycle.ViewModel
 import com.garan.tempo.TAG
 import com.garan.tempo.TempoService
-import com.garan.tempo.data.AvailabilityHolder
-import com.garan.tempo.data.metrics.TempoMetric
+import com.garan.tempo.data.metrics.CurrentExercise
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.vibrations.TempoVibrationsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.EnumMap
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,11 +38,9 @@ class WorkoutViewModel @Inject constructor(
                 tempoService = it
                 serviceState.value = ServiceState.Connected(
                     exerciseState = it.exerciseState,
-                    availability = it.dataAvailability,
-                    metrics = it.metrics,
+                    exercise = it.currentExercise,
                     checkpoint = it.checkpoint,
-                    settings = it.currentSettings,
-                    exerciseId = it.currentWorkoutId
+                    settings = it.currentSettings
                 )
             }
             Log.i(TAG, "onServiceConnected")
@@ -91,10 +86,8 @@ sealed class ServiceState {
     object Disconnected : ServiceState()
     data class Connected(
         val exerciseState: State<ExerciseState>,
-        val availability: State<AvailabilityHolder>,
-        val metrics: State<EnumMap<TempoMetric, Number>>,
+        val exercise: State<CurrentExercise>,
         val checkpoint: State<ExerciseUpdate.ActiveDurationCheckpoint?>,
-        val settings: State<ExerciseSettingsWithScreens?>,
-        val exerciseId: State<UUID?>
+        val settings: State<ExerciseSettingsWithScreens?>
     ) : ServiceState()
 }

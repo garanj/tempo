@@ -7,6 +7,7 @@ import androidx.health.services.client.data.ExerciseCapabilities
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.garan.tempo.data.metrics.CurrentExerciseRepository
 import com.garan.tempo.settings.ExerciseSettingsDao
 import com.garan.tempo.settings.ExerciseSettingsDatabase
 import com.garan.tempo.settings.TempoSettings
@@ -41,6 +42,10 @@ class ProviderModule {
     @Provides
     fun provideVibrationManager(@ApplicationContext appContext: Context) =
         TempoVibrationsManager(appContext)
+
+    @Singleton
+    @Provides
+    fun provideCurrentExerciseRepository() = CurrentExerciseRepository()
 
     @Singleton
     @Provides
