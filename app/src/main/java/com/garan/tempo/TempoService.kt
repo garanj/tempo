@@ -33,7 +33,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.Instant
 import javax.inject.Inject
@@ -88,7 +87,7 @@ class TempoService : LifecycleService() {
             enableForegroundService()
             started = true
 
-            lifecycleScope.launch {
+            lifecycleScope.launch(Dispatchers.IO) {
                 healthManager.exerciseUpdateFlow.collect { message ->
                     if (currentExerciseRepository.hasCurrentExercise()) {
                         currentExercise.value =
@@ -100,10 +99,8 @@ class TempoService : LifecycleService() {
 
                             if (message.update.exerciseStateInfo.state.isEnded) {
                                 // TODO handle different end reasons
-                                withContext(Dispatchers.IO) {
-                                    if (currentExerciseRepository.hasCurrentExercise()) {
-                                        saveExercise(currentExerciseRepository.getCurrentExercise())
-                                    }
+                                if (currentExerciseRepository.hasCurrentExercise()) {
+                                    saveExercise(currentExerciseRepository.getCurrentExercise())
                                 }
                                 currentExerciseRepository.disposeCurrentExercise()
                                 stopSelf()
@@ -138,7 +135,7 @@ class TempoService : LifecycleService() {
     }
 
     fun prepare(settingsId: Int) {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             currentSettings.value = tempoSettingsManager.getExerciseSettings(settingsId).first()
             currentSettings.value?.let {
                 currentExerciseRepository.initializeCurrentExercise(it.displayMetricsSet)
@@ -160,13 +157,13 @@ class TempoService : LifecycleService() {
     }
 
     fun endExercise() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             healthManager.endExercise()
         }
     }
 
     fun pauseResumeExercise() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             if (exerciseState.value.isUserPaused) {
                 healthManager.resumeExercise()
             } else if (!exerciseState.value.isAutoPauseState()) {
@@ -176,7 +173,7 @@ class TempoService : LifecycleService() {
     }
 
     private fun maybeStopService() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
             if (exerciseState.value == ExerciseState.PREPARING) {
                 healthManager.endExercise()
                 stopSelf()
