@@ -3,7 +3,6 @@ package com.garan.tempo.data.metrics
 import androidx.health.services.client.data.DataType
 import com.garan.tempo.R
 import java.util.EnumMap
-import kotlin.math.roundToInt
 
 /**
  * Represents a metric used in Tempo, either for display during the workout, or recording.

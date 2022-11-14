@@ -2,14 +2,10 @@ package com.garan.tempo.settings
 
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.ExerciseType
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.room.Relation
-import com.garan.tempo.R
 import com.garan.tempo.data.metrics.TempoMetric
-import com.garan.tempo.data.requiredPermissions
 
 @Entity(tableName = "exercise_settings")
 data class ExerciseSettings(

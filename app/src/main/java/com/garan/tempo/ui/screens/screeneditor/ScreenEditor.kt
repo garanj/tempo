@@ -1,5 +1,6 @@
 package com.garan.tempo.ui.screens.screeneditor
 
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -7,10 +8,15 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ViewCozy
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.health.services.client.data.ExerciseState
@@ -33,8 +39,11 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.VerticalPager
 import com.google.accompanist.pager.VerticalPagerIndicator
 import com.google.accompanist.pager.rememberPagerState
+import com.google.android.horologist.compose.rotaryinput.onRotaryInputAccumulated
+import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.Instant
+import kotlin.math.sign
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -44,6 +53,8 @@ fun ScreenEditor(
     viewModel: ScreenEditorViewModel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState(1)
+    val focusRequester = remember { FocusRequester() }
+    val coroutineScope = rememberCoroutineScope()
     val settings by viewModel.exerciseSettings.collectAsState(ExerciseSettingsWithScreens())
 
     Box(
@@ -66,7 +77,20 @@ fun ScreenEditor(
     )
 
     VerticalPager(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .onRotaryInputAccumulated {
+                coroutineScope.launch {
+                    pagerState.scrollToPage(
+                        (pagerState.currentPage + it.sign.toInt()).coerceIn(
+                            0,
+                            pagerState.pageCount - 1
+                        )
+                    )
+                }
+            }
+            .focusRequester(focusRequester)
+            .focusable(),
         count = screens.size,
         state = pagerState
     ) { page ->
@@ -142,5 +166,8 @@ fun ScreenEditor(
                 )
             }
         }
+    }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }
