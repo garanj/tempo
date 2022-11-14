@@ -12,5 +12,9 @@ data class AvailabilityHolder(
             heartRateAvailability = DataTypeAvailability.AVAILABLE,
             locationAvailability = LocationAvailability.ACQUIRED_UNTETHERED
         )
+        val UNKNOWN = AvailabilityHolder(
+            heartRateAvailability = DataTypeAvailability.UNKNOWN,
+            locationAvailability = LocationAvailability.UNKNOWN
+        )
     }
 }

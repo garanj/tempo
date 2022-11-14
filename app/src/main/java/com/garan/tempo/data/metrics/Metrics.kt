@@ -2,7 +2,6 @@ package com.garan.tempo.data.metrics
 
 import androidx.health.services.client.data.DataType
 import com.garan.tempo.R
-import com.garan.tempo.settings.Units
 import java.util.EnumMap
 import kotlin.math.roundToInt
 
@@ -255,16 +254,7 @@ enum class TempoMetric {
     abstract val aggregationType: AggregationType
     abstract val screenEditorDefault: Number
 
-
-    fun roundedDoubleOrDashes(value: Double) = if (!value.isNaN()) {
-        value.roundToInt().toString()
-    } else {
-        "--"
-    }
-
     companion object {
-        const val LIMIT_PACE = 0.2
-
         val screenEditorDefaults by lazy {
             EnumMap<TempoMetric, Number>(TempoMetric::class.java).apply {
                 putAll(values().associateWith {

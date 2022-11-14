@@ -3,17 +3,14 @@ package com.garan.tempo.ui.screens.metricpicker
 import androidx.health.services.client.data.ExerciseCapabilities
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.garan.tempo.HealthServicesManager
 import com.garan.tempo.data.metrics.TempoMetric
 import com.garan.tempo.settings.TempoSettingsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

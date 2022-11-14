@@ -1,10 +1,7 @@
 package com.garan.tempo.ui.screens.workout
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
-import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.ui.components.ambient.AmbientState
 
 /**
@@ -22,26 +19,22 @@ fun WorkoutScreen(
 ) {
     if (serviceState is ServiceState.Connected) {
         val exerciseState by serviceState.exerciseState
-        val metrics by serviceState.metrics
+        val exercise by serviceState.exercise
         val checkpoint by serviceState.checkpoint
         val settings by serviceState.settings
-        val exerciseId by serviceState.exerciseId
-        val availability by serviceState.availability
         ActiveScreen(
-            metricsUpdate = metrics,
+            metricsUpdate = exercise.metricsMap,
             checkpoint = checkpoint,
             exerciseState = exerciseState,
             screenList = settings?.screenSettings ?: listOf(),
             onFinishTap = onFinishTap,
             onPauseResumeTap = onPauseResumeTap,
             onFinishStateChange = {
-                exerciseId?.let {
-                    onFinishStateChange(it.toString())
-                }
+                onFinishStateChange(exercise.id.toString())
             },
             onActiveScreenChange = onActiveScreenChange,
             ambientState = ambientState,
-            availabilityHolder = availability
+            availabilityHolder = exercise.availability
         )
     }
 }

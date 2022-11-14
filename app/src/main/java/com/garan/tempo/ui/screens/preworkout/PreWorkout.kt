@@ -95,13 +95,14 @@ fun PreWorkoutScreen(
 ) {
     if (serviceState is ServiceState.Connected) {
         val exerciseState by serviceState.exerciseState
-        val availability by serviceState.availability
+        val exercise by serviceState.exercise
         PreWorkout(
             exerciseState = exerciseState,
-            availability = availability,
+            availability = exercise.availability,
             prepareExercise = onPrepareExercise,
             startExercise = onStartExercise,
-            onStartNavigate = onStartNavigate
+            onStartNavigate = onStartNavigate,
+            requiresHrIndicator = exercise.requiresHeartRateIndicator
         )
     }
 }
@@ -112,7 +113,8 @@ fun PreWorkout(
     availability: AvailabilityHolder,
     prepareExercise: () -> Unit,
     startExercise: () -> Unit,
-    onStartNavigate: () -> Unit
+    onStartNavigate: () -> Unit,
+    requiresHrIndicator: Boolean = true
 ) {
     var startButtonPressed by remember { mutableStateOf(false) }
     LaunchedEffect(exerciseState) {
@@ -130,7 +132,9 @@ fun PreWorkout(
     ) {
         Row {
             GpsIndicator(availability.locationAvailability)
-            HrIndicator(availability.heartRateAvailability)
+            if (requiresHrIndicator) {
+                HrIndicator(availability.heartRateAvailability)
+            }
         }
     }
 

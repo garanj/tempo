@@ -11,24 +11,20 @@ import android.os.IBinder
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.neverEqualPolicy
+import androidx.compose.runtime.referentialEqualityPolicy
 import androidx.core.app.NotificationCompat
-import androidx.health.services.client.data.DataType
-import androidx.health.services.client.data.DataTypeAvailability
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
-import androidx.health.services.client.data.LocationAvailability
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.ongoing.OngoingActivity
 import androidx.wear.ongoing.Status
-import com.garan.tempo.data.AvailabilityHolder
 import com.garan.tempo.data.SavedExercise
 import com.garan.tempo.data.SavedExerciseDao
 import com.garan.tempo.data.SavedExerciseMetric
 import com.garan.tempo.data.isAutoPauseState
-import com.garan.tempo.data.metrics.MetricsRepository
-import com.garan.tempo.data.metrics.TempoMetric
+import com.garan.tempo.data.metrics.CurrentExercise
+import com.garan.tempo.data.metrics.CurrentExerciseRepository
 import com.garan.tempo.mapping.RouteMapCreator
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
 import com.garan.tempo.settings.TempoSettingsManager
@@ -40,9 +36,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.Instant
-import java.time.ZonedDateTime
-import java.util.EnumMap
-import java.util.UUID
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,6 +46,9 @@ class TempoService : LifecycleService() {
 
     @Inject
     lateinit var tempoVibrationsManager: TempoVibrationsManager
+
+    @Inject
+    lateinit var currentExerciseRepository: CurrentExerciseRepository
 
     // Provides access to sensor data through [ExerciseClient].
     @Inject
@@ -69,13 +65,8 @@ class TempoService : LifecycleService() {
     private val binder = LocalBinder()
     private var started = false
 
-    private lateinit var currentWorkoutStart: ZonedDateTime
-
     // TODO: Exercise cache for post workout upload
     // private var cache: ExerciseCache? = null
-    // Maintain a status of datatypes where availability can vary. This is used to determine whether
-    // the last held reading of for example heart rate, is still valid.
-    val dataAvailability = mutableStateOf(AvailabilityHolder())
 
     var exerciseState = mutableStateOf(ExerciseState.ENDED)
         private set
@@ -83,42 +74,13 @@ class TempoService : LifecycleService() {
     var currentSettings: MutableState<ExerciseSettingsWithScreens?> = mutableStateOf(null)
         private set
 
-    var currentWorkoutId: MutableState<UUID?> = mutableStateOf(null)
-        private set
-
-    private var metricsRepository = MetricsRepository()
-
-    // The state of metrics is provided by an [EnumMap]. This is a useful representation as each
-    // [TempoMetric] can be a key, and as that's an Enum, this can be efficiently represented, with
-    // the UI retrieving only those that have been populated and subscribed to. On the downside,
-    // there appears to be no immutable EnumMap, so this is a non-ideal use here, where the mutable
-    // object is passed. Furthermore, the snapshot policy is set to never equal, as all updates from
-    // a given WHS update are written to the EnumMap, before the map is then assigned to the metrics
-    // value, to ensure that the UI only received an update once per WHS update (not for every time
-    // the map is updated). There is probably a much better way to do this all, with something that
-    // provides an immutable representation and a more meaningful snapshot policy.
-    val metrics = mutableStateOf<EnumMap<TempoMetric, Number>>(
-        value = EnumMap<TempoMetric, Number>(TempoMetric::class.java),
-        policy = neverEqualPolicy()
+    val currentExercise = mutableStateOf(
+        value = CurrentExercise(),
+        policy = referentialEqualityPolicy()
     )
 
-    val checkpoint = mutableStateOf<ExerciseUpdate.ActiveDurationCheckpoint>(
-        ExerciseUpdate.ActiveDurationCheckpoint(Instant.now(), Duration.ZERO)
-    )
-
-    private fun processAvailability(message: ExerciseMessage.AvailabilityChangedMessage) {
-        if (message.availability is LocationAvailability) {
-            dataAvailability.value = dataAvailability.value.copy(
-                locationAvailability = message.availability
-            )
-        } else if (message.availability is DataTypeAvailability
-            && message.dataType == DataType.HEART_RATE_BPM
-        ) {
-            dataAvailability.value = dataAvailability.value.copy(
-                heartRateAvailability = message.availability
-            )
-        }
-    }
+    val checkpoint =
+        mutableStateOf(ExerciseUpdate.ActiveDurationCheckpoint(Instant.now(), Duration.ZERO))
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -128,33 +90,23 @@ class TempoService : LifecycleService() {
 
             lifecycleScope.launch {
                 healthManager.exerciseUpdateFlow.collect { message ->
+                    if (currentExerciseRepository.hasCurrentExercise()) {
+                        currentExercise.value =
+                            currentExerciseRepository.updateFromExerciseMessage(message)
+                    }
                     when (message) {
                         is ExerciseMessage.ExerciseUpdateMessage -> {
-                            currentSettings.value?.let {
-                                // Because [metrics] has a never equal snapshot policy, assigning it
-                                // the EnumMap here serves to send an updated state to the UI. This
-                                // is non-ideal, as really a snapshot policy should be used that has
-                                // an efficient sense of equality for when a whole set of metrics
-                                // have been added from WHS.
-                                metrics.value = metricsRepository.processUpdate(message.update)
+                            message.update.activeDurationCheckpoint?.let { checkpoint.value = it }
 
-                                // TODO: Store the update in a cache for analysis at the end.
-                                // cache?.processUpdate(exerciseUpdate)
-
-                                message.update.activeDurationCheckpoint?.let { checkpoint.value = it }
-
-                                if (message.update.exerciseStateInfo.state.isEnded) {
-                                    // TODO handle different end reasons
-                                    currentWorkoutId.value?.let { workoutId ->
-                                        withContext(Dispatchers.IO) {
-                                            saveExercise(
-                                                startTime = currentWorkoutStart,
-                                                exerciseId = workoutId
-                                            )
-                                        }
+                            if (message.update.exerciseStateInfo.state.isEnded) {
+                                // TODO handle different end reasons
+                                withContext(Dispatchers.IO) {
+                                    if (currentExerciseRepository.hasCurrentExercise()) {
+                                        saveExercise(currentExerciseRepository.getCurrentExercise())
                                     }
-                                    stopSelf()
                                 }
+                                currentExerciseRepository.disposeCurrentExercise()
+                                stopSelf()
                             }
                             if (exerciseState.value != message.update.exerciseStateInfo.state) {
                                 tempoVibrationsManager.vibrateByStateTransition(exerciseState.value)
@@ -162,15 +114,7 @@ class TempoService : LifecycleService() {
                             exerciseState.value = message.update.exerciseStateInfo.state
                         }
 
-                        is ExerciseMessage.AvailabilityChangedMessage -> {
-                            //cache?.processAvailability(message.dataType, message.availability)
-                            processAvailability(message)
-                            metricsRepository.updateAvailability(dataAvailability.value)
-                        }
-
-                        else -> {
-
-                        }
+                        else -> {}
                     }
                 }
             }
@@ -196,6 +140,9 @@ class TempoService : LifecycleService() {
     fun prepare(settingsId: Int) {
         lifecycleScope.launch {
             currentSettings.value = tempoSettingsManager.getExerciseSettings(settingsId).first()
+            currentSettings.value?.let {
+                currentExerciseRepository.initializeCurrentExercise(it.displayMetricsSet)
+            }
             healthManager.prepare(currentSettings.value!!)
         }
     }
@@ -203,18 +150,12 @@ class TempoService : LifecycleService() {
     fun startExercise(settingsId: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
             currentSettings.value = tempoSettingsManager.getExerciseSettings(settingsId).first()
-            currentWorkoutId.value = UUID.randomUUID()
-            currentSettings.value?.let {
-                metricsRepository = MetricsRepository(it.displayMetricsSet)
-            }
 //            cache = ExerciseCache(
 //                context = this@TempoService,
 //                exerciseType = currentSettings.value!!.exerciseSettings.exerciseType,
 //                exerciseId = currentWorkoutId.value.toString()
 //            )
             healthManager.startExercise(currentSettings.value!!)
-            currentWorkoutStart = ZonedDateTime.now()
-
         }
     }
 
@@ -293,28 +234,28 @@ class TempoService : LifecycleService() {
         return notificationBuilder.build()
     }
 
-    private suspend fun saveExercise(
-        startTime: ZonedDateTime,
-        exerciseId: UUID
-    ) {
-        val summaryMetrics = currentSettings.value?.exerciseSettings?.endSummaryMetrics ?: setOf()
-        val finalMetrics = metrics.value.entries.filter {
-            summaryMetrics.contains(it.key)
-        }.map {
-            SavedExerciseMetric(
-                metric = it.key,
-                longValue = if (it.value is Long) it.value.toLong() else null,
-                doubleValue = if (it.value is Double) it.value.toDouble() else null
+    private suspend fun saveExercise(currentExercise: CurrentExercise) {
+        if (currentExercise.wasStarted) {
+            val summaryMetrics =
+                currentSettings.value?.exerciseSettings?.endSummaryMetrics ?: setOf()
+            val finalMetrics = currentExercise.metricsMap.entries.filter {
+                summaryMetrics.contains(it.key)
+            }.map {
+                SavedExerciseMetric(
+                    metric = it.key,
+                    longValue = if (it.value is Long) it.value.toLong() else null,
+                    doubleValue = if (it.value is Double) it.value.toDouble() else null
+                )
+            }
+            val savedExercise = SavedExercise(
+                recordingId = currentExercise.id.toString(),
+                startTime = currentExercise.startDateTime!!,
+                activeDuration = checkpoint.value.activeDuration
             )
-        }
-        val savedExercise = SavedExercise(
-            recordingId = exerciseId.toString(),
-            startTime = startTime,
-            activeDuration = checkpoint.value.activeDuration
-        )
-        savedExerciseDao.insert(savedExercise, finalMetrics)
+            savedExerciseDao.insert(savedExercise, finalMetrics)
 
-        //routeMapCreator.createMap(exerciseId)
+            //routeMapCreator.createMap(exerciseId)
+        }
     }
 
     inner class LocalBinder : Binder() {

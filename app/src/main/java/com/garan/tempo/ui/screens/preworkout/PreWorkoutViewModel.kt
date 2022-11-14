@@ -27,9 +27,6 @@ class PreWorkoutViewModel @Inject constructor(
     private val settingsId = savedStateHandle.get<Int>("settingsId")!!
     private var tempoService: TempoService? = null
 
-    var permissionsGranted = mutableStateOf(false)
-        private set
-
     val exerciseSettings = tempoSettingsManager.getExerciseSettings(settingsId)
 
     val serviceState: MutableState<ServiceState> = mutableStateOf(ServiceState.Disconnected)
@@ -42,11 +39,9 @@ class PreWorkoutViewModel @Inject constructor(
                 tempoService = it
                 serviceState.value = ServiceState.Connected(
                     exerciseState = it.exerciseState,
-                    availability = it.dataAvailability,
-                    metrics = it.metrics,
+                    exercise = it.currentExercise,
                     checkpoint = it.checkpoint,
-                    settings = it.currentSettings,
-                    exerciseId = it.currentWorkoutId
+                    settings = it.currentSettings
                 )
             }
             Log.i(TAG, "onServiceConnected")
