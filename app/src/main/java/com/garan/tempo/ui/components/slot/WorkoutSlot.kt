@@ -26,7 +26,7 @@ fun WorkoutSlot(
     val formatter = LocalDisplayUnitFormatter.current
     val context = LocalContext.current
 
-    val formattedValue by remember(metricType, metricValue) {
+    val formattedValue by remember(metricType, metricValue, availabilityHolder) {
         val formattedString = if (metricType == TempoMetric.HEART_RATE_BPM &&
             availabilityHolder.heartRateAvailability != DataTypeAvailability.AVAILABLE
         ) {
