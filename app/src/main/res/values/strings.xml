@@ -76,7 +76,6 @@
     <string name="auto_paused">Auto-paused</string>
     <string name="user_paused">Paused</string>
 
-
     <!-- Prepare -->
     <string name="permissions_required">Permissions are required for Tempo</string>
     <string name="next">Next</string>
@@ -85,6 +84,13 @@
     <!-- Summary metrics -->
     <string name="summary_metric_active_duration">Active duration</string>
     <string name="summary_metric_start_time">Start time</string>
+
+    <!-- Screen format -->
+    <string name="screen_format_one_slot">Single-slot</string>
+    <string name="screen_format_two_slot">Dual-slot</string>
+    <string name="screen_format_one_plus_two_slot">One + Double</string>
+    <string name="screen_format_one_plus_four_slot">One + Quad"</string>
+    <string name="screen_format_six_slot">Six-slot</string>
 
     <string name="other_app_in_progress_message">An exercise is already underway in another app</string>
 </resources>
