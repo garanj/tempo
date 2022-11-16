@@ -10,6 +10,8 @@ class DisplayUnitFormatter(
     val distanceScaleFactor: Double = 1609.344,
     // Default to speed unit of mph
     val speedScaleFactor: Double = 2.23694,
+    // Pace is by default in milliseconds/kilometer, convert to seconds per kilometer
+    val paceScaleFactor: Double = 0.001,
     // Default to elevation unit of feet
     val elevationScaleFactor: Double = 3.28084,
     val labelMap: Map<TempoMetric, Int> = imperialLabelMap()
@@ -45,13 +47,14 @@ class DisplayUnitFormatter(
             value.toLong() / 60, value.toLong() % 60
         )
 
+        // Pace is in milliseconds/kilometer
         TempoMetric.PACE,
         TempoMetric.AVG_PACE,
         TempoMetric.MAX_PACE -> {
             if (value.toDouble() < limitPace) {
                 "--"
             } else {
-                val pace = (distanceScaleFactor / value.toDouble()).toLong()
+                val pace = (paceScaleFactor * value.toDouble()).toLong()
                 "%d:%02d".format(pace / 60, pace % 60)
             }
         }
@@ -88,6 +91,8 @@ private fun roundedDoubleOrDashes(value: Double) = if (!value.isNaN()) {
 fun metricUnitFormatter() = DisplayUnitFormatter(
     distanceScaleFactor = 1000.0,
     speedScaleFactor = 3.6,
+    // Conversion from ms/km to s/mile
+    paceScaleFactor = 0.00062150403,
     elevationScaleFactor = 1.0,
     labelMap = metricLabelMap()
 )

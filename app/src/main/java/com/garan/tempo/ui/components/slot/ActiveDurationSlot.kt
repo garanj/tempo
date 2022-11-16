@@ -43,7 +43,7 @@ fun ActiveDurationSlot(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
     var durationStart by remember { mutableStateOf(calculateDurationMillis(checkpoint)) }
-    var duration by remember { mutableStateOf(0L) }
+    var duration by remember { mutableStateOf(durationStart) }
     var tickStart by remember { mutableStateOf(System.currentTimeMillis()) }
     val seconds by remember { derivedStateOf { duration / 1000 } }
     var lifecycleEnabled by remember { mutableStateOf(true) }
@@ -69,9 +69,9 @@ fun ActiveDurationSlot(
 
         if (state == ExerciseState.ACTIVE && lifecycleEnabled && ambientState == AmbientState.Interactive) {
             while (true) {
-                delay(200)
                 val delta = System.currentTimeMillis() - tickStart
                 duration = durationStart + delta
+                delay(200)
             }
         }
     }
