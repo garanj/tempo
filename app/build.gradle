@@ -6,14 +6,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('/Users/garan/keystore/upload-keystore.jks')
-            storePassword 'UploadBardy123456'
-            keyAlias 'upload'
-            keyPassword 'UploadBardy123456'
-        }
-    }
     compileSdkVersion 33
     buildToolsVersion "30.0.3"
     defaultConfig {
