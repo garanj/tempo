@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+option java_package = "com.garan.counterpart";
+option java_multiple_files = true;
+
+message ExerciseCacheHeader {
+  map<string, int32> data_types = 1;
+  int64 boot_instant_millis = 2;
+  string exercise_type = 3;
+  string id = 4;
+}
+
+message DataTypeAvailability {
+  int32 data_type = 1;
+  int32 id = 2;
+}
+
+message LocationAvailability {
+  int32 id = 1;
+}
+
+message ExerciseCacheRecord {
+  oneof message {
+    SampleExerciseMetric sample = 1;
+    IntervalExerciseMetric interval = 2;
+    DataTypeAvailability dataTypeAvailability = 3;
+    LocationAvailability locationAvailability = 4;
+    StateRecord state = 5;
+    ExerciseCacheHeader header = 6;
+  }
+}
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  double altitude = 3;
+  double bearing = 4;
+}
+
+message HeartRateAccuracy {
+  int32 id = 1;
+}
+
+message LocationAccuracy {
+  double horizontalPositionErrorMeters = 1;
+  double verticalPositionErrorMeters = 2;
+}
+
+message SampleExerciseMetric {
+  oneof value {
+    double double_value = 1;
+    int64 long_value = 2;
+    Location location_value = 3;
+  }
+  int32 data_type = 4;
+  int64 time_from_boot = 5;
+  oneof accuracy {
+    HeartRateAccuracy heart_accuracy = 6;
+    LocationAccuracy location_accuracy = 7;
+  }
+}
+
+message IntervalExerciseMetric {
+  oneof value {
+    double double_value = 1;
+    int64 long_value = 2;
+    Location location_value = 3;
+  }
+  int32 data_type = 4;
+  int64 start_time_from_boot = 5;
+  int64 end_time_from_boot = 6;
+  oneof accuracy {
+    HeartRateAccuracy heart_accuracy = 7;
+    LocationAccuracy location_accuracy = 8;
+  }
+}
+
+message StateRecord {
+  int64 timestamp = 1;
+  int32 state = 2;
+}

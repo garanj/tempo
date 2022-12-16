@@ -16,7 +16,7 @@ import com.garan.tempo.data.SavedExerciseMetric
         SavedExerciseMetric::class,
         TempoSettings::class
     ],
-    version = 33
+    version = 35
 )
 @TypeConverters(Converters::class)
 abstract class ExerciseSettingsDatabase : RoomDatabase() {

@@ -70,6 +70,12 @@
     </application>
 
     <queries>
-        <package android:name="com.google.android.wearable.healthservices" />
+        <package android:name="com.fossil.wearables.watchfaces" />
+    </queries>
+
+    <queries>
+        <intent>
+            <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+        </intent>
     </queries>
 </manifest>

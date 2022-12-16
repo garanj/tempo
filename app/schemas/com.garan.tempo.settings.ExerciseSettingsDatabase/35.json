@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 33,
-    "identityHash": "3498dc4114c4c499113fc8ba3d96afff",
+    "version": 35,
+    "identityHash": "5014f0be6d3b8d73179209b1ade141f2",
     "entities": [
       {
         "tableName": "exercise_settings",
@@ -100,7 +100,7 @@
       },
       {
         "tableName": "saved_exercises",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`exerciseId` INTEGER, `recordingId` TEXT NOT NULL, `startTime` TEXT NOT NULL, `activeDuration` INTEGER NOT NULL, `mapPaths` BLOB, PRIMARY KEY(`exerciseId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`exerciseId` INTEGER, `recordingId` TEXT NOT NULL, `startTime` TEXT NOT NULL, `activeDuration` INTEGER NOT NULL, `mapPathData` BLOB, PRIMARY KEY(`exerciseId`))",
         "fields": [
           {
             "fieldPath": "exerciseId",
@@ -127,8 +127,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "mapPaths",
-            "columnName": "mapPaths",
+            "fieldPath": "mapPathData",
+            "columnName": "mapPathData",
             "affinity": "BLOB",
             "notNull": false
           }
@@ -216,7 +216,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3498dc4114c4c499113fc8ba3d96afff')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5014f0be6d3b8d73179209b1ade141f2')"
     ]
   }
 }

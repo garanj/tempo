@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseType
+import kotlin.reflect.KClass
 
 // Icons for various exercise types
 // TODO - make all exercise types work
@@ -36,6 +37,22 @@ val DataType<*, *>.requiredPermissions: Set<String>
     }.toSet()
 
 // TODO add requires GPS to data type.
+
+data class DataTypeMetadata(
+    val dataType: DataType<*, *>,
+    val requiresActivityRecognition: Boolean = false,
+    val requiresAccessFineLocation: Boolean = false,
+    val requiresBodySensors: Boolean = false,
+    val valueType: KClass<*>
+)
+
+val dataTypeDetails = setOf(
+    DataTypeMetadata(
+        dataType = DataType.HEART_RATE_BPM,
+        requiresBodySensors = true,
+        valueType = Double::class
+    )
+)
 
 val NO_PERMISSION_SET = setOf(
     DataType.ACTIVE_EXERCISE_DURATION_TOTAL,

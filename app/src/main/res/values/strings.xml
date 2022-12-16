@@ -84,6 +84,7 @@
     <!-- Summary metrics -->
     <string name="summary_metric_active_duration">Active duration</string>
     <string name="summary_metric_start_time">Start time</string>
+    <string name="map_title">Route</string>
 
     <!-- Screen format -->
     <string name="screen_format_one_slot">Single-slot</string>

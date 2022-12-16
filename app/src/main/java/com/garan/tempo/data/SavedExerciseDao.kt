@@ -28,18 +28,19 @@ interface SavedExerciseDao {
 
     @Transaction
     @Insert
-    suspend fun insert(savedExercise: SavedExercise, metrics: List<SavedExerciseMetric>) {
+    suspend fun insert(savedExercise: SavedExercise, metrics: List<SavedExerciseMetric>): Long {
         val id = insert(savedExercise)
         metrics.forEach { it.exerciseId = id }
         insertAll(metrics)
+        return id
     }
 }
 
 @Entity
 data class SavedExerciseUpdate(
     @ColumnInfo(name = "exerciseId")
-    var exerciseId: String = "",
+    var exerciseId: Long = 0,
 
-    @ColumnInfo(name = "hasMap")
-    val hasMap: Boolean = false
+    @ColumnInfo(name = "mapPathData")
+    val mapPathData: ByteArray? = null
 )

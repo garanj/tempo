@@ -27,7 +27,7 @@ data class SavedExercise(
     val recordingId: String = "",
     val startTime: ZonedDateTime = ZonedDateTime.now(),
     val activeDuration: Duration = Duration.ZERO,
-    val hasMap: Boolean = false
+    val mapPathData: ByteArray? = null
 )
 
 /**

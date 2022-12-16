@@ -1,5 +1,6 @@
 package com.garan.tempo
 
+import android.content.Context
 import androidx.health.services.client.ExerciseUpdateCallback
 import androidx.health.services.client.HealthServicesClient
 import androidx.health.services.client.data.Availability
@@ -11,7 +12,9 @@ import androidx.health.services.client.data.ExerciseLapSummary
 import androidx.health.services.client.data.ExerciseState
 import androidx.health.services.client.data.ExerciseUpdate
 import androidx.health.services.client.data.WarmUpConfig
+import com.garan.tempo.data.cachingExerciseClient
 import com.garan.tempo.settings.ExerciseSettingsWithScreens
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.trySendBlocking
@@ -21,9 +24,10 @@ import javax.inject.Inject
 
 class HealthServicesManager @Inject constructor(
     healthServicesClient: HealthServicesClient,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    @ApplicationContext appContext: Context
 ) {
-    private val exerciseClient = healthServicesClient.exerciseClient
+    private val exerciseClient = healthServicesClient.cachingExerciseClient(appContext)
 
     suspend fun isExerciseInProgress(): ExerciseInfo {
         return exerciseClient.getCurrentExerciseInfoAsync().await()
@@ -57,7 +61,7 @@ class HealthServicesManager @Inject constructor(
         exerciseClient.resumeExerciseAsync().await()
     }
 
-    suspend fun startExercise(exerciseSettingsWithScreens: ExerciseSettingsWithScreens) {
+    suspend fun startExercise(exerciseSettingsWithScreens: ExerciseSettingsWithScreens): String {
         val exerciseSettings = exerciseSettingsWithScreens.exerciseSettings
         val capabilities = exerciseClient.getCapabilitiesAsync().await()
         val exerciseCapabilities =
@@ -70,8 +74,8 @@ class HealthServicesManager @Inject constructor(
             dataTypes = dataTypes.intersect(exerciseCapabilities.supportedDataTypes),
             exerciseType = exerciseSettings.exerciseType
         )
-        exerciseClient.startExerciseAsync(config).await()
-
+        return exerciseClient.startCachedExerciseAsync(config, exerciseSettings.recordingMetrics)
+            .await()
     }
 
     val exerciseUpdateFlow = callbackFlow {

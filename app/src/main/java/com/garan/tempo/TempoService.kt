@@ -64,9 +64,6 @@ class TempoService : LifecycleService() {
     private val binder = LocalBinder()
     private var started = false
 
-    // TODO: Exercise cache for post workout upload
-    // private var cache: ExerciseCache? = null
-
     var exerciseState = mutableStateOf(ExerciseState.ENDED)
         private set
 
@@ -77,6 +74,8 @@ class TempoService : LifecycleService() {
         value = CurrentExercise(),
         policy = referentialEqualityPolicy()
     )
+
+    var cacheFileId: String? = null
 
     val checkpoint =
         mutableStateOf(ExerciseUpdate.ActiveDurationCheckpoint(Instant.now(), Duration.ZERO))
@@ -101,6 +100,7 @@ class TempoService : LifecycleService() {
                                 // TODO handle different end reasons
                                 if (currentExerciseRepository.hasCurrentExercise()) {
                                     saveExercise(currentExerciseRepository.getCurrentExercise())
+
                                 }
                                 currentExerciseRepository.disposeCurrentExercise()
                                 stopSelf()
@@ -146,13 +146,9 @@ class TempoService : LifecycleService() {
 
     fun startExercise(settingsId: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
-            currentSettings.value = tempoSettingsManager.getExerciseSettings(settingsId).first()
-//            cache = ExerciseCache(
-//                context = this@TempoService,
-//                exerciseType = currentSettings.value!!.exerciseSettings.exerciseType,
-//                exerciseId = currentWorkoutId.value.toString()
-//            )
-            healthManager.startExercise(currentSettings.value!!)
+            val settings = tempoSettingsManager.getExerciseSettings(settingsId).first()
+            currentSettings.value = settings
+            cacheFileId = healthManager.startExercise(currentSettings.value!!)
         }
     }
 
@@ -249,9 +245,10 @@ class TempoService : LifecycleService() {
                 startTime = currentExercise.startDateTime!!,
                 activeDuration = checkpoint.value.activeDuration
             )
-            savedExerciseDao.insert(savedExercise, finalMetrics)
+            val databaseId = savedExerciseDao.insert(savedExercise, finalMetrics)
 
-            //routeMapCreator.createMap(exerciseId)
+            cacheFileId?.let { cacheId -> routeMapCreator.createMap(cacheId, databaseId) }
+            cacheFileId = null
         }
     }
 
